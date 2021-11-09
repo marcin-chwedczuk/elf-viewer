@@ -25,6 +25,24 @@ public class ElfReader {
         offset += 2;
         ElfType type = ElfType.fromUnsignedShort(e_type);
 
-        return new Elf32Header(identification, type);
+        short e_machine = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+        ElfMachine machine = ElfMachine.fromUnsignedShort(e_machine);
+
+        int e_version = file.readUnsignedInt(endianness, offset);
+        offset += 4;
+        // TODO: Overflow check
+        ElfVersion version = ElfVersion.fromByte((byte)e_version);
+
+        int e_entry = file.readUnsignedInt(endianness, offset);
+        offset += 4;
+        Elf32Address entry = new Elf32Address(e_entry);
+
+        return new Elf32Header(
+                identification,
+                type,
+                machine,
+                version,
+                entry);
     }
 }

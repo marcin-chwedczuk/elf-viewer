@@ -40,5 +40,15 @@ class ElfReaderTest {
         // elf type
         assertThat(header.type())
                 .isEqualTo(ElfType.Executable);
+
+        // elf machine - x86 (386)
+        assertThat(header.machine())
+                .isEqualTo(ElfMachine.Intel386);
+
+        assertThat(header.version())
+                .isEqualTo(ElfVersion.EV_CURRENT);
+
+        assertThat(header.entry())
+                .isEqualTo(new Elf32Address(0x8048310));
     }
 }
