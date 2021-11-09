@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.template.gui.mainwindow;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit5.ApplicationTest;
-import pl.marcinchwedczuk.template.gui.App;
+import pl.marcinchwedczuk.elfviewer.gui.App;
 
 import java.util.concurrent.TimeoutException;
 

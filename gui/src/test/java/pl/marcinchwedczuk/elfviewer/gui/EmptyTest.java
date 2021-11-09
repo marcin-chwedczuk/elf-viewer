@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.template.gui;
+package pl.marcinchwedczuk.elfviewer.gui;
 
 import org.junit.jupiter.api.Test;
 

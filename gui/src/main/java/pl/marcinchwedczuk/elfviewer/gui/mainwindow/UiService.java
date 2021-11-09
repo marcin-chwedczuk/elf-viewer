@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.template.gui.mainwindow;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.scene.control.Alert;
 

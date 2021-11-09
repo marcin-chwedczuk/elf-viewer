@@ -1,8 +1,8 @@
-package pl.marcinchwedczuk.template.gui;
+package pl.marcinchwedczuk.elfviewer.gui;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import pl.marcinchwedczuk.template.gui.mainwindow.MainWindow;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow;
 
 /**
  * JavaFX App

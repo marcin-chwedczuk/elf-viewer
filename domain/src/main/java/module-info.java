@@ -1,3 +1,3 @@
-module pl.marcinchwedczuk.template.domain {
-    exports pl.marcinchwedczuk.template.domain;
+module pl.marcinchwedczuk.elfviewer.domain {
+    exports pl.marcinchwedczuk.elfviewer.domain;
 }

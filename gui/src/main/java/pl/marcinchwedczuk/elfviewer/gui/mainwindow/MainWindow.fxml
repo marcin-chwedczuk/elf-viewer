@@ -7,7 +7,7 @@
 <VBox minHeight="100" minWidth="300"
       styleClass="mainWindow" stylesheets="@MainWindow.css"
       xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/"
-      fx:controller="pl.marcinchwedczuk.template.gui.mainwindow.MainWindow"
+      fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow"
       fx:id="mainWindow">
     <children>
         <Button>Click me!</Button>

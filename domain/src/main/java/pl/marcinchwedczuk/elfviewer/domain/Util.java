@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.template.domain;
+package pl.marcinchwedczuk.elfviewer.domain;
 
 public class Util {
     private Util() { }

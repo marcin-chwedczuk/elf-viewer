@@ -1,6 +1,6 @@
 # JavaFX Opinionated Application Template
 
-![Build Status](https://github.com/marcin-chwedczuk/javafx-template/actions/workflows/ci.yaml/badge.svg)
+![Build Status](https://github.com/marcin-chwedczuk/elf-viewer/actions/workflows/ci.yaml/badge.svg)
 
 * Created for JDK 11+, with Java 9 modules support
 * Multi-module Maven project by default

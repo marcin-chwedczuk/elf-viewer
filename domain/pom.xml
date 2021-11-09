@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>parent-project</artifactId>
-        <groupId>pl.marcinchwedczuk.template</groupId>
+        <groupId>pl.marcinchwedczuk.elfviewer</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -18,7 +18,7 @@
     <properties>
         <extra-jvm-options-when-running-tests>
             <!-- Needed to make module code accessible outside module e.g. in unit tests. -->
-            --add-opens pl.marcinchwedczuk.template.domain/pl.marcinchwedczuk.template.domain=ALL-UNNAMED
+            --add-opens pl.marcinchwedczuk.elfviewer.domain/pl.marcinchwedczuk.elfviewer.domain=ALL-UNNAMED
         </extra-jvm-options-when-running-tests>
     </properties>
 

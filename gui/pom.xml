@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>parent-project</artifactId>
-        <groupId>pl.marcinchwedczuk.template</groupId>
+        <groupId>pl.marcinchwedczuk.elfviewer</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -20,15 +20,15 @@
             --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
 
             <!-- Needed to make module code accessible outside module e.g. in unit tests. -->
-            --add-opens pl.marcinchwedczuk.template.gui/pl.marcinchwedczuk.template.gui=ALL-UNNAMED
-            --add-opens pl.marcinchwedczuk.template.gui/pl.marcinchwedczuk.template.gui.mainwindow=ALL-UNNAMED
+            --add-opens pl.marcinchwedczuk.elfviewer.gui/pl.marcinchwedczuk.elfviewer.gui=ALL-UNNAMED
+            --add-opens pl.marcinchwedczuk.elfviewer.gui/pl.marcinchwedczuk.elfviewer.gui.mainwindow=ALL-UNNAMED
         </extra-jvm-options-when-running-tests>
     </properties>
 
     <dependencies>
         <!-- Other modules -->
         <dependency>
-            <groupId>pl.marcinchwedczuk.template</groupId>
+            <groupId>pl.marcinchwedczuk.elfviewer</groupId>
             <artifactId>domain</artifactId>
         </dependency>
 
@@ -162,7 +162,7 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>pl.marcinchwedczuk.template.gui/pl.marcinchwedczuk.template.gui.App</mainClass>
+                    <mainClass>pl.marcinchwedczuk.elfviewer.gui/pl.marcinchwedczuk.elfviewer.gui.App</mainClass>
                     <options>
                         <!-- Enable assertions -->
                         <option>-ea</option>

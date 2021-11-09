@@ -1,11 +1,8 @@
-package pl.marcinchwedczuk.template.domain;
+package pl.marcinchwedczuk.elfviewer.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.Target;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UtilTest {
     @Test

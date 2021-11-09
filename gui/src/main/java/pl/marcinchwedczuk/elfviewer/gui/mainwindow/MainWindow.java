@@ -1,13 +1,12 @@
-package pl.marcinchwedczuk.template.gui.mainwindow;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
 import javafx.stage.Stage;
-import pl.marcinchwedczuk.template.domain.Util;
+import pl.marcinchwedczuk.elfviewer.domain.Util;
 
 import java.io.IOException;
 import java.net.URL;
