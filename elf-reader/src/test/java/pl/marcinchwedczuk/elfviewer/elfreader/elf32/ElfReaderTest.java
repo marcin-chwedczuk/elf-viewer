@@ -48,7 +48,16 @@ class ElfReaderTest {
         assertThat(header.version())
                 .isEqualTo(ElfVersion.EV_CURRENT);
 
+        // program start address in memory
         assertThat(header.entry())
                 .isEqualTo(new Elf32Address(0x8048310));
+
+        // offset into ELF file
+        assertThat(header.programHeaderTableOffset())
+                .isEqualTo(new Elf32Offset(52));
+
+        // offset into ELF file
+        assertThat(header.sectionHeaderTableOffset())
+                .isEqualTo(new Elf32Offset(6116));
     }
 }

@@ -18,16 +18,26 @@ public class Elf32Header {
     @ElfApi("e_entry")
     private final Elf32Address entry;
 
+    @ElfApi("e_phoff")
+    private final Elf32Offset programHeaderTableOffset;
+
+    @ElfApi("e_shoff")
+    private final Elf32Offset sectionHeaderTableOffset;
+
     public Elf32Header(ElfIdentification identification,
                        ElfType type,
                        ElfMachine machine,
                        ElfVersion version,
-                       Elf32Address entry) {
+                       Elf32Address entry,
+                       Elf32Offset programHeaderTableOffset,
+                       Elf32Offset sectionHeaderTableOffset) {
         this.identification = identification;
         this.type = type;
         this.machine = machine;
         this.version = version;
         this.entry = entry;
+        this.programHeaderTableOffset = programHeaderTableOffset;
+        this.sectionHeaderTableOffset = sectionHeaderTableOffset;
     }
 
     public ElfIdentification identification() {
@@ -48,5 +58,13 @@ public class Elf32Header {
 
     public Elf32Address entry() {
         return entry;
+    }
+
+    public Elf32Offset programHeaderTableOffset() {
+        return programHeaderTableOffset;
+    }
+
+    public Elf32Offset sectionHeaderTableOffset() {
+        return sectionHeaderTableOffset;
     }
 }

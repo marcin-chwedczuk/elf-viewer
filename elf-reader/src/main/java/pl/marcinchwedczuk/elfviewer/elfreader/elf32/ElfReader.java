@@ -38,11 +38,21 @@ public class ElfReader {
         offset += 4;
         Elf32Address entry = new Elf32Address(e_entry);
 
+        int e_phoff = file.readUnsignedInt(endianness, offset);
+        offset += 4;
+        Elf32Offset programHeaderTableOffset = new Elf32Offset(e_phoff);
+
+        int e_shoff = file.readUnsignedInt(endianness, offset);
+        offset += 4;
+        Elf32Offset sectionHeaderTableOffset = new Elf32Offset(e_shoff);
+
         return new Elf32Header(
                 identification,
                 type,
                 machine,
                 version,
-                entry);
+                entry,
+                programHeaderTableOffset,
+                sectionHeaderTableOffset);
     }
 }
