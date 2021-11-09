@@ -6,7 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import pl.marcinchwedczuk.elfviewer.domain.Util;
+import pl.marcinchwedczuk.elfviewer.elfreader.Util;
 
 import java.io.IOException;
 import java.net.URL;

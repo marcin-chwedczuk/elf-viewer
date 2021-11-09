@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.domain;
+package pl.marcinchwedczuk.elfviewer.elfreader;
 
 import org.junit.jupiter.api.Test;
 

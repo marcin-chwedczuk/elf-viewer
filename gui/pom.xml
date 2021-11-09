@@ -29,7 +29,7 @@
         <!-- Other modules -->
         <dependency>
             <groupId>pl.marcinchwedczuk.elfviewer</groupId>
-            <artifactId>domain</artifactId>
+            <artifactId>elf-reader</artifactId>
         </dependency>
 
         <!-- External -->

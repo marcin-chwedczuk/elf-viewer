@@ -7,11 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="gui" />
-        <module name="domain" />
+        <module name="elf-reader" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="domain" target="11" />
+      <module name="elf-reader" target="11" />
       <module name="gui" target="11" />
       <module name="parent-project" target="11" />
     </bytecodeTargetLevel>

@@ -13,7 +13,7 @@
 
     <modules>
         <module>gui</module>
-        <module>domain</module>
+        <module>elf-reader</module>
     </modules>
 
     <properties>
@@ -64,7 +64,7 @@
             </dependency>
             <dependency>
                 <groupId>pl.marcinchwedczuk.elfviewer</groupId>
-                <artifactId>domain</artifactId>
+                <artifactId>elf-reader</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -13,7 +13,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="domain" />
+    <orderEntry type="module" module-name="elf-reader" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:mac:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:16" level="project" />

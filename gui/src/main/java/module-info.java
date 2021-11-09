@@ -1,5 +1,5 @@
 module pl.marcinchwedczuk.elfviewer.gui {
-    requires pl.marcinchwedczuk.elfviewer.domain;
+    requires pl.marcinchwedczuk.elfviewer.elfreader;
 
     requires javafx.controls;
     requires javafx.fxml;
