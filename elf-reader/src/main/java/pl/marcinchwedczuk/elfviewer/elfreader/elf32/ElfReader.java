@@ -46,6 +46,28 @@ public class ElfReader {
         offset += 4;
         Elf32Offset sectionHeaderTableOffset = new Elf32Offset(e_shoff);
 
+        int e_flags = file.readUnsignedInt(endianness, offset);
+        offset += 4;
+
+        short e_ehsize = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+
+        short e_phentsize = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+
+        short e_phnum = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+
+        short e_shentsize = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+
+        short e_shnum = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+
+        short e_shstrndx = file.readUnsignedShort(endianness, offset);
+        offset += 2;
+        SHTIndex shstrndx = new SHTIndex(e_shstrndx);
+
         return new Elf32Header(
                 identification,
                 type,
@@ -53,6 +75,13 @@ public class ElfReader {
                 version,
                 entry,
                 programHeaderTableOffset,
-                sectionHeaderTableOffset);
+                sectionHeaderTableOffset,
+                e_flags,
+                e_ehsize,
+                e_phentsize,
+                e_phnum,
+                e_shentsize,
+                e_shnum,
+                shstrndx);
     }
 }

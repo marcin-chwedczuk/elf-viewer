@@ -7,7 +7,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ElfReaderTest {
 
@@ -59,5 +58,29 @@ class ElfReaderTest {
         // offset into ELF file
         assertThat(header.sectionHeaderTableOffset())
                 .isEqualTo(new Elf32Offset(6116));
+
+        // flags
+        assertThat(header.flags())
+                .isEqualTo(0);
+
+        // header size
+        assertThat(header.headerSize())
+                .isEqualTo(52);
+
+        // program headers
+        assertThat(header.programHeaderSize())
+                .isEqualTo(32);
+        assertThat(header.numberOfProgramHeaders())
+                .isEqualTo(9);
+
+        // section headers
+        assertThat(header.sectionHeaderSize())
+                .isEqualTo(40);
+        assertThat(header.numberOfSectionHeaders())
+                .isEqualTo(31);
+
+        // Strings section
+        assertThat(header.sectionNameStringTableIndex())
+                .isEqualTo(new SHTIndex(28));
     }
 }
