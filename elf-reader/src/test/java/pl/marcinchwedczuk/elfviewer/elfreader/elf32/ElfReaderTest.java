@@ -5,20 +5,20 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ElfReaderTest {
-
     @Test
-    public void elf32_identification() throws IOException {
+    public void elf32_header() throws IOException {
         byte[] helloWorld32 = this.getClass()
                 .getResourceAsStream("hello-world-32")
                 .readAllBytes();
 
         AbstractFile elfFile = new InMemoryFile(helloWorld32);
 
-        Elf32Header header = ElfReader.read(elfFile);
+        Elf32Header header = ElfReader.readElf32(elfFile).header;
         ElfIdentification identification = header.identification();
 
         assertThat(identification.magicString())
@@ -80,7 +80,23 @@ class ElfReaderTest {
                 .isEqualTo(31);
 
         // Strings section
-        assertThat(header.sectionNameStringTableIndex())
+        assertThat(header.sectionContainingSectionNames())
                 .isEqualTo(new SHTIndex(28));
+    }
+
+
+    @Test
+    public void elf32_sections() throws IOException {
+        byte[] helloWorld32 = this.getClass()
+                .getResourceAsStream("hello-world-32")
+                .readAllBytes();
+
+        AbstractFile elfFile = new InMemoryFile(helloWorld32);
+
+        List<Elf32SectionHeader> sections = ElfReader.readElf32(elfFile).sectionHeaders;
+
+        sections.forEach(section -> {
+            System.out.println(section);
+        });
     }
 }

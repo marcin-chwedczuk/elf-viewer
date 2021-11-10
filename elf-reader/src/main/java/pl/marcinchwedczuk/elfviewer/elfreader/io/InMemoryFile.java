@@ -10,6 +10,17 @@ public class InMemoryFile implements AbstractFile {
     }
 
     @Override
+    public byte read(long offset) {
+        if (bytes.length <= offset)
+            throw new RuntimeException(String.format(
+                    "File size: %d. Requested range [%d, %d). Range is outside of the file.",
+                    bytes.length, offset, offset + 1));
+
+        // TODO: Overflow check
+        return bytes[(int)offset];
+    }
+
+    @Override
     public byte[] read(long offset, int size) {
         if (bytes.length < offset + size)
             throw new RuntimeException(String.format(

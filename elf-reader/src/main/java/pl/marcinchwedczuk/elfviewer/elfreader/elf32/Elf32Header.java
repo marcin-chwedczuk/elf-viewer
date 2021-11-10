@@ -128,7 +128,7 @@ public class Elf32Header {
         return sectionHeaderCount & 0xffff;
     }
 
-    public SHTIndex sectionNameStringTableIndex() {
+    public SHTIndex sectionContainingSectionNames() {
         return sectionNamesStringTableIndex;
     }
 }

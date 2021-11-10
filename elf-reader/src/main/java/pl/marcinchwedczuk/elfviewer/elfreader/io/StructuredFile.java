@@ -16,6 +16,10 @@ public class StructuredFile {
         this.offset = initialOffset;
     }
 
+    public StructuredFile(AbstractFile file, Endianness endianness, Elf32Offset offset) {
+        this(file, endianness, offset.longValue());
+    }
+
     private byte[] readNext(int nbytes) {
         byte[] bytes = file.read(offset, 4);
         offset += bytes.length;

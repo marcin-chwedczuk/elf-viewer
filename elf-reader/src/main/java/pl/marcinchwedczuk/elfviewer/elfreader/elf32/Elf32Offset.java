@@ -6,10 +6,14 @@ import java.util.Objects;
 
 @ElfApi("Elf32_Off")
 public class Elf32Offset {
-    private final int offset;
+    private final long offset;
 
-    public Elf32Offset(int offset) {
+    public Elf32Offset(long offset) {
         this.offset = offset;
+    }
+
+    public long longValue() {
+        return offset;
     }
 
     @Override
@@ -27,6 +31,6 @@ public class Elf32Offset {
 
     @Override
     public String toString() {
-        return Integer.toHexString(offset);
+        return String.format("0x%08x", offset);
     }
 }

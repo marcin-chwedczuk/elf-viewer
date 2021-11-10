@@ -27,6 +27,6 @@ public class Elf32Address {
 
     @Override
     public String toString() {
-        return Integer.toHexString(address);
+        return String.format("0x%08x", address);
     }
 }

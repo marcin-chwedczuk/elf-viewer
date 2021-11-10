@@ -17,6 +17,17 @@ public class FileSystemFile implements AbstractFile, AutoCloseable {
     }
 
     @Override
+    public byte read(long offset) {
+        try {
+            file.seek(offset);
+
+            return file.readByte();
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot read data.", e);
+        }
+    }
+
+    @Override
     public byte[] read(long offset, int size) {
         try {
             file.seek(offset);
