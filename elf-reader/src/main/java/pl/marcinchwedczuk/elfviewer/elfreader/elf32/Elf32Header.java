@@ -28,22 +28,22 @@ public class Elf32Header {
     private int flags;
 
     @ElfApi("e_ehsize")
-    private short headerSize;
+    private short elfHeaderSize;
 
     @ElfApi("e_phentsize")
     private short programHeaderSize;
 
     @ElfApi("e_phnum")
-    private short numberOfProgramHeaders;
+    private short programHeaderCount;
 
     @ElfApi("e_shentsize")
     private short sectionHeaderSize;
 
     @ElfApi("e_shnum")
-    private short numberOfSectionHeaders;
+    private short sectionHeaderCount;
 
     @ElfApi("e_shstrndx")
-    private SHTIndex sectionNameStringTableIndex;
+    private SHTIndex sectionNamesStringTableIndex;
 
     public Elf32Header(ElfIdentification identification,
                        ElfType type,
@@ -53,12 +53,12 @@ public class Elf32Header {
                        Elf32Offset programHeaderTableOffset,
                        Elf32Offset sectionHeaderTableOffset,
                        int flags,
-                       short headerSize,
+                       short elfHeaderSize,
                        short programHeaderSize,
-                       short numberOfProgramHeaders,
+                       short programHeaderCount,
                        short sectionHeaderSize,
-                       short numberOfSectionHeaders,
-                       SHTIndex sectionNameStringTableIndex) {
+                       short sectionHeaderCount,
+                       SHTIndex sectionNamesStringTableIndex) {
         this.identification = identification;
         this.type = type;
         this.machine = machine;
@@ -67,12 +67,12 @@ public class Elf32Header {
         this.programHeaderTableOffset = programHeaderTableOffset;
         this.sectionHeaderTableOffset = sectionHeaderTableOffset;
         this.flags = flags;
-        this.headerSize = headerSize;
+        this.elfHeaderSize = elfHeaderSize;
         this.programHeaderSize = programHeaderSize;
-        this.numberOfProgramHeaders = numberOfProgramHeaders;
+        this.programHeaderCount = programHeaderCount;
         this.sectionHeaderSize = sectionHeaderSize;
-        this.numberOfSectionHeaders = numberOfSectionHeaders;
-        this.sectionNameStringTableIndex = sectionNameStringTableIndex;
+        this.sectionHeaderCount = sectionHeaderCount;
+        this.sectionNamesStringTableIndex = sectionNamesStringTableIndex;
     }
 
     public ElfIdentification identification() {
@@ -109,7 +109,7 @@ public class Elf32Header {
     }
 
     public int headerSize() {
-        return headerSize & 0xffff;
+        return elfHeaderSize & 0xffff;
     }
 
     public int programHeaderSize() {
@@ -117,7 +117,7 @@ public class Elf32Header {
     }
 
     public int numberOfProgramHeaders() {
-        return numberOfProgramHeaders & 0xffff;
+        return programHeaderCount & 0xffff;
     }
 
     public int sectionHeaderSize() {
@@ -125,10 +125,10 @@ public class Elf32Header {
     }
 
     public int numberOfSectionHeaders() {
-        return numberOfSectionHeaders & 0xffff;
+        return sectionHeaderCount & 0xffff;
     }
 
     public SHTIndex sectionNameStringTableIndex() {
-        return sectionNameStringTableIndex;
+        return sectionNamesStringTableIndex;
     }
 }

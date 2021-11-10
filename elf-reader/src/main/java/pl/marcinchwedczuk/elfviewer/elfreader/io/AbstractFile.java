@@ -10,7 +10,7 @@ public interface AbstractFile {
         return endianness.toUnsignedShort(bytes);
     }
 
-    default int readUnsignedInt(Endianness endianness, int offset) {
+    default int readUnsignedInt(Endianness endianness, long offset) {
         byte[] bytes = read(offset, 4);
         return endianness.toUnsignedInt(bytes);
     }
