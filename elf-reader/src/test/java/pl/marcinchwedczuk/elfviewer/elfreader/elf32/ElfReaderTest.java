@@ -6,19 +6,26 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Allocate;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Executable;
 
 class ElfReaderTest {
-    @Test
-    public void elf32_header() throws IOException {
-        byte[] helloWorld32 = this.getClass()
+    private final AbstractFile helloWorld32;
+
+    public ElfReaderTest() throws IOException {
+        byte[] binaryBytes = this.getClass()
                 .getResourceAsStream("hello-world-32")
                 .readAllBytes();
 
-        AbstractFile elfFile = new InMemoryFile(helloWorld32);
+        helloWorld32 = new InMemoryFile(binaryBytes);
+    }
 
-        Elf32Header header = ElfReader.readElf32(elfFile).header;
+    @Test
+    public void elf32_header() {
+        Elf32Header header = ElfReader.readElf32(helloWorld32).header;
         ElfIdentification identification = header.identification();
 
         assertThat(identification.magicString())
@@ -84,19 +91,47 @@ class ElfReaderTest {
                 .isEqualTo(new SHTIndex(28));
     }
 
-
     @Test
-    public void elf32_sections() throws IOException {
-        byte[] helloWorld32 = this.getClass()
-                .getResourceAsStream("hello-world-32")
-                .readAllBytes();
+    public void elf32_sections() {
+        List<Elf32SectionHeader> sections = ElfReader.readElf32(helloWorld32).sectionHeaders;
+        Optional<Elf32SectionHeader> maybeTextSection = sections.stream()
+                .filter(s -> s.name().equals(".text"))
+                .findFirst();
 
-        AbstractFile elfFile = new InMemoryFile(helloWorld32);
+        assertThat(maybeTextSection)
+                .isPresent();
 
-        List<Elf32SectionHeader> sections = ElfReader.readElf32(elfFile).sectionHeaders;
+        Elf32SectionHeader textSection = maybeTextSection.get();
 
-        sections.forEach(section -> {
-            System.out.println(section);
-        });
+        assertThat(textSection.addressAlignment())
+                .isEqualTo(16);
+
+        assertThat(textSection.type())
+                .isEqualTo(ElfSectionType.ProgBits);
+
+        // Not applicable to this section
+        assertThat(textSection.containedEntrySize())
+                .isEqualTo(0);
+
+        assertThat(textSection.flags())
+                .isEqualTo(SectionAttributes.of(Allocate, Executable));
+
+        assertThat(textSection.info())
+                .isEqualTo(0);
+
+        assertThat(textSection.link())
+                .isEqualTo(0);
+
+        assertThat(textSection.inMemoryAddress())
+                .isEqualTo(new Elf32Address(0x08048310));
+
+        assertThat(textSection.offsetInFile())
+                .isEqualTo(new Elf32Offset(0x00000310));
+
+        assertThat(textSection.sectionSize())
+                .isEqualTo(0x00000192);
+
+
+
     }
 }

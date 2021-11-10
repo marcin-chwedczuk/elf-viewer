@@ -10,8 +10,9 @@ public class Elf32SectionHeader {
      * giving the location of a null-terminated string.
      */
     @ElfApi("sh_name")
-    private final int nameIndex;
-    private String sectionName;
+    private final StringTableIndex nameIndex;
+
+    private String name;
 
     /**
      * This member categorizes the section's contents and semantics.
@@ -87,7 +88,8 @@ public class Elf32SectionHeader {
     @ElfApi("sh_entsize")
     private final int containedEntrySize;
 
-    public Elf32SectionHeader(int nameIndex,
+    public Elf32SectionHeader(StringTableIndex nameIndex,
+                              String name,
                               ElfSectionType type,
                               SectionAttributes flags,
                               Elf32Address inMemoryAddress,
@@ -99,6 +101,7 @@ public class Elf32SectionHeader {
                               int containedEntrySize) {
         // TODO: Add arguments checks
         this.nameIndex = nameIndex;
+        this.name = name;
         this.type = type;
         this.flags = flags;
         this.inMemoryAddress = inMemoryAddress;
@@ -110,27 +113,23 @@ public class Elf32SectionHeader {
         this.containedEntrySize = containedEntrySize;
     }
 
-    public StringTableIndex nameIndex() { return new StringTableIndex(nameIndex); }
+    public StringTableIndex nameIndex() { return nameIndex; }
+    public String name() { return name; }
     public ElfSectionType type() { return type; }
     public SectionAttributes flags() { return flags; }
     public Elf32Address inMemoryAddress() { return inMemoryAddress; }
     public Elf32Offset offsetInFile() { return offsetInFile; }
+    public int sectionSize() { return sectionSize; }
     public int link() { return link; }
     public int info() { return info; }
     public int addressAlignment() { return addressAlignment; }
     public int containedEntrySize() { return containedEntrySize; }
 
-    public void setSectionName(String sectionName) {
-        this.sectionName = sectionName;
-    }
-
-    public String sectionName() { return sectionName; }
-
     @Override
     public String toString() {
         return String.format(
-                "%4d | %20s | %24s | %40s | %s | %s | 0x%08x | 0x%08x | %2d | %2d",
-                nameIndex, sectionName, type, flags, inMemoryAddress, offsetInFile,
+                "%4s | %20s | %24s | %40s | %s | %s | 0x%08x | 0x%08x | %2d | %2d",
+                nameIndex, name, type, flags, inMemoryAddress, offsetInFile,
                 link, info, addressAlignment, containedEntrySize);
     }
 

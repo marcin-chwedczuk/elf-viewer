@@ -8,6 +8,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ElfReader {
     private ElfReader() { }
@@ -77,32 +78,40 @@ public class ElfReader {
 
     private static List<Elf32SectionHeader> readElf32SectionHeaders(AbstractFile file,
                                                                     Endianness endianness,
-                                                                    SHTIndex sectionContainingSectionNames,
-                                                                    TableHelper tableHelper) {
-        List<Elf32SectionHeader> headers = new ArrayList<>(tableHelper.tableSize());
+                                                                    SHTIndex sectionHeaderTable,
+                                                                    TableHelper sectionHeaders) {
+        StringTable sectionNames = loadSectionsNameStringTable(
+                file, endianness, sectionHeaderTable, sectionHeaders);
 
-        for (int i = 0; i < tableHelper.tableSize(); i++) {
-            Elf32Offset offset = tableHelper.offsetForEntry(new SHTIndex(i));
+        List<Elf32SectionHeader> headers = new ArrayList<>(sectionHeaders.tableSize());
+
+        for (int i = 0; i < sectionHeaders.tableSize(); i++) {
+            Elf32Offset offset = sectionHeaders.offsetForEntry(new SHTIndex(i));
             StructuredFile headerFile = new StructuredFile(file, endianness, offset);
 
-            Elf32SectionHeader sectionHeader = readElf32SectionHeader(headerFile);
+            Elf32SectionHeader sectionHeader = readElf32SectionHeader(headerFile, Optional.of(sectionNames));
             headers.add(sectionHeader);
-        }
-
-        // Get section names
-        Elf32SectionHeader sectionNamesSection = headers.get(sectionContainingSectionNames.intValue());
-        StringTable stringTable = new StringTable(file, sectionNamesSection);
-
-        for (Elf32SectionHeader sectionHeader: headers) {
-            StringTableIndex sectionName = sectionHeader.nameIndex();
-            sectionHeader.setSectionName(stringTable.getStringAtIndex(sectionName));
         }
 
         return headers;
     }
 
-    private static Elf32SectionHeader readElf32SectionHeader(StructuredFile headerFile) {
-        int sectionNameIndex = headerFile.readUnsignedInt();
+    private static StringTable loadSectionsNameStringTable(AbstractFile file,
+                                                           Endianness endianness,
+                                                           SHTIndex sectionNamesSection,
+                                                           TableHelper sectionHeaderTable) {
+        Elf32Offset offset = sectionHeaderTable.offsetForEntry(sectionNamesSection);
+        StructuredFile headerFile = new StructuredFile(file, endianness, offset);
+        Elf32SectionHeader sectionNamesStringTableSection = readElf32SectionHeader(
+                headerFile, Optional.empty());
+        return new StringTable(file, sectionNamesStringTableSection);
+    }
+
+    private static Elf32SectionHeader readElf32SectionHeader(
+            StructuredFile headerFile,
+            Optional<StringTable> maybeSectionNames)
+    {
+        StringTableIndex sectionNameIndex = new StringTableIndex(headerFile.readUnsignedInt());
         ElfSectionType type = ElfSectionType.fromUnsignedInt(headerFile.readUnsignedInt());
         SectionAttributes flags = new SectionAttributes(headerFile.readUnsignedInt());
         Elf32Address inMemoryAddress = headerFile.readAddress();
@@ -113,8 +122,13 @@ public class ElfReader {
         int addressAlignment = headerFile.readUnsignedInt();
         int containedEntrySize = headerFile.readUnsignedInt();
 
+        String sectionName = maybeSectionNames
+                .map(st -> st.getStringAtIndex(sectionNameIndex))
+                .orElse("(not-resolved)");
+
         return new Elf32SectionHeader(
                 sectionNameIndex,
+                sectionName,
                 type,
                 flags,
                 inMemoryAddress,
@@ -125,5 +139,4 @@ public class ElfReader {
                 addressAlignment,
                 containedEntrySize);
     }
-
 }
