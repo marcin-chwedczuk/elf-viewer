@@ -12,6 +12,9 @@ public class StringTable {
 
     public StringTable(AbstractFile file,
                        Elf32SectionHeader section) {
+        if (!section.type().equals(ElfSectionType.StringTable))
+            throw new IllegalArgumentException("Invalid section type!");
+
         this.file = file;
         this.section = section;
     }

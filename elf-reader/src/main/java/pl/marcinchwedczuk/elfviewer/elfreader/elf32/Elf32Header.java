@@ -43,7 +43,7 @@ public class Elf32Header {
     private short sectionHeaderCount;
 
     @ElfApi("e_shstrndx")
-    private SHTIndex sectionNamesStringTableIndex;
+    private SectionHeaderTableIndex sectionNamesStringTableIndex;
 
     public Elf32Header(ElfIdentification identification,
                        ElfType type,
@@ -58,7 +58,7 @@ public class Elf32Header {
                        short programHeaderCount,
                        short sectionHeaderSize,
                        short sectionHeaderCount,
-                       SHTIndex sectionNamesStringTableIndex) {
+                       SectionHeaderTableIndex sectionNamesStringTableIndex) {
         this.identification = identification;
         this.type = type;
         this.machine = machine;
@@ -128,7 +128,7 @@ public class Elf32Header {
         return sectionHeaderCount & 0xffff;
     }
 
-    public SHTIndex sectionContainingSectionNames() {
+    public SectionHeaderTableIndex sectionContainingSectionNames() {
         return sectionNamesStringTableIndex;
     }
 }

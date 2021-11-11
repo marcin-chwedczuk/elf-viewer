@@ -21,7 +21,7 @@ public class StructuredFile {
     }
 
     private byte[] readNext(int nbytes) {
-        byte[] bytes = file.read(offset, 4);
+        byte[] bytes = file.read(offset, nbytes);
         offset += bytes.length;
         return bytes;
     }

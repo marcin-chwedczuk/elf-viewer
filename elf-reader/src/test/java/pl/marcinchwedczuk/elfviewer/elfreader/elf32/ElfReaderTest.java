@@ -88,7 +88,7 @@ class ElfReaderTest {
 
         // Strings section
         assertThat(header.sectionContainingSectionNames())
-                .isEqualTo(new SHTIndex(28));
+                .isEqualTo(new SectionHeaderTableIndex(28));
     }
 
     @Test
@@ -130,8 +130,33 @@ class ElfReaderTest {
 
         assertThat(textSection.sectionSize())
                 .isEqualTo(0x00000192);
+    }
 
+    @Test
+    void elf32_symbol_table() {
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
+        Optional<Elf32SectionHeader> maybeSymbolTableSection = elfFile.getSectionHeader(".symtab");
+        assertThat(maybeSymbolTableSection)
+                .isPresent();
 
+        Optional<Elf32SectionHeader> maybeSymbolStringTable = elfFile.getSectionHeader(".strtab");
+        assertThat(maybeSymbolStringTable)
+                .isPresent();
+
+        StringTable symbolNames = new StringTable(helloWorld32, maybeSymbolStringTable.get());
+
+        Elf32SectionHeader symbolTableSection = maybeSymbolTableSection.get();
+        SymbolTable symbols = new SymbolTable(
+                helloWorld32,
+                elfFile.endianness,
+                symbolTableSection,
+                symbolNames,
+                elfFile);
+
+        for (int i = 0; i < symbols.size(); i++) {
+            Elf32Symbol sym = symbols.get(new SymbolTableIndex(i));
+            System.out.println(sym);
+        }
     }
 }
