@@ -248,6 +248,7 @@ class ElfReaderTest {
 
         List<Elf32NoteInformation> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
 
+        // TODO: Fix it
         for (Elf32NoteInformation note : notes) {
             System.out.println(note);
         }
