@@ -185,4 +185,28 @@ class ElfReaderTest {
         assertThat(elfFile.sectionHeaders.get(14).name())
                 .isEqualTo(".text");
     }
+
+    @Test
+    void elf32_relocation_table() {
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+
+        Optional<Elf32SectionHeader> maybeRelocationsSection = elfFile.getSectionHeader(".rel.dyn");
+        assertThat(maybeRelocationsSection)
+                .isPresent();
+
+        RelocationsTable relocations = new RelocationsTable(
+                helloWorld32,
+                elfFile.endianness,
+                maybeRelocationsSection.get(),
+                elfFile);
+
+        assertThat(relocations.size())
+                .isEqualTo(1);
+
+        Elf32Relocation relocation = relocations.get(0);
+        assertThat(relocation.offset())
+                .isEqualTo(new Elf32Address(0x08049ffc));
+        assertThat(relocation.info())
+                .isEqualTo(0x00000206);
+    }
 }
