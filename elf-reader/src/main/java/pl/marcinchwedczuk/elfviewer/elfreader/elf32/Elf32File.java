@@ -15,12 +15,16 @@ public class Elf32File {
      */
     public final List<Elf32SectionHeader> sectionHeaders;
 
+    public final List<Elf32ProgramHeader> programHeaders;
+
     public Elf32File(Endianness endianness,
                      Elf32Header header,
-                     List<Elf32SectionHeader> sectionHeaders) {
+                     List<Elf32SectionHeader> sectionHeaders,
+                     List<Elf32ProgramHeader> programHeaders) {
         this.endianness = endianness;
         this.header = header;
         this.sectionHeaders = sectionHeaders;
+        this.programHeaders = programHeaders;
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {

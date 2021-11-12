@@ -35,7 +35,56 @@ public class ElfReader {
                         header.sectionHeaderSize(),
                         header.numberOfSectionHeaders()));
 
-        return new Elf32File(endianness, header, sectionHeaders);
+        List<Elf32ProgramHeader> programHeaders = readElf32ProgramHeaders(
+                file, endianness, new TableHelper(
+                        header.programHeaderTableOffset(),
+                        header.programHeaderSize(),
+                        header.numberOfProgramHeaders()));
+
+        return new Elf32File(
+                endianness,
+                header,
+                sectionHeaders,
+                programHeaders);
+    }
+
+    private static List<Elf32ProgramHeader> readElf32ProgramHeaders(
+            AbstractFile file,
+            Endianness endianness,
+            TableHelper programHeadersTable)
+    {
+        List<Elf32ProgramHeader> headers = new ArrayList<>(programHeadersTable.tableSize());
+
+        for (int i = 0; i < programHeadersTable.tableSize(); i++) {
+            Elf32Offset offset = programHeadersTable.offsetForEntry(i);
+            StructuredFile headerFile = new StructuredFile(file, endianness, offset);
+
+            Elf32ProgramHeader sectionHeader = readElf32ProgramHeader(headerFile);
+            headers.add(sectionHeader);
+        }
+
+        return headers;
+    }
+
+    private static Elf32ProgramHeader readElf32ProgramHeader(StructuredFile headerFile) {
+        Elf32SegmentType type = Elf32SegmentType.fromUnsignedInt(headerFile.readUnsignedInt());
+        Elf32Offset fileOffset = headerFile.readOffset();
+        Elf32Address virtualAddress = headerFile.readAddress();
+        Elf32Address physicalAddress = headerFile.readAddress();
+        int fileSize = headerFile.readUnsignedInt();
+        int memorySize = headerFile.readUnsignedInt();
+        Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
+        int alignment = headerFile.readUnsignedInt();
+
+        return new Elf32ProgramHeader(
+                type,
+                fileOffset,
+                virtualAddress,
+                physicalAddress,
+                fileSize,
+                memorySize,
+                flags,
+                alignment);
     }
 
     public static Elf32Header readElf32Header(ElfIdentification identification, StructuredFile elfHeaderFile) {

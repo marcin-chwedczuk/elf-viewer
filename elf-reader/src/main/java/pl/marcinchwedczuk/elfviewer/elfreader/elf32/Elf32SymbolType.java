@@ -47,8 +47,6 @@ public enum Elf32SymbolType {
     @ElfApi("STT_HIPROC")
     HiReservedProcessorSpecific(15);
 
-
-
     public static Elf32SymbolType fromSymbolInfo(byte info) {
         byte v = (byte)(info & 0x0f);
 

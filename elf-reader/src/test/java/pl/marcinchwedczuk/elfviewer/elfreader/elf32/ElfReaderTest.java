@@ -209,4 +209,36 @@ class ElfReaderTest {
         assertThat(relocation.info())
                 .isEqualTo(0x00000206);
     }
+
+    @Test
+    void elf32_segments() {
+        List<Elf32ProgramHeader> segments = ElfReader
+                .readElf32(helloWorld32)
+                .programHeaders;
+
+        assertThat(segments.size())
+                .isEqualTo(9);
+
+        Elf32ProgramHeader textSegment = segments.get(2);
+
+        assertThat(textSegment.type())
+                .isEqualTo(Elf32SegmentType.Load);
+        assertThat(textSegment.fileOffset())
+                .isEqualTo(new Elf32Offset(0x000000));
+        assertThat(textSegment.virtualAddress())
+                .isEqualTo(new Elf32Address(0x08048000));
+        assertThat(textSegment.physicalAddress())
+                .isEqualTo(new Elf32Address(0x08048000));
+        assertThat(textSegment.fileSize())
+                .isEqualTo(0x005c8);
+        assertThat(textSegment.memorySize())
+                .isEqualTo(0x005c8);
+        assertThat(textSegment.flags())
+                .isEqualTo(Elf32SegmentFlags.of(
+                        Elf32SegmentFlags.Readable,
+                        Elf32SegmentFlags.Executable
+                ));
+        assertThat(textSegment.alignment())
+                .isEqualTo(0x1000);
+    }
 }
