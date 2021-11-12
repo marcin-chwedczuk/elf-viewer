@@ -22,6 +22,10 @@ public class Elf32Relocation {
     public int symbol() { return (info >>> 8) & 0xff; }
     public int type() { return (info & 0xff); }
 
+    public Intel386RelocationType intel386RelocationType() {
+        return Intel386RelocationType.fromType(type());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
