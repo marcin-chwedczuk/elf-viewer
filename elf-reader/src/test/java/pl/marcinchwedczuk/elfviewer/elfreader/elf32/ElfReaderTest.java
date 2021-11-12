@@ -154,9 +154,35 @@ class ElfReaderTest {
                 symbolNames,
                 elfFile);
 
-        for (int i = 0; i < symbols.size(); i++) {
-            Elf32Symbol sym = symbols.get(new SymbolTableIndex(i));
-            System.out.println(sym);
-        }
+        // 1. Check Section symbols have their names resolved
+        Optional<Elf32Symbol> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
+        assertThat(textSectionSymbol)
+                .isPresent();
+
+        // 2. Check symbol for 'main' is defined and all values are set
+        Optional<Elf32Symbol> maybeMain = symbols.slowlyFindSymbolByName("main");
+        assertThat(maybeMain)
+                .isPresent();
+
+        Elf32Symbol main = maybeMain.get();
+        assertThat(main.binding())
+                .isEqualTo(Elf32SymbolBinding.Global);
+        assertThat(main.symbolType())
+                .isEqualTo(Elf32SymbolType.Function);
+
+        // TODO: Parse visibility
+        assertThat(main.other())
+                .isEqualTo((byte)0);
+
+        assertThat(main.size())
+                .isEqualTo(46);
+        assertThat(main.value())
+                .isEqualTo(new Elf32Address(0x0804840b));
+
+        // Check section header index, it should point to .text section
+        assertThat(main.index())
+                .isEqualTo(new SectionHeaderTableIndex(14));
+        assertThat(elfFile.sectionHeaders.get(14).name())
+                .isEqualTo(".text");
     }
 }

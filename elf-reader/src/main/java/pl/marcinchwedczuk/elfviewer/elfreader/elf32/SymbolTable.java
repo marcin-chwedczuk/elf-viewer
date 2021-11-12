@@ -7,6 +7,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SymbolTable {
     private final AbstractFile file;
@@ -68,6 +69,18 @@ public class SymbolTable {
                 info,
                 other,
                 symbolIndex);
+    }
+
+    public Optional<Elf32Symbol> slowlyFindSymbolByName(String name) {
+        for (int i = 0; i < size(); i++) {
+            Elf32Symbol symbol = get(new SymbolTableIndex(i));
+
+            if (name.equals(symbol.name())) {
+                return Optional.of(symbol);
+            }
+        }
+
+        return Optional.empty();
     }
 
     private boolean isSectionSymbol(StringTableIndex nameIndex, Elf32SymbolType type) {
