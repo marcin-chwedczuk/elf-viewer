@@ -241,4 +241,15 @@ class ElfReaderTest {
         assertThat(textSegment.alignment())
                 .isEqualTo(0x1000);
     }
+
+    @Test
+    void elf32_notes() {
+        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+
+        List<Elf32NoteInformation> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
+
+        for (Elf32NoteInformation note : notes) {
+            System.out.println(note);
+        }
+    }
 }

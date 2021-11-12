@@ -16,6 +16,10 @@ public class Elf32Offset {
         return offset;
     }
 
+    public Elf32Offset plus(int nbytes) {
+        return new Elf32Offset(offset + nbytes);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -32,5 +36,9 @@ public class Elf32Offset {
     @Override
     public String toString() {
         return String.format("0x%08x", offset);
+    }
+
+    public boolean isBefore(Elf32Offset other) {
+        return this.offset < other.offset;
     }
 }

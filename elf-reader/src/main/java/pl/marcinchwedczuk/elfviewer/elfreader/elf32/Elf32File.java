@@ -1,11 +1,13 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 
 import java.util.List;
 import java.util.Optional;
 
 public class Elf32File {
+    public final AbstractFile storage;
     public final Endianness endianness;
     public final Elf32Header header;
 
@@ -17,10 +19,12 @@ public class Elf32File {
 
     public final List<Elf32ProgramHeader> programHeaders;
 
-    public Elf32File(Endianness endianness,
+    public Elf32File(AbstractFile storage,
+                     Endianness endianness,
                      Elf32Header header,
                      List<Elf32SectionHeader> sectionHeaders,
                      List<Elf32ProgramHeader> programHeaders) {
+        this.storage = storage;
         this.endianness = endianness;
         this.header = header;
         this.sectionHeaders = sectionHeaders;

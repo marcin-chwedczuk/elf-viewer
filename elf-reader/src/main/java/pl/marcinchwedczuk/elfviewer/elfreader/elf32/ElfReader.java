@@ -42,6 +42,7 @@ public class ElfReader {
                         header.numberOfProgramHeaders()));
 
         return new Elf32File(
+                file,
                 endianness,
                 header,
                 sectionHeaders,
@@ -187,5 +188,46 @@ public class ElfReader {
                 info,
                 addressAlignment,
                 containedEntrySize);
+    }
+
+
+    public static List<Elf32NoteInformation> readNotes(Elf32File elfFile, String sectionName) {
+        Elf32SectionHeader noteSection = elfFile.getSectionHeader(sectionName)
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Section with name " + sectionName + " not found."));
+
+        if (!noteSection.type().equals(ElfSectionType.Note))
+            throw new IllegalArgumentException("Invalid section type.");
+
+        Elf32Offset startOffset = noteSection.offsetInFile();
+        Elf32Offset endOffset = startOffset.plus(noteSection.sectionSize());
+
+        List<Elf32NoteInformation> notes = new ArrayList<>();
+        Elf32Offset curr = startOffset;
+        while (curr.isBefore(endOffset)) {
+            StructuredFile noteFile = new StructuredFile(elfFile.storage, elfFile.endianness,
+                    curr);
+
+            int nameLen = noteFile.readUnsignedInt();
+            int descLen = noteFile.readUnsignedInt();
+            int type = noteFile.readUnsignedInt();
+
+            String name = (nameLen > 0)
+                    ? noteFile.readStringNullTerminatedWithAlignment(4)
+                    : null;
+
+            String description = (descLen > 0)
+                    ? noteFile.readStringNullTerminatedWithAlignment(4)
+                    : null;
+
+            notes.add(new Elf32NoteInformation(
+                    nameLen, name,
+                    descLen, description,
+                    type));
+
+            curr = noteFile.currentPositionInFile();
+        }
+
+        return notes;
     }
 }
