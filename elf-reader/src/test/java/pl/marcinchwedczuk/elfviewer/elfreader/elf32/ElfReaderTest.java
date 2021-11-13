@@ -286,5 +286,18 @@ class ElfReaderTest {
                         Elf32DynamicArrayTag.INIT,
                         null,
                         new Elf32Address(0x80482a8)));
+
+        // Read library name
+        Elf32DynamicStructure strTabPtr = results.stream()
+                .filter(x -> x.tag().equals(Elf32DynamicArrayTag.STR_TAB))
+                .findFirst()
+                .get();
+
+        int offset = results.get(0).value();
+        // TODO: Translate STRTAB memory address -> physical file offset
+
+        // Read using StringTable ...
+
+        // See: https://stackoverflow.com/a/22613627/1779504
     }
 }

@@ -25,6 +25,10 @@ public class Elf32DynamicStructure {
         this.ptr = ptr;
     }
 
+    public Elf32DynamicArrayTag tag() { return tag; }
+    public Integer value() { return value; }
+    public Elf32Address ptr() { return ptr; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
