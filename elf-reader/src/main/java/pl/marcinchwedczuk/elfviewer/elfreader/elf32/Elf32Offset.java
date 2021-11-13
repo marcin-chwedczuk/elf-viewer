@@ -41,4 +41,8 @@ public class Elf32Offset {
     public boolean isBefore(Elf32Offset other) {
         return this.offset < other.offset;
     }
+
+    public boolean isAfterOrAt(Elf32Offset other) {
+        return this.offset >= other.offset;
+    }
 }

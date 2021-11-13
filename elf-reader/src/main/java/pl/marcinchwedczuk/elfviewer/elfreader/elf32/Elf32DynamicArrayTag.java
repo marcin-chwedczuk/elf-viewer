@@ -213,6 +213,36 @@ public enum Elf32DynamicArrayTag {
     @ElfApi("DT_BIND_NOW")
     BIND_NOW(24),
 
+    // TODO: Add extra constants from: https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html
+
+    @ElfApi("DT_INIT_ARRAY")
+    INIT_ARRAY(25),
+
+    @ElfApi("DT_FINI_ARRAY")
+    FINI_ARRAY(26),
+
+    @ElfApi("DT_INIT_ARRAYSZ")
+    INIT_ARRAYSZ(27),
+
+    @ElfApi("DT_FINI_ARRAYSZ")
+    FINI_ARRAYSZ(28),
+
+    // TODO: Add extra entries from https://github.com/lattera/glibc/blob/master/elf/elf.h
+
+    @ElfApi("DT_GNU_HASH")
+    GNU_HASH(0x6ffffef5),
+
+    @ElfApi("DT_VERNEED")
+    VERNEED(0x6ffffffe),
+
+    @ElfApi("DT_VERNEEDNUM")
+    VERNEEDNUM(0x6fffffff),
+
+    // TODO: Add entries from: https://refspecs.linuxfoundation.org/LSB_2.1.0/LSB-Core-generic/LSB-Core-generic/dynsectent.html
+
+    @ElfApi("DT_VERSYM")
+    VERSYM(0x6ffffff0),
+
     /**
      * Values in this inclusive range are reserved for processor-specific semantics.
      * If meanings are specified, the processor supplement explains them.
@@ -231,5 +261,15 @@ public enum Elf32DynamicArrayTag {
 
     Elf32DynamicArrayTag(int v) {
         this.value = v;
+    }
+
+    public static Elf32DynamicArrayTag fromUnsignedInt(int v) {
+        for (Elf32DynamicArrayTag value : Elf32DynamicArrayTag.values()) {
+            if (value.value == v) {
+                return value;
+            }
+        }
+
+        throw new IllegalArgumentException("Unrecognized uint: " + Integer.toHexString(v));
     }
 }

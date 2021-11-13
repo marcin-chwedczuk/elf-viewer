@@ -269,4 +269,22 @@ class ElfReaderTest {
         assertThat(iph.getInterpreterPath())
                 .isEqualTo("/lib/ld-linux.so.2");
     }
+
+    @Test
+    void dynamic_section() {
+        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+        List<Elf32DynamicStructure> results = ElfReader.readDynamicSection(helloWorldElf);
+
+        assertThat(results.get(0))
+                .isEqualTo(new Elf32DynamicStructure(
+                        Elf32DynamicArrayTag.NEEDED,
+                        1,
+                        null));
+
+        assertThat(results.get(1))
+                .isEqualTo(new Elf32DynamicStructure(
+                        Elf32DynamicArrayTag.INIT,
+                        null,
+                        new Elf32Address(0x80482a8)));
+    }
 }

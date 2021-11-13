@@ -5,6 +5,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Elf32File {
     public final AbstractFile storage;
@@ -37,5 +40,13 @@ public class Elf32File {
                 .findFirst();
 
         return maybeSymbolTableSection;
+    }
+
+    public List<Elf32ProgramHeader> getProgramHeadersOfType(Elf32SegmentType segmentType) {
+        List<Elf32ProgramHeader> programHeaders = this.programHeaders.stream()
+                .filter(ph -> ph.type().equals(segmentType))
+                .collect(toList());
+
+        return programHeaders;
     }
 }
