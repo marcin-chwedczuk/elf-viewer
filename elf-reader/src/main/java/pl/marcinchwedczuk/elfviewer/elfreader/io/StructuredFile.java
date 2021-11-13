@@ -65,6 +65,11 @@ public class StructuredFile {
         return bytes[0];
     }
 
+    public String readStringNullTerminated() {
+        // TODO: Make it better
+        return readStringNullTerminatedWithAlignment(1);
+    }
+
     public String readStringNullTerminatedWithAlignment(int alignment) {
         // TODO: Make the buffer dynamic
         byte[] buf = new byte[4096];

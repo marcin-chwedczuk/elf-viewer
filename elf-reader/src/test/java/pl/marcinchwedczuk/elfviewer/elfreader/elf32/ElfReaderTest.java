@@ -253,4 +253,20 @@ class ElfReaderTest {
             System.out.println(note);
         }
     }
+
+    @Test
+    void elf32_interpreter() {
+        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+        Elf32ProgramHeader interpreterSegment = helloWorldElf.programHeaders.stream()
+                .filter(ph -> ph.type().equals(Elf32SegmentType.Interpreter))
+                .findFirst()
+                .get();
+
+        Elf32InterpreterProgramHeader iph = new Elf32InterpreterProgramHeader(
+                helloWorldElf,
+                interpreterSegment);
+
+        assertThat(iph.getInterpreterPath())
+                .isEqualTo("/lib/ld-linux.so.2");
+    }
 }

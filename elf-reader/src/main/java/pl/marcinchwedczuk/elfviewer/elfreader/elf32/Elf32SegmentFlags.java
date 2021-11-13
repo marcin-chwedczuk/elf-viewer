@@ -1,13 +1,21 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
+
 import java.util.Objects;
 
 public class Elf32SegmentFlags {
+    @ElfApi("PF_X")
     public static Elf32SegmentFlags Executable = new Elf32SegmentFlags(1 << 0);
+
+    @ElfApi("PF_W")
     public static Elf32SegmentFlags Writable = new Elf32SegmentFlags(1 << 1);
+
+    @ElfApi("PF_R")
     public static Elf32SegmentFlags Readable = new Elf32SegmentFlags(1 << 2);
 
     public static Elf32SegmentFlags MaskOsSpecific = new Elf32SegmentFlags(0x0ff00000);
+    @ElfApi("PF_MASKPROC")
     public static Elf32SegmentFlags MaskProcessorSpecific = new Elf32SegmentFlags(0xf0000000);
 
     public static Elf32SegmentFlags of(Elf32SegmentFlags... flags) {
