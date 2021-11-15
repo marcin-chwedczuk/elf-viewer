@@ -1,4 +1,18 @@
-# JavaFX Opinionated Application Template
+# Elf Viewer
+
+!!! PROJECT UNDER CONSTRUCTION !!!
+
+Current status:
+* Partial parsing of 32-bit ELF - DONE
+* Parsing of 64-bit ELF - WAITING
+* GUI in JavaFX - WAITING
+
+Right now I am playing with the API and I try to figure out the most
+intuitive and Javaish API for dealing with ELFs.
+
+Rest of the README comes from the standard template:
+
+---
 
 ![Build Status](https://github.com/marcin-chwedczuk/elf-viewer/actions/workflows/ci.yaml/badge.svg)
 
