@@ -74,8 +74,8 @@ public class Elf32GnuHash {
         int h2 = h1 >> shift2;
 
         int c = 4 * 8; // sizeof(int) * BITS_PER_BYTE
-        int n = umod((h1 / c), maskWords); // bloom filter world
-        int bitmask = (1 << umod(h1, c))  // bits within bloom filter world
+        int n = umod((h1 / c), maskWords); // bloom filter word
+        int bitmask = (1 << umod(h1, c))  // bits within bloom filter word
                 | (1 << umod(h2, c));
 
         if ((bloomFilter[n] & bitmask) != bitmask) {
