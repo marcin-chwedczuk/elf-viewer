@@ -125,6 +125,11 @@ public class Elf32SectionHeader {
     public int addressAlignment() { return addressAlignment; }
     public int containedEntrySize() { return containedEntrySize; }
 
+    public Elf32Offset sectionEndOffsetInFile() {
+        // TODO: Consider alignment
+        return offsetInFile.plus(sectionSize);
+    }
+
     @Override
     public String toString() {
         return String.format(

@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
+import pl.marcinchwedczuk.elfviewer.elfreader.StandardSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -250,7 +251,7 @@ class ElfReaderTest {
 
         // TODO: Fix it
         for (Elf32NoteInformation note : notes) {
-            System.out.println(note);
+            // System.out.println(note);
         }
     }
 
@@ -299,5 +300,43 @@ class ElfReaderTest {
         // Read using StringTable ...
 
         // See: https://stackoverflow.com/a/22613627/1779504
+    }
+
+    @Test
+    void gnu_hash_section() {
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+
+        Elf32SectionHeader dynsymSection = elfFile
+                .getSectionHeader(StandardSectionNames.DYN_SYM)
+                .get();
+
+        Elf32SectionHeader dymstrSection = elfFile
+                .getSectionHeader(StandardSectionNames.DYN_STR)
+                .get();
+
+        StringTable symbolNames =
+                new StringTable(elfFile.storage, dymstrSection);
+
+        SymbolTable dymsym = new SymbolTable(
+                elfFile.storage,
+                elfFile.endianness,
+                dynsymSection,
+                symbolNames,
+                elfFile);
+
+        Elf32SectionHeader gnuHashSection = elfFile
+                .getSectionHeader(StandardSectionNames.GNU_HASH)
+                .get();
+
+        Elf32GnuHash gnuHash = ElfReader.readGnuHashSection(
+                elfFile,
+                gnuHashSection,
+                dymsym);
+
+        assertThat(gnuHash.findSymbol("blah"))
+                .isEmpty();
+
+        assertThat(gnuHash.findSymbol("_IO_stdin_used").get().name())
+                .isEqualTo("_IO_stdin_used");
     }
 }

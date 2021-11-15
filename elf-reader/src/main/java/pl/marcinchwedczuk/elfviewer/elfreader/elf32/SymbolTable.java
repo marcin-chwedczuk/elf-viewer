@@ -26,7 +26,7 @@ public class SymbolTable {
         // TODO: Check this condition
         if (!section.type().equals(ElfSectionType.SymbolTable)
             && !section.type().equals(ElfSectionType.DynamicSymbols))
-            throw new IllegalArgumentException("Invalid section type!");
+            throw new IllegalArgumentException("Invalid section type, expecting symbol table but got " + section.type());
 
         this.file = file;
         this.endianness = endianness;

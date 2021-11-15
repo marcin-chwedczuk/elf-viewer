@@ -301,4 +301,39 @@ public class ElfReader {
 
         return result;
     }
+
+    public static Elf32GnuHash readGnuHashSection(Elf32File file,
+                                                  Elf32SectionHeader gnuHashSection,
+                                                  SymbolTable dynsym) {
+        // TODO: Check section types
+
+        StructuredFile sf = new StructuredFile(
+                file.storage,
+                file.endianness,
+                gnuHashSection.offsetInFile());
+
+        int nbuckets = sf.readUnsignedInt();
+        int symbolIndex = sf.readUnsignedInt();
+        int maskWords = sf.readUnsignedInt();
+        int shift2 = sf.readUnsignedInt();
+
+        // TODO: Check boundary of section
+        int[] bloomFilter = sf.readIntArray(maskWords);
+        int[] buckets = sf.readIntArray(nbuckets);
+        int[] hashValues = sf.readIntArray(dynsym.size() - symbolIndex);
+
+        if (sf.currentPositionInFile()
+                .isAfter(gnuHashSection.sectionEndOffsetInFile()))
+            throw new IllegalStateException("Read past section end.");
+
+        return new Elf32GnuHash(
+                dynsym,
+                nbuckets,
+                symbolIndex,
+                maskWords,
+                shift2,
+                bloomFilter,
+                buckets,
+                hashValues);
+    }
 }

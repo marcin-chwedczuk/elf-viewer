@@ -92,4 +92,14 @@ public class StructuredFile {
 
         return new String(buf, 0, strLen, StandardCharsets.US_ASCII);
     }
+
+    public int[] readIntArray(int size) {
+        if (size < 0) throw new IllegalArgumentException();
+
+        int[] result = new int[size];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = readUnsignedInt();
+        }
+        return result;
+    }
 }

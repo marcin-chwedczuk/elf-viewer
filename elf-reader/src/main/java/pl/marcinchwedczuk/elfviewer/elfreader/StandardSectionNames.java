@@ -25,4 +25,5 @@ public class StandardSectionNames {
     public static final String STR_TAB = ".strtab";
     public static final String SYM_TAB = ".symtab";
     public static final String TEXT = ".text";
+    public static final String GNU_HASH = ".gnu.hash";
 }
