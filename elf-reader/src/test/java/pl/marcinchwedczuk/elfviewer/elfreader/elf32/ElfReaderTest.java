@@ -338,5 +338,7 @@ class ElfReaderTest {
 
         assertThat(gnuHash.findSymbol("_IO_stdin_used").get().name())
                 .isEqualTo("_IO_stdin_used");
+
+        // TODO: Test with library exporting more than 1 symbol
     }
 }

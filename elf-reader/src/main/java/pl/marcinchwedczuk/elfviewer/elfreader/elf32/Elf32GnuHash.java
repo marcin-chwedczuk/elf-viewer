@@ -29,6 +29,7 @@ public class Elf32GnuHash {
      */
     private final int shift2;
 
+    // TODO: Add ElfApi annotations
     // Has size maskWords
     private final int[] bloomFilter;
 
