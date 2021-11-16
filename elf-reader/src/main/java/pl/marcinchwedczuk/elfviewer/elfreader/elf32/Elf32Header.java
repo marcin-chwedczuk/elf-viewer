@@ -136,6 +136,6 @@ public class Elf32Header {
     public boolean isIntel386() {
         return identification.elfClass() == ElfClass.ELF_CLASS_32
                 && identification.elfData() == ElfData.ELF_DATA_LSB
-                && machine == ElfMachine.Intel386;
+                && machine == ElfMachine.INTEL_386;
     }
 }

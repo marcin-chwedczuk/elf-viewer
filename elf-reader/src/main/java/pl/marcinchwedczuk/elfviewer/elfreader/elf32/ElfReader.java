@@ -89,7 +89,7 @@ public class ElfReader {
 
     public static Elf32Header readElf32Header(ElfIdentification identification, StructuredFile elfHeaderFile) {
         ElfType type = ElfType.fromValue(elfHeaderFile.readUnsignedShort());
-        ElfMachine machine = ElfMachine.fromUnsignedShort(elfHeaderFile.readUnsignedShort());
+        ElfMachine machine = ElfMachine.fromValue(elfHeaderFile.readUnsignedShort());
 
         // TODO: Overflow check
         ElfVersion version = ElfVersion.fromValue((byte)elfHeaderFile.readUnsignedInt());

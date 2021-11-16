@@ -21,18 +21,22 @@ public class ElfIdentification {
         this.originalBytes = Arrays.copyOf(bytes, EI_NIDENT);
     }
 
-    public String magicString() {
-        byte[] magicBytes = {
+    public byte[] magicBytes() {
+        return new byte[] {
                 originalBytes[EI_MAG0],
                 originalBytes[EI_MAG1],
                 originalBytes[EI_MAG2],
                 originalBytes[EI_MAG3]
         };
+    }
+
+    public String magicString() {
+        byte[] bytes = magicBytes();
 
         return new String(
-                magicBytes,
+                bytes,
                 0,
-                magicBytes.length,
+                bytes.length,
                 StandardCharsets.US_ASCII);
     }
 

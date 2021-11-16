@@ -58,7 +58,7 @@ class ElfReaderTest {
 
         // elf machine - x86 (386)
         assertThat(header.machine())
-                .isEqualTo(ElfMachine.Intel386);
+                .isEqualTo(ElfMachine.INTEL_386);
 
         assertThat(header.version())
                 .isEqualTo(ElfVersion.CURRENT);
