@@ -29,7 +29,11 @@ public class ElfIdentification {
                 originalBytes[EI_MAG3]
         };
 
-        return new String(magicBytes, 0, magicBytes.length, StandardCharsets.US_ASCII);
+        return new String(
+                magicBytes,
+                0,
+                magicBytes.length,
+                StandardCharsets.US_ASCII);
     }
 
     /**
@@ -39,8 +43,11 @@ public class ElfIdentification {
         return ElfClass.fromValue(originalBytes[EI_CLASS]);
     }
 
+    /**
+     * @return ELF encoding, Little Endian or Big Endian.
+     */
     public ElfData elfData() {
-        return ElfData.fromByte(originalBytes[EI_DATA]);
+        return ElfData.fromValue(originalBytes[EI_DATA]);
     }
 
     public ElfVersion version() {

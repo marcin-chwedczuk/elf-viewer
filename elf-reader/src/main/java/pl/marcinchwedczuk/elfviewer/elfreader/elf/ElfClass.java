@@ -2,12 +2,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
-
-import static java.util.Objects.requireNonNull;
 
 public class ElfClass extends BytePartialEnum<ElfClass> {
     private static final Map<Byte, ElfClass> byValue = mkByValueMap();

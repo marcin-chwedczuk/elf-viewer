@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfData;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentificationIndexes;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
@@ -21,13 +22,10 @@ public class ElfReader {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);
         ElfIdentification identification = ElfIdentification.parseBytes(identificationBytes);
 
-        Endianness endianness = null;
-        switch(identification.elfData()) {
-            case ELF_DATA_LSB: endianness = new LittleEndian(); break;
-            case ELF_DATA_MSB: endianness = new BigEndian(); break;
-            default:
-                throw new RuntimeException("Invalid elf data: " + identification.elfData());
-        }
+        Endianness endianness =
+                identification.elfData().is(ElfData.ELF_DATA_LSB) ? new LittleEndian() :
+                identification.elfData().is(ElfData.ELF_DATA_MSB) ? new BigEndian() :
+                throwElfReaderException("Unrecognised data encoding: %s.", identification.elfData());
 
         final int startOffset = ElfIdentificationIndexes.EI_NIDENT;
         Elf32Header header = readElf32Header(identification, new StructuredFile(file, endianness, startOffset));
@@ -338,5 +336,12 @@ public class ElfReader {
                 bloomFilter,
                 buckets,
                 hashValues);
+    }
+
+    private static <T> T throwElfReaderException(String message) {
+        throw new RuntimeException(String.format("%s", message));
+    }
+    private static <T> T throwElfReaderException(String format, Object... args) {
+        throw new RuntimeException(String.format(format, args));
     }
 }
