@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
 /**
  * The value 1 signifies the original file format;

@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
 public enum ElfData {
     /**

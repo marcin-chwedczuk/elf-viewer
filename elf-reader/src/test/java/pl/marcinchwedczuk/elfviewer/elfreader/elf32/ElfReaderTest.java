@@ -2,6 +2,10 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.StandardSectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfClass;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfData;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 

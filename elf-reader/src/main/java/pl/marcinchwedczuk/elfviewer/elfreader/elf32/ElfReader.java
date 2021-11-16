@@ -1,5 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentificationIndexes;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;

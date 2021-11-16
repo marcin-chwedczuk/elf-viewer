@@ -1,9 +1,9 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfIdentificationIndexes.*;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentificationIndexes.*;
 
 public class ElfIdentification {
     public static ElfIdentification parseBytes(byte[] bytes) {
@@ -32,8 +32,11 @@ public class ElfIdentification {
         return new String(magicBytes, 0, magicBytes.length, StandardCharsets.US_ASCII);
     }
 
+    /**
+     * @return ELF binary architecture, that is 32 or 64 bit.
+     */
     public ElfClass elfClass() {
-        return ElfClass.fromByte(originalBytes[EI_CLASS]);
+        return ElfClass.fromValue(originalBytes[EI_CLASS]);
     }
 
     public ElfData elfData() {
