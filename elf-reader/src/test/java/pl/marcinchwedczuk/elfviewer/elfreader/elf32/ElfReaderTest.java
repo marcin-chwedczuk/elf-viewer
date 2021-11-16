@@ -2,10 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.StandardSectionNames;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfClass;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfData;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -45,8 +42,15 @@ class ElfReaderTest {
                 .isEqualTo(ElfData.ELF_DATA_LSB);
 
         // only valid value
-        assertThat(identification.version())
-                .isEqualTo(ElfVersion.EV_CURRENT);
+        assertThat(identification.elfVersion())
+                .isEqualTo(ElfVersion.CURRENT);
+
+        // Most systems sets this field to 0 instead of 3(LINUX)
+        assertThat(identification.osAbi())
+                .isEqualTo(ElfOsAbi.NONE);
+
+        assertThat(identification.osAbiVersion())
+                .isEqualTo(0);
 
         // elf type
         assertThat(header.type())
@@ -57,7 +61,7 @@ class ElfReaderTest {
                 .isEqualTo(ElfMachine.Intel386);
 
         assertThat(header.version())
-                .isEqualTo(ElfVersion.EV_CURRENT);
+                .isEqualTo(ElfVersion.CURRENT);
 
         // program start address in memory
         assertThat(header.entry())

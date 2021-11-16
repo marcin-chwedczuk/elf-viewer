@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
 
 import java.util.Collection;
@@ -12,17 +13,20 @@ public class ElfData extends BytePartialEnum<ElfData> {
     /**
      * Unknown data format.
      */
-    public static final ElfData ELF_DATA_NONE = new ElfData(b(0), "ELFDATANONE");
+    @ElfApi("ELFDATANONE")
+    public static final ElfData ELF_DATA_NONE = new ElfData(b(0), "ELF_DATA_NONE");
 
     /**
      * Two's complement, little-endian.
      */
-    public static final ElfData ELF_DATA_LSB = new ElfData(b(1), "ELFDATA2LSB");
+    @ElfApi("ELFDATA2LSB")
+    public static final ElfData ELF_DATA_LSB = new ElfData(b(1), "ELF_DATA_LSB");
 
     /**
      * Two's complement, big-endian.
      */
-    public static final ElfData ELF_DATA_MSB = new ElfData(b(2), "ELFDATA2MSB");
+    @ElfApi("ELFDATA2MSB")
+    public static final ElfData ELF_DATA_MSB = new ElfData(b(2), "ELF_DATA_MSB");
 
     private ElfData(byte value) {
         super(value);

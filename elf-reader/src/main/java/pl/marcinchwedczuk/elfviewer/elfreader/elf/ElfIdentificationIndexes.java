@@ -22,9 +22,19 @@ public interface ElfIdentificationIndexes {
     int EI_VERSION = 6;
 
     /**
+     * OS ABI identification.
+     */
+    int EI_OSABI = 7;
+
+    /**
+     * ABI version.
+     */
+    int EI_ABIVERSION = 8;
+
+    /**
      * Start of padding bytes.
      */
-    int EI_PAD = 7;
+    int EI_PAD = 9;
 
     /**
      * Size of e_ident[].

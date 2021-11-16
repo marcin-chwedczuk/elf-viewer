@@ -95,7 +95,7 @@ public class ElfReader {
         ElfMachine machine = ElfMachine.fromUnsignedShort(elfHeaderFile.readUnsignedShort());
 
         // TODO: Overflow check
-        ElfVersion version = ElfVersion.fromByte((byte)elfHeaderFile.readUnsignedInt());
+        ElfVersion version = ElfVersion.fromValue((byte)elfHeaderFile.readUnsignedInt());
 
         Elf32Address entry = elfHeaderFile.readAddress();
         Elf32Offset programHeaderTableOffset = elfHeaderFile.readOffset();

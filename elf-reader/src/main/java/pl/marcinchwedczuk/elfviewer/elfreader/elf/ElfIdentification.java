@@ -50,8 +50,16 @@ public class ElfIdentification {
         return ElfData.fromValue(originalBytes[EI_DATA]);
     }
 
-    public ElfVersion version() {
-        return ElfVersion.fromByte(originalBytes[EI_VERSION]);
+    public ElfVersion elfVersion() {
+        return ElfVersion.fromValue((int)originalBytes[EI_VERSION]);
+    }
+
+    public ElfOsAbi osAbi() {
+        return ElfOsAbi.fromValue(originalBytes[EI_OSABI]);
+    }
+
+    public int osAbiVersion() {
+        return (int)originalBytes[EI_ABIVERSION];
     }
 
     public byte[] paddingBytes() {
