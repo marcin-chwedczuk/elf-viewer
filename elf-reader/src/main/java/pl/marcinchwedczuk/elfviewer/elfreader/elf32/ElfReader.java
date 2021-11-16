@@ -1,9 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfData;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentificationIndexes;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
@@ -91,7 +88,7 @@ public class ElfReader {
     }
 
     public static Elf32Header readElf32Header(ElfIdentification identification, StructuredFile elfHeaderFile) {
-        ElfType type = ElfType.fromUnsignedShort(elfHeaderFile.readUnsignedShort());
+        ElfType type = ElfType.fromValue(elfHeaderFile.readUnsignedShort());
         ElfMachine machine = ElfMachine.fromUnsignedShort(elfHeaderFile.readUnsignedShort());
 
         // TODO: Overflow check

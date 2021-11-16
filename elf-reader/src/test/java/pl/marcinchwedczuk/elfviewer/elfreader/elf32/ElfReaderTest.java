@@ -54,7 +54,7 @@ class ElfReaderTest {
 
         // elf type
         assertThat(header.type())
-                .isEqualTo(ElfType.Executable);
+                .isEqualTo(ElfType.EXECUTABLE);
 
         // elf machine - x86 (386)
         assertThat(header.machine())
