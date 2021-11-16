@@ -12,6 +12,10 @@ public class Elf32Address {
         this.address = address;
     }
 
+    public boolean isNull() {
+        return (address == 0);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
