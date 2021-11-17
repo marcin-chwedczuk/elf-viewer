@@ -81,34 +81,79 @@ public class Elf32SectionHeader {
         return flags;
     }
 
+    /**
+     * @return If this section appears in the memory image of a process,
+     * this member holds the address at which the section's first
+     * byte should reside.  Otherwise, the member contains zero.
+     */
     public Elf32Address inMemoryAddress() {
         return inMemoryAddress;
     }
 
+    /**
+     * @return This member's value holds the byte offset from the
+     * beginning of the file to the first byte in the section.
+     * One section type, SHT_NOBITS, occupies no space in the
+     * file, and its sh_offset member locates the conceptual
+     * placement in the file.
+     */
     public Elf32Offset offsetInFile() {
         return offsetInFile;
     }
 
+    /**
+     * @return This member holds the section's size in bytes. Unless the
+     * section type is SHT_NOBITS, the section occupies sh_size
+     * bytes in the file.  A section of type SHT_NOBITS may have
+     * a nonzero size, but it occupies no space in the file.
+     */
     public int sectionSize() {
         return sectionSize;
     }
 
+    /**
+     * @return This member holds a section header table index link, whose
+     * interpretation depends on the section type.
+     */
     public int link() {
         return link;
     }
 
+    /**
+     * @return This member holds extra information, whose interpretation
+     * depends on the section type.
+     */
     public int info() {
         return info;
     }
 
+    /**
+     * Some sections have address alignment constraints.
+     * If a section holds a doubleword, the system must ensure
+     * doubleword alignment for the entire section.  That is, the
+     * value of sh_addr must be congruent to zero, modulo the
+     * value of sh_addralign.  Only zero and positive integral
+     * powers of two are allowed.  The value 0 or 1 means that
+     * the section has no alignment constraints.
+     */
     public int addressAlignment() {
         return addressAlignment;
     }
 
+    /**
+     * Some sections hold a table of fixed-sized entries, such as
+     * a symbol table.  For such a section, this member gives the
+     * size in bytes for each entry.  This member contains zero
+     * if the section does not hold a table of fixed-size
+     * entries.
+     */
     public int containedEntrySize() {
         return containedEntrySize;
     }
 
+    /**
+     * @return Offset of the first byte in ELF file located after this section end.
+     */
     public Elf32Offset sectionEndOffsetInFile() {
         // TODO: Consider alignment
         return offsetInFile.plus(sectionSize);
@@ -121,5 +166,4 @@ public class Elf32SectionHeader {
                 nameIndex, name, type, flags, inMemoryAddress, offsetInFile,
                 link, info, addressAlignment, containedEntrySize);
     }
-
 }
