@@ -9,6 +9,8 @@ public abstract class IntFlags<T extends IntFlags<T>> {
     protected IntFlags(int init) {
         this.raw = init;
     }
+
+    @SafeVarargs
     protected IntFlags(Flag<T>... flags) {
         this(combine(flags));
     }

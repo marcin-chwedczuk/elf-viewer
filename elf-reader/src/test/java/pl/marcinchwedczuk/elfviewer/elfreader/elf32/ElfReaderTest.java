@@ -12,8 +12,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Allocate;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Executable;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
 
 class ElfReaderTest {
     private final AbstractFile helloWorld32;
@@ -124,7 +124,7 @@ class ElfReaderTest {
                 .isEqualTo(0);
 
         assertThat(textSection.flags())
-                .isEqualTo(SectionAttributes.of(Allocate, Executable));
+                .isEqualTo(new SectionAttributes(ALLOCATE, EXECUTABLE));
 
         assertThat(textSection.info())
                 .isEqualTo(0);
