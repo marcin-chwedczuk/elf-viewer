@@ -1,7 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
-import pl.marcinchwedczuk.elfviewer.elfreader.StandardSectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
@@ -315,11 +315,11 @@ class ElfReaderTest {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Elf32SectionHeader dynsymSection = elfFile
-                .getSectionHeader(StandardSectionNames.DYN_SYM)
+                .getSectionHeader(SectionNames.DYNSYM)
                 .get();
 
         Elf32SectionHeader dymstrSection = elfFile
-                .getSectionHeader(StandardSectionNames.DYN_STR)
+                .getSectionHeader(SectionNames.DYNSTR)
                 .get();
 
         StringTable symbolNames =
@@ -333,7 +333,7 @@ class ElfReaderTest {
                 elfFile);
 
         Elf32SectionHeader gnuHashSection = elfFile
-                .getSectionHeader(StandardSectionNames.GNU_HASH)
+                .getSectionHeader(SectionNames.GNU_HASH)
                 .get();
 
         Elf32GnuHash gnuHash = ElfReader.readGnuHashSection(
