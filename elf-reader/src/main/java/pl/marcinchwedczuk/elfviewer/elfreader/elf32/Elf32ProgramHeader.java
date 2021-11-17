@@ -29,7 +29,6 @@ public class Elf32ProgramHeader {
     @ElfApi("p_memsz")
     private final int memorySize;
 
-    // TODO: Figure out what values are allowed
     @ElfApi("p_flags")
     private final Elf32SegmentFlags flags;
 

@@ -9,6 +9,9 @@ public abstract class IntFlags<T extends IntFlags<T>> {
     protected IntFlags(int init) {
         this.raw = init;
     }
+    protected IntFlags(Flag<T>... flags) {
+        this(combine(flags));
+    }
 
     public final boolean hasFlag(Flag<T> flag) {
         return (raw & flag.value()) == flag.value();
@@ -65,8 +68,21 @@ public abstract class IntFlags<T extends IntFlags<T>> {
         return sb.toString();
     }
 
+    private static int combine(Flag<?>[] flags) {
+        int v = 0;
+        for (Flag<?> f : flags) {
+            v |= f.value();
+        }
+        return v;
+    }
+
     public static <T extends IntFlags<T>>
     Flag<T> flag(String name, int value) {
         return new Flag<>(name, value);
+    }
+
+    public static <T extends IntFlags<T>>
+    Mask<T> mask(int value) {
+        return new Mask<>(value);
     }
 }

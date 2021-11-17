@@ -75,9 +75,12 @@ public class IntFlagsTest {
         public static final Flag<UnixPermissions> W = flag("W", 1 << 1);
         public static final Flag<UnixPermissions> X = flag("X", 1 << 0);
 
-        public UnixPermissions() { this(0); }
         public UnixPermissions(int init) {
             super(init);
+        }
+
+        public UnixPermissions(Flag<UnixPermissions>... flags) {
+            super(flags);
         }
 
         @Override
