@@ -6,17 +6,19 @@ import java.util.Objects;
 
 public class Elf32SegmentFlags {
     @ElfApi("PF_X")
-    public static Elf32SegmentFlags Executable = new Elf32SegmentFlags(1 << 0);
+    public static Elf32SegmentFlags ExecutableFlag = new Elf32SegmentFlags(1 << 0);
 
     @ElfApi("PF_W")
-    public static Elf32SegmentFlags Writable = new Elf32SegmentFlags(1 << 1);
+    public static Elf32SegmentFlags WritableFlag = new Elf32SegmentFlags(1 << 1);
 
     @ElfApi("PF_R")
-    public static Elf32SegmentFlags Readable = new Elf32SegmentFlags(1 << 2);
+    public static Elf32SegmentFlags ReadableFlag = new Elf32SegmentFlags(1 << 2);
 
-    public static Elf32SegmentFlags MaskOsSpecific = new Elf32SegmentFlags(0x0ff00000);
+    @ElfApi("PF_MASKOS")
+    public static Elf32SegmentFlags OsSpecificMask = new Elf32SegmentFlags(0x0ff00000);
+
     @ElfApi("PF_MASKPROC")
-    public static Elf32SegmentFlags MaskProcessorSpecific = new Elf32SegmentFlags(0xf0000000);
+    public static Elf32SegmentFlags ProcessorSpecificMask = new Elf32SegmentFlags(0xf0000000);
 
     public static Elf32SegmentFlags of(Elf32SegmentFlags... flags) {
         int combined = 0;
@@ -62,22 +64,22 @@ public class Elf32SegmentFlags {
         StringBuilder sb = new StringBuilder();
         Elf32SegmentFlags curr = this;
 
-        if (curr.hasFlag(Readable)) {
-            curr = curr.clearFlag(Readable);
+        if (curr.hasFlag(ReadableFlag)) {
+            curr = curr.clearFlag(ReadableFlag);
             sb.append("R");
         } else {
             sb.append("-");
         }
 
-        if (curr.hasFlag(Writable)) {
-            curr = curr.clearFlag(Writable);
+        if (curr.hasFlag(WritableFlag)) {
+            curr = curr.clearFlag(WritableFlag);
             sb.append("W");
         } else {
             sb.append("-");
         }
 
-        if (curr.hasFlag(Executable)) {
-            curr = curr.clearFlag(Executable);
+        if (curr.hasFlag(ExecutableFlag)) {
+            curr = curr.clearFlag(ExecutableFlag);
             sb.append("X");
         } else {
             sb.append("-");

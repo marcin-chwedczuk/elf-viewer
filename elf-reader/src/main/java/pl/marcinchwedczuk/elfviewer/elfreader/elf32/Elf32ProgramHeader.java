@@ -4,73 +4,35 @@ import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 /**
  * An executable or shared object file's program header table is an
- *        array of structures, each describing a segment or other
- *        information the system needs to prepare the program for
- *        execution.  An object file segment contains one or more sections.
- *        Program headers are meaningful only for executable and shared
- *        object files.
+ * array of structures, each describing a segment or other
+ * information the system needs to prepare the program for
+ * execution.  An object file segment contains one or more sections.
+ * Program headers are meaningful only for executable and shared
+ * object files.
  */
 public class Elf32ProgramHeader {
-    /**
-     * This member tells what kind of segment this array element describes or
-     * how to interpret the array element's information.
-     * Type values and their meanings appear below.
-     */
     @ElfApi("p_type")
     private final Elf32SegmentType type;
 
-    /**
-     * This member gives the offset from the beginning of the file
-     * at which the first byte of the segment resides.
-     */
     @ElfApi("p_offset")
     private final Elf32Offset fileOffset;
 
-    /**
-     * This member gives the virtual address at which the first byte
-     * of the segment resides in memory.
-     */
     @ElfApi("p_vaddr")
     private final Elf32Address virtualAddress;
 
-    /**
-     * On systems for which physical addressing is relevant,
-     * this member is reserved for the segment's physical address.
-     * This member requires operating system specific information,
-     * which is described in the appendix at the end of Book III.
-     */
     @ElfApi("p_paddr")
     private final Elf32Address physicalAddress;
 
-    /**
-     * This member gives the number of bytes in
-     * the file image of the segment; it may be zero.
-     */
     @ElfApi("p_filesz")
     private final int fileSize;
-    /**
-     * This member gives the number of bytes in
-     * the memory image of the segment; it may be zero.
-     */
+
     @ElfApi("p_memsz")
     private final int memorySize;
 
     // TODO: Figure out what values are allowed
-    /**
-     * This member gives flags relevant to the segment.
-     * Defined flag values appear below.
-     */
     @ElfApi("p_flags")
     private final Elf32SegmentFlags flags;
 
-    /**
-     * Loadable process segments must have congruent values for p_vaddr and p_offset,
-     * modulo the page size. This member gives the value to which the segments
-     * are aligned in memory and in the file.
-     * Values 0 and 1 mean that no alignment is required.
-     * Otherwise, p_align should be a positive, integral power of 2,
-     * and p_addr should equal p_offset, modulo p_align.
-     */
     @ElfApi("p_align")
     private final int alignment;
 
@@ -92,14 +54,76 @@ public class Elf32ProgramHeader {
         this.alignment = alignment;
     }
 
-    public Elf32SegmentType type() { return type; }
-    public Elf32Offset fileOffset() { return fileOffset; }
-    public Elf32Address virtualAddress() { return virtualAddress; }
-    public Elf32Address physicalAddress() { return physicalAddress; }
-    public int fileSize() { return fileSize; }
-    public int memorySize() { return memorySize; }
-    public Elf32SegmentFlags flags() { return flags; }
-    public int alignment() { return alignment; }
+    /**
+     * @return Segment type which indicates what kind of
+     * segment this array element describes or how to interpret
+     * the array element's information.
+     */
+    public Elf32SegmentType type() {
+        return type;
+    }
+
+    /**
+     * @return The offset from the beginning of the
+     * file at which the first byte of the segment resides.
+     */
+    public Elf32Offset fileOffset() {
+        return fileOffset;
+    }
+
+    /**
+     * @return The virtual address at which the first
+     * byte of the segment resides in memory.
+     */
+    public Elf32Address virtualAddress() {
+        return virtualAddress;
+    }
+
+    /**
+     * @return On systems for which physical addressing is relevant, this
+     * member is reserved for the segment's physical address.
+     * Under BSD this member is not used and must be zero.
+     */
+    public Elf32Address physicalAddress() {
+        return physicalAddress;
+    }
+
+    /**
+     * @return The number of bytes in the file image of
+     * the segment.  It may be zero.
+     */
+    public int fileSize() {
+        return fileSize;
+    }
+
+    /**
+     * @return The number of bytes in the memory image
+     * of the segment.  It may be zero.
+     */
+    public int memorySize() {
+        return memorySize;
+    }
+
+    /**
+     * @return This member holds a bit mask of flags relevant to the
+     * segment e.g. eXecutable, or Writable.
+     */
+    public Elf32SegmentFlags flags() {
+        return flags;
+    }
+
+    /**
+     * @return The value to which the segments are
+     * aligned in memory and in the file.  Loadable process
+     * segments must have congruent values for p_vaddr and
+     * p_offset, modulo the page size.  Values of zero and one
+     * mean no alignment is required.  Otherwise, p_align should
+     * be a positive, integral power of two, and p_vaddr should
+     * equal p_offset, modulo p_align.
+     */
+    public int alignment() {
+        return alignment;
+    }
 
     @Override
     public String toString() {

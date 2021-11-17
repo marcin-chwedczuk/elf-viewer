@@ -244,8 +244,8 @@ class ElfReaderTest {
                 .isEqualTo(0x005c8);
         assertThat(textSegment.flags())
                 .isEqualTo(Elf32SegmentFlags.of(
-                        Elf32SegmentFlags.Readable,
-                        Elf32SegmentFlags.Executable
+                        Elf32SegmentFlags.ReadableFlag,
+                        Elf32SegmentFlags.ExecutableFlag
                 ));
         assertThat(textSegment.alignment())
                 .isEqualTo(0x1000);
