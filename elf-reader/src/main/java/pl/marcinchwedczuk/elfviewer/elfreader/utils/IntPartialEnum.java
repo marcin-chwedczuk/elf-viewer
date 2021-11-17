@@ -48,6 +48,9 @@ public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
     public final boolean is(T value) {
         return this.equals(value);
     }
+    public final boolean isNot(T value) {
+        return !this.equals(value);
+    }
     public final boolean isOneOf(T... values) {
         for (T value : values) {
             if (this.is(value))

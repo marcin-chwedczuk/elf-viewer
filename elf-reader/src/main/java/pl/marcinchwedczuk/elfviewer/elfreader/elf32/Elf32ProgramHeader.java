@@ -2,6 +2,14 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
+/**
+ * An executable or shared object file's program header table is an
+ *        array of structures, each describing a segment or other
+ *        information the system needs to prepare the program for
+ *        execution.  An object file segment contains one or more sections.
+ *        Program headers are meaningful only for executable and shared
+ *        object files.
+ */
 public class Elf32ProgramHeader {
     /**
      * This member tells what kind of segment this array element describes or

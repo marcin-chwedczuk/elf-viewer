@@ -1,123 +1,146 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
-public enum Elf32SegmentType {
+import java.util.Collection;
+import java.util.Map;
+
+public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
+    private static final Map<Integer, Elf32SegmentType> byValue = mkByValueMap();
+    private static final Map<String, Elf32SegmentType> byName = mkByNameMap();
+
     /**
-     * The array element is unused; other members' values are undefined.
-     * This type lets the program header table have ignored entries.
+     * The array element is unused and the other
+     * members' values are undefined.  This lets the
+     * program header have ignored entries.
      */
     @ElfApi("PT_NULL")
-    Null(0),
+    public static final Elf32SegmentType NULL = new Elf32SegmentType(0, "NULL");
 
     /**
      * The array element specifies a loadable segment,
-     * described by p_filesz and p_memsz.
-     * The bytes from the file are mapped to the beginning of the memory segment.
-     * If the segment's memory size (p_memsz) is larger than the file size (p_filesz),
-     * the "extra'' bytes are defined to hold the value 0 and to follow the segment's
-     * initialized area. The file size may not be larger than the memory size.
-     * Loadable segment entries in the program header table appear in ascending order,
-     * sorted on the p_vaddr member.
+     * described by p_filesz and p_memsz.  The bytes
+     * from the file are mapped to the beginning of the
+     * memory segment.  If the segment's memory size
+     * p_memsz is larger than the file size p_filesz,
+     * the "extra" bytes are defined to hold the value
+     * 0 and to follow the segment's initialized area.
+     * The file size may not be larger than the memory
+     * size.  Loadable segment entries in the program
+     * header table appear in ascending order, sorted
+     * on the p_vaddr member.
      */
     @ElfApi("PT_LOAD")
-    Load(1),
+    public static final Elf32SegmentType LOAD = new Elf32SegmentType(1, "LOAD");
 
     /**
-     * The array element specifies dynamic linking information. See Book III.
+     * The array element specifies dynamic linking
+     * information.
      */
     @ElfApi("PT_DYNAMIC")
-    Dynamic(2),
+    public static final Elf32SegmentType DYNAMIC = new Elf32SegmentType(2, "DYNAMIC");
 
     /**
-     * The array element specifies the location and size of a null-terminated path name
-     * to invoke as an interpreter. See Book III.
+     * The array element specifies the location and
+     * size of a null-terminated pathname to invoke as
+     * an interpreter.  This segment type is meaningful
+     * only for executable files (though it may occur
+     * for shared objects).  However it may not occur
+     * more than once in a file.  If it is present, it
+     * must precede any loadable segment entry.
      */
     @ElfApi("PT_INTERP")
-    Interpreter(3),
+    public static final Elf32SegmentType INTERPRETER = new Elf32SegmentType(3, "INTERPRETER");
 
     /**
-     * The array element specifies the location and size of auxiliary information.
+     * The array element specifies the location of
+     * notes (ElfN_Nhdr).
      */
     @ElfApi("PT_NOTE")
-    Note(4),
+    public static final Elf32SegmentType NOTE = new Elf32SegmentType(4, "NOTE");
 
     /**
-     * This segment type is reserved but has unspecified semantics. See Book III.
+     * This segment type is reserved but has
+     * unspecified semantics.  Programs that contain an
+     * array element of this type do not conform to the
+     * ABI.
      */
     @ElfApi("PT_SHLIB")
-    ShLib(5),
+    public static final Elf32SegmentType SHLIB = new Elf32SegmentType(5, "SHLIB");
 
     /**
-     * The array element, if present, specifies the location and size of the program
-     * header table itself, both in the file and in the memory image of the program.
-     * This segment type may not occur more than once in a file.
-     * Moreover, it may occur only if the program header table is part of the memory
-     * image of the program. If it is present, it must precede any loadable segment entry.
-     * See "Program Interpreter" in the appendix at the end of Book III
-     * for further information.
+     * The array element, if present, specifies the
+     * location and size of the program header table
+     * itself, both in the file and in the memory image
+     * of the program.  This segment type may not occur
+     * more than once in a file.  Moreover, it may
+     * occur only if the program header table is part
+     * of the memory image of the program.  If it is
+     * present, it must precede any loadable segment
+     * entry.
      */
     @ElfApi("PT_PHDR")
-    ProgramHeader(6),
+    public static final Elf32SegmentType PROGRAM_HEADER = new Elf32SegmentType(6, "PROGRAM_HEADER");
 
-    /**
-     * Thread-local storage segment.
-     */
     @ElfApi("PT_TLS")
-    ThreadLocalStorage(7),
+    public static final Elf32SegmentType THREAD_LOCAL_STORAGE = new Elf32SegmentType(7, "THREAD_LOCAL_STORAGE");
 
-    /**
-     * Number of defined types.
-     */
     @ElfApi("PT_NUM")
-    NumberOfDefinedTypes(8),
+    public static final Elf32SegmentType NUM_DEFINED_TYPES = new Elf32SegmentType(8, "NUM_DEFINED_TYPES");
 
-    /**
-     * GCC .eh_frame_hdr segment.
-     */
     @ElfApi("PT_GNU_EH_FRAME")
-    GnuEhFrame(0x6474e550),
+    public static final Elf32SegmentType GNU_EH_FRAME = new Elf32SegmentType(0x6474e550, "GNU_EH_FRAME");
 
     /**
-     * Indicates stack executability.
+     * GNU extension which is used by the Linux kernel
+     * to control the state of the stack via the flags
+     * set in the p_flags member.
      */
     @ElfApi("PT_GNU_STACK")
-    GnuStack(0x6474e551),
+    public static final Elf32SegmentType GNU_STACK = new Elf32SegmentType(0x6474e551, "GNU_STACK");
 
-    /**
-     * Read-only after relocation.
-     */
     @ElfApi("PT_GNU_RELRO")
-    GnuRelRo(0x6474e552),
+    public static final Elf32SegmentType GNU_RELO = new Elf32SegmentType(0x6474e552, "GNU_RELO");
 
-    // TODO: add other values from elf.h
+    @ElfApi("PT_SUNWBSS")
+    public static final Elf32SegmentType SUNW_BSS = new Elf32SegmentType(0x6ffffffa, "SUNW_BSS");
 
-    /**
-     * Values in this inclusive range are reserved for processor-specific semantics.
-     */
+    @ElfApi("PT_SUNWSTACK")
+    public static final Elf32SegmentType SUNW_STACK = new Elf32SegmentType(0x6ffffffb, "SUNW_STACK");
+
+    @ElfApi("PT_LOOS")
+    public static final int LO_OS_SPECIFIC = 0x60000000;
+    @ElfApi("PT_HIOS")
+    public static final int HI_OS_SPECIFIC = 0x6fffffff;
+
     @ElfApi("PT_LOPROC")
-    LoProcessorSpecific(0x70000000),
-
-    /**
-     * Values in this inclusive range are reserved for processor-specific semantics.
-     */
+    public static final int LO_PROCESSOR_SPECIFIC = 0x70000000;
     @ElfApi("PT_HIPROC")
-    HiProcessorSpecific(0x7fffffff);
+    public static final int HI_PROCESSOR_SPECIFIC = 0x7fffffff;
 
-    public static Elf32SegmentType fromUnsignedInt(int v) {
-        for (Elf32SegmentType value : Elf32SegmentType.values()) {
-            // No sign extension byte -> int
-            if (value.value == v) {
-                return value;
-            }
-        }
+    @ElfApi("PT_LOSUNW")
+    public static final int LO_SUNW = 0x6ffffffa;
+    @ElfApi("PT_HISUNW")
+    public static final int HI_SUNW = 0x6fffffff;
 
-        throw new IllegalArgumentException("Unrecognized uint: " + Integer.toHexString(v));
+    private Elf32SegmentType(int value) {
+        super(value);
     }
 
-    private final int value;
+    private Elf32SegmentType(int value, String name) {
+        super(value, name, byValue, byName);
+    }
 
-    Elf32SegmentType(int value) {
-        this.value = value;
+    public static Elf32SegmentType fromValue(int value) {
+        return IntPartialEnum.fromValueOrCreate(value, byValue, Elf32SegmentType::new);
+    }
+
+    public static Elf32SegmentType fromName(String name) {
+        return IntPartialEnum.fromName(name, byName);
+    }
+
+    public static Collection<Elf32SegmentType> knownValues() {
+        return IntPartialEnum.knownValues(byValue);
     }
 }

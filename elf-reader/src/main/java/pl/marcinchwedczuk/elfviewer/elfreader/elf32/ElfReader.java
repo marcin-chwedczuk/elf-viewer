@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.DYNAMIC;
+
 public class ElfReader {
     private ElfReader() { }
 
@@ -67,7 +69,7 @@ public class ElfReader {
     }
 
     private static Elf32ProgramHeader readElf32ProgramHeader(StructuredFile headerFile) {
-        Elf32SegmentType type = Elf32SegmentType.fromUnsignedInt(headerFile.readUnsignedInt());
+        Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
         Elf32Offset fileOffset = headerFile.readOffset();
         Elf32Address virtualAddress = headerFile.readAddress();
         Elf32Address physicalAddress = headerFile.readAddress();
@@ -235,7 +237,7 @@ public class ElfReader {
         // TODO: Handle segment missing
         // TODO: Naming segment <-> program header
         Elf32ProgramHeader dynamicSegment =
-                elfFile.getProgramHeadersOfType(Elf32SegmentType.Dynamic).get(0);
+                elfFile.getProgramHeadersOfType(DYNAMIC).get(0);
 
         StructuredFile sf = new StructuredFile(elfFile.storage, elfFile.endianness,
                 dynamicSegment.fileOffset());

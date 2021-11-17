@@ -231,7 +231,7 @@ class ElfReaderTest {
         Elf32ProgramHeader textSegment = segments.get(2);
 
         assertThat(textSegment.type())
-                .isEqualTo(Elf32SegmentType.Load);
+                .isEqualTo(Elf32SegmentType.LOAD);
         assertThat(textSegment.fileOffset())
                 .isEqualTo(new Elf32Offset(0x000000));
         assertThat(textSegment.virtualAddress())
@@ -267,7 +267,7 @@ class ElfReaderTest {
     void elf32_interpreter() {
         Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
         Elf32ProgramHeader interpreterSegment = helloWorldElf.programHeaders.stream()
-                .filter(ph -> ph.type().equals(Elf32SegmentType.Interpreter))
+                .filter(ph -> ph.type().equals(Elf32SegmentType.INTERPRETER))
                 .findFirst()
                 .get();
 
