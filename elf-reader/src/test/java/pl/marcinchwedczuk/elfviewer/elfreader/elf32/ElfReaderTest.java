@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Allocate;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributeFlags.Executable;
 
@@ -97,7 +98,7 @@ class ElfReaderTest {
 
         // Strings section
         assertThat(header.sectionContainingSectionNames())
-                .isEqualTo(new SectionHeaderTableIndex(28));
+                .isEqualTo(new SectionHeaderIndex(28));
     }
 
     @Test
@@ -116,7 +117,7 @@ class ElfReaderTest {
                 .isEqualTo(16);
 
         assertThat(textSection.type())
-                .isEqualTo(ElfSectionType.ProgBits);
+                .isEqualTo(PROGBITS);
 
         // Not applicable to this section
         assertThat(textSection.containedEntrySize())
@@ -190,7 +191,7 @@ class ElfReaderTest {
 
         // Check section header index, it should point to .text section
         assertThat(main.index())
-                .isEqualTo(new SectionHeaderTableIndex(14));
+                .isEqualTo(new SectionHeaderIndex(14));
         assertThat(elfFile.sectionHeaders.get(14).name())
                 .isEqualTo(".text");
     }

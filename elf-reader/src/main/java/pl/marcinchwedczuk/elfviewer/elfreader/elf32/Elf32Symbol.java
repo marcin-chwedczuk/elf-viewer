@@ -57,7 +57,7 @@ public class Elf32Symbol {
      *  this file's references to the symbol will be linked to the actual definition.
      */
     @ElfApi("st_shndx")
-    private final SectionHeaderTableIndex index;
+    private final SectionHeaderIndex index;
 
     public Elf32Symbol(StringTableIndex nameIndex,
                        String name,
@@ -65,7 +65,7 @@ public class Elf32Symbol {
                        int size,
                        byte info,
                        byte other,
-                       SectionHeaderTableIndex index) {
+                       SectionHeaderIndex index) {
         this.nameIndex = nameIndex;
         this.name = name;
         this.value = value;
@@ -90,7 +90,7 @@ public class Elf32Symbol {
     }
 
     public byte other() { return other; }
-    public SectionHeaderTableIndex index() { return index; }
+    public SectionHeaderIndex index() { return index; }
 
     @Override
     public String toString() {

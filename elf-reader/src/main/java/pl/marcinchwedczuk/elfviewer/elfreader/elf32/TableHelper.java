@@ -27,7 +27,7 @@ public class TableHelper {
         return new Elf32Offset(entryOffset);
     }
 
-    public Elf32Offset offsetForEntry(SectionHeaderTableIndex index) {
+    public Elf32Offset offsetForEntry(SectionHeaderIndex index) {
         return offsetForEntry(index.intValue());
     }
 

@@ -6,13 +6,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
+
 public class StringTable {
     private final AbstractFile file;
     private final Elf32SectionHeader section;
 
     public StringTable(AbstractFile file,
                        Elf32SectionHeader section) {
-        if (!section.type().equals(ElfSectionType.StringTable))
+        if (section.type().isNot(STRING_TABLE))
             throw new IllegalArgumentException("Invalid section type!");
 
         this.file = file;

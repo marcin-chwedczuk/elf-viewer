@@ -6,6 +6,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.Optional;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
+
 public class RelocationsTable {
     private final AbstractFile file;
     private final Endianness endianness;
@@ -19,7 +21,7 @@ public class RelocationsTable {
                             Elf32SectionHeader section,
                             Elf32File elf32File) {
         // TODO: Check this condition
-        if (!section.type().equals(ElfSectionType.Relocation))
+        if (!section.type().is(REL))
             throw new IllegalArgumentException("Invalid section type!");
 
         this.file = file;

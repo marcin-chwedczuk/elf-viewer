@@ -44,7 +44,7 @@ public class Elf32Header {
     private short sectionHeaderCount;
 
     @ElfApi("e_shstrndx")
-    private SectionHeaderTableIndex sectionNamesStringTableIndex;
+    private SectionHeaderIndex sectionNamesStringTableIndex;
 
     public Elf32Header(ElfIdentification identification,
                        ElfType type,
@@ -59,7 +59,7 @@ public class Elf32Header {
                        short programHeaderCount,
                        short sectionHeaderSize,
                        short sectionHeaderCount,
-                       SectionHeaderTableIndex sectionNamesStringTableIndex) {
+                       SectionHeaderIndex sectionNamesStringTableIndex) {
         this.identification = identification;
         this.type = type;
         this.machine = machine;
@@ -207,7 +207,7 @@ public class Elf32Header {
      * section header table contains the value zero.
      */
     // TODO: Properly handle size overflow
-    public SectionHeaderTableIndex sectionContainingSectionNames() {
+    public SectionHeaderIndex sectionContainingSectionNames() {
         return sectionNamesStringTableIndex;
     }
 

@@ -4,10 +4,10 @@ import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.SYMBOL_TABLE;
 
 public class SymbolTable {
     private final AbstractFile file;
@@ -24,8 +24,7 @@ public class SymbolTable {
                        StringTable symbolNames,
                        Elf32File elf32File) {
         // TODO: Check this condition
-        if (!section.type().equals(ElfSectionType.SymbolTable)
-            && !section.type().equals(ElfSectionType.DynamicSymbols))
+        if (!section.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS))
             throw new IllegalArgumentException("Invalid section type, expecting symbol table but got " + section.type());
 
         this.file = file;
@@ -54,7 +53,7 @@ public class SymbolTable {
         int size = symbolFile.readUnsignedInt();
         byte info = symbolFile.readByte();
         byte other = symbolFile.readByte();
-        SectionHeaderTableIndex symbolIndex = new SectionHeaderTableIndex(symbolFile.readUnsignedShort());
+        SectionHeaderIndex symbolIndex = new SectionHeaderIndex(symbolFile.readUnsignedShort());
 
         String name = isSectionSymbol(nameIndex, Elf32SymbolType.fromSymbolInfo(info))
                 // TODO: Add boundary check, validate logic with readelf source code
