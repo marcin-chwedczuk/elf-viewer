@@ -92,6 +92,10 @@ public class Elf32Symbol {
         return other;
     }
 
+    public Elf32SymbolVisibility visibility() {
+        return Elf32SymbolVisibility.fromSymbolOther(other);
+    }
+
     public SectionHeaderIndex index() {
         return index;
     }
