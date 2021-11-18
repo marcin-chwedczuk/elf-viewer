@@ -158,11 +158,9 @@ class ElfReaderTest {
 
         Elf32SectionHeader symbolTableSection = maybeSymbolTableSection.get();
         SymbolTable symbols = new SymbolTable(
-                helloWorld32,
-                elfFile.endianness,
-                symbolTableSection,
-                symbolNames,
-                elfFile);
+                elfFile, symbolTableSection,
+                symbolNames
+        );
 
         // 1. Check Section symbols have their names resolved
         Optional<Elf32Symbol> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
@@ -326,11 +324,9 @@ class ElfReaderTest {
                 new StringTable(elfFile.storage, dymstrSection);
 
         SymbolTable dymsym = new SymbolTable(
-                elfFile.storage,
-                elfFile.endianness,
-                dynsymSection,
-                symbolNames,
-                elfFile);
+                elfFile, dynsymSection,
+                symbolNames
+        );
 
         Elf32SectionHeader gnuHashSection = elfFile
                 .getSectionHeader(SectionNames.GNU_HASH)

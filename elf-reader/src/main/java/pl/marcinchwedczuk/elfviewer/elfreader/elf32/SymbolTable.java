@@ -3,9 +3,12 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.SYMBOL_TABLE;
 
@@ -18,25 +21,24 @@ public class SymbolTable {
 
     private final TableHelper tableHelper;
 
-    public SymbolTable(AbstractFile file,
-                       Endianness endianness,
+    public SymbolTable(Elf32File elf32File,
                        Elf32SectionHeader section,
-                       StringTable symbolNames,
-                       Elf32File elf32File) {
-        // TODO: Check this condition
-        if (!section.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS))
-            throw new IllegalArgumentException("Invalid section type, expecting symbol table but got " + section.type());
+                       StringTable symbolNames)
+    {
+        requireNonNull(elf32File);
+        requireNonNull(section);
+        requireNonNull(symbolNames);
 
-        this.file = file;
-        this.endianness = endianness;
+        // TODO: Check this condition
+        Args.checkSectionType(section, SYMBOL_TABLE, DYNAMIC_SYMBOLS);
+
+        this.file = elf32File.storage;
+        this.endianness = elf32File.endianness;
         this.section = section;
         this.symbolNames = symbolNames;
         this.elf32File = elf32File;
 
-        tableHelper = new TableHelper(
-                section.offsetInFile(),
-                section.containedEntrySize(),
-                section.sectionSize() / section.containedEntrySize());
+        tableHelper = TableHelper.forSectionEntries(section);
     }
 
     public int size() {

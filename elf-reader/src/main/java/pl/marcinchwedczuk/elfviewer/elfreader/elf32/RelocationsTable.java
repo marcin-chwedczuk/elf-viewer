@@ -4,8 +4,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
-import java.util.Optional;
-
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
 
 public class RelocationsTable {
@@ -29,10 +27,7 @@ public class RelocationsTable {
         this.section = section;
         this.elf32File = elf32File;
 
-        tableHelper = new TableHelper(
-                section.offsetInFile(),
-                section.containedEntrySize(),
-                section.sectionSize() / section.containedEntrySize());
+        tableHelper = TableHelper.forSectionEntries(section);
     }
 
     public int size() {

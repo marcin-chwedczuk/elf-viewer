@@ -31,17 +31,15 @@ public class ElfReader {
         Elf32Header header = readElf32Header(identification, new StructuredFile(file, endianness, startOffset));
 
         List<Elf32SectionHeader> sectionHeaders = readElf32SectionHeaders(
-                file, endianness, header.sectionContainingSectionNames(),
-                new TableHelper(
-                        header.sectionHeaderTableOffset(),
-                        header.sectionHeaderSize(),
-                        header.numberOfSectionHeaders()));
+                file,
+                endianness,
+                header.sectionContainingSectionNames(),
+                TableHelper.forSectionHeaders(header));
 
         List<Elf32ProgramHeader> programHeaders = readElf32ProgramHeaders(
-                file, endianness, new TableHelper(
-                        header.programHeaderTableOffset(),
-                        header.programHeaderSize(),
-                        header.numberOfProgramHeaders()));
+                file,
+                endianness,
+                TableHelper.forProgramHeaders(header));
 
         return new Elf32File(
                 file,

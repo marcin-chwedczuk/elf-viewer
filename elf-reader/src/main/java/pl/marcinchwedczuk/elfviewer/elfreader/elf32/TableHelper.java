@@ -1,13 +1,41 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import static java.util.Objects.requireNonNull;
+
 public class TableHelper {
+    public static TableHelper forSectionHeaders(Elf32Header header) {
+        return new TableHelper(
+                header.sectionHeaderTableOffset(),
+                header.sectionHeaderSize(),
+                header.numberOfSectionHeaders());
+    }
+
+    public static TableHelper forProgramHeaders(Elf32Header header) {
+        return new TableHelper(
+                header.programHeaderTableOffset(),
+                header.programHeaderSize(),
+                header.numberOfProgramHeaders());
+    }
+
+    public static TableHelper forSectionEntries(Elf32SectionHeader sectionHeader) {
+        return new TableHelper(
+                sectionHeader.offsetInFile(),
+                sectionHeader.containedEntrySize(),
+                // TODO: Use actual section size
+                sectionHeader.sectionSize() / sectionHeader.containedEntrySize());
+    }
+
     private final Elf32Offset startOffset;
     private final int entrySize;
     private final int entriesCount;
 
-    public TableHelper(Elf32Offset startOffset,
+    private TableHelper(Elf32Offset startOffset,
                        int entrySize,
                        int entriesCount) {
+        requireNonNull(startOffset);
+        if (entrySize <= 0)
+            throw new IllegalArgumentException("Entry size must be a positive number.");
+
         this.startOffset = startOffset;
         this.entrySize = entrySize;
         this.entriesCount = entriesCount;
@@ -17,13 +45,12 @@ public class TableHelper {
         return entriesCount;
     }
 
-    public Elf32Offset offsetForEntry(int rawIndex) {
-        if (rawIndex >= entriesCount) {
-            // TODO: Better message
-            throw new IndexOutOfBoundsException("Index is out of bounds: " + rawIndex);
+    public Elf32Offset offsetForEntry(int index) {
+        if (index >= tableSize()) {
+            throw new IndexOutOfBoundsException("Index is out of bounds: " + index);
         }
 
-        long entryOffset = startOffset.longValue() + (long)rawIndex * entrySize;
+        long entryOffset = startOffset.longValue() + (long)index * entrySize;
         return new Elf32Offset(entryOffset);
     }
 
