@@ -283,25 +283,19 @@ class ElfReaderTest {
     @Test
     void dynamic_section() {
         Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
-        List<Elf32DynamicStructure> results = ElfReader.readDynamicSection2(helloWorldElf)
+        List<Elf32DynamicTag> results = ElfReader.readDynamicSection2(helloWorldElf)
                 .get()
                 .getTags();
 
         assertThat(results.get(0))
-                .isEqualTo(new Elf32DynamicStructure(
-                        Elf32DynamicArrayTag.NEEDED,
-                        1,
-                        null));
+                .isEqualTo(new Elf32DynamicTag(Elf32DynamicTagType.NEEDED, 1));
 
         assertThat(results.get(1))
-                .isEqualTo(new Elf32DynamicStructure(
-                        Elf32DynamicArrayTag.INIT,
-                        null,
-                        new Elf32Address(0x80482a8)));
+                .isEqualTo(new Elf32DynamicTag(Elf32DynamicTagType.INIT, 0x80482a8));
 
         // Read library name
-        Elf32DynamicStructure strTabPtr = results.stream()
-                .filter(x -> x.tag().equals(Elf32DynamicArrayTag.STRTAB))
+        Elf32DynamicTag strTabPtr = results.stream()
+                .filter(x -> x.type().equals(Elf32DynamicTagType.STRTAB))
                 .findFirst()
                 .get();
 

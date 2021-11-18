@@ -27,62 +27,18 @@ public class Elf32DynamicTags {
         this.tableHelper = TableHelper.forSectionEntries(dynamicSection);
     }
 
-    public List<Elf32DynamicStructure> getTags() {
+    public List<Elf32DynamicTag> getTags() {
         Elf32Offset startOffset = dynamicSection.offsetInFile();
         StructuredFile sf = new StructuredFile(elfFile, startOffset);
 
-
-        // Section ends with NULL entry
-        List<Elf32DynamicStructure> result = new ArrayList<>();
-
-        Set<Elf32DynamicArrayTag> tagsWithValue = Set.of(
-                Elf32DynamicArrayTag.NEEDED,
-                Elf32DynamicArrayTag.PLTRELSZ,
-                Elf32DynamicArrayTag.RELASZ,
-                Elf32DynamicArrayTag.RELAENT,
-                Elf32DynamicArrayTag.STRSZ,
-                Elf32DynamicArrayTag.SYMENT,
-                Elf32DynamicArrayTag.SONAME,
-                Elf32DynamicArrayTag.RPATH,
-                Elf32DynamicArrayTag.RELSZ,
-                Elf32DynamicArrayTag.RELENT,
-                Elf32DynamicArrayTag.PLTREL,
-                Elf32DynamicArrayTag.INIT_ARRAYSZ,
-                Elf32DynamicArrayTag.FINI_ARRAYSZ
-        );
-        Set<Elf32DynamicArrayTag> tagsWithPtr = Set.of(
-                Elf32DynamicArrayTag.PLTGOT,
-                Elf32DynamicArrayTag.HASH,
-                Elf32DynamicArrayTag.STRTAB,
-                Elf32DynamicArrayTag.SYMTAB,
-                Elf32DynamicArrayTag.RELA,
-                Elf32DynamicArrayTag.INIT,
-                Elf32DynamicArrayTag.FINI,
-                Elf32DynamicArrayTag.REL,
-                Elf32DynamicArrayTag.DEBUG,
-                Elf32DynamicArrayTag.JMPREL,
-                Elf32DynamicArrayTag.INIT_ARRAY,
-                Elf32DynamicArrayTag.FINI_ARRAY,
-                Elf32DynamicArrayTag.GNU_HASH,
-                Elf32DynamicArrayTag.VERNEED,
-                Elf32DynamicArrayTag.VERSYM
-        );
+        List<Elf32DynamicTag> result = new ArrayList<>();
 
         for (int i = 0; i < tableHelper.tableSize(); i++) {
-            Elf32DynamicArrayTag tag =
-                    Elf32DynamicArrayTag.fromValue(sf.readUnsignedInt());
+            Elf32DynamicTagType tag =
+                    Elf32DynamicTagType.fromValue(sf.readUnsignedInt());
 
-            if (tagsWithValue.contains(tag)) {
-                int value = sf.readUnsignedInt();
-                result.add(new Elf32DynamicStructure(tag, value, null));
-            } else if (tagsWithPtr.contains(tag)) {
-                Elf32Address addr = sf.readAddress();
-                result.add(new Elf32DynamicStructure(tag, null, addr));
-            } else {
-                // TODO: verify...
-                sf.readUnsignedInt(); // drop data
-                result.add(new Elf32DynamicStructure(tag, null, null));
-            }
+            int value = sf.readUnsignedInt();
+            result.add(new Elf32DynamicTag(tag, value));
         }
 
         return result;
