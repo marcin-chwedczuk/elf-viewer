@@ -32,4 +32,9 @@ public class Args {
 
         throw new IllegalArgumentException(message);
     }
+
+    public static void checkByteValue(int value) {
+        if (value < 0 || value > 0xff)
+            throw new IllegalArgumentException("Expected value between 0 and 0xFF but got: " + value + ".");
+    }
 }

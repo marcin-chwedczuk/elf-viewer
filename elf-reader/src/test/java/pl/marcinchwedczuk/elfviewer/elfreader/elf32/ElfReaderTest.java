@@ -208,8 +208,6 @@ class ElfReaderTest {
                 .isPresent();
 
         RelocationsTable relocations = new RelocationsTable(
-                helloWorld32,
-                elfFile.endianness,
                 maybeRelocationsSection.get(),
                 elfFile);
 

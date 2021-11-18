@@ -238,8 +238,7 @@ public class ElfReader {
         Elf32ProgramHeader dynamicSegment =
                 elfFile.getProgramHeadersOfType(DYNAMIC).get(0);
 
-        StructuredFile sf = new StructuredFile(elfFile.storage, elfFile.endianness,
-                dynamicSegment.fileOffset());
+        StructuredFile sf = new StructuredFile(elfFile, dynamicSegment.fileOffset());
 
         List<Elf32DynamicStructure> result = new ArrayList<>();
         // Section ends with NULL entry
