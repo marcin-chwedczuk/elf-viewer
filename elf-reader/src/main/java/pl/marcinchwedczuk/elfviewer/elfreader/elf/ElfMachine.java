@@ -1096,7 +1096,6 @@ public class ElfMachine extends ShortPartialEnum<ElfMachine> {
     @ElfApi("EM_BPF")
     public static final ElfMachine BPF = new ElfMachine(s(247), "BPF");
 
-
     private ElfMachine(short value) {
         super(value);
     }

@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 
@@ -20,6 +21,10 @@ public class StructuredFile {
 
     public StructuredFile(AbstractFile file, Endianness endianness, Elf32Offset offset) {
         this(file, endianness, offset.longValue());
+    }
+
+    public StructuredFile(Elf32File file, Elf32Offset offset) {
+        this(file.storage, file.endianness, offset);
     }
 
     public Elf32Offset currentPositionInFile() { return new Elf32Offset(offset); }

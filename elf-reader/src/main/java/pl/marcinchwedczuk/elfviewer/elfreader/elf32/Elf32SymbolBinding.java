@@ -1,14 +1,23 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfMachine;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.ShortPartialEnum;
 
-public enum Elf32SymbolBinding {
+import java.util.Collection;
+import java.util.Map;
+
+public class Elf32SymbolBinding extends BytePartialEnum<Elf32SymbolBinding> {
+    private static final Map<Byte, Elf32SymbolBinding> byValue = mkByValueMap();
+    private static final Map<String, Elf32SymbolBinding> byName = mkByNameMap();
+
     /**
      * Local symbols are not visible outside the object file containing their definition.
      * Local symbols of the same name may exist in multiple files without interfering with each other.
      */
     @ElfApi("STB_LOCAL")
-    Local(0),
+    public static final Elf32SymbolBinding LOCAL = new Elf32SymbolBinding(b(0), "LOCAL");
 
     /**
      * Global symbols are visible to all object files being combined.
@@ -16,40 +25,71 @@ public enum Elf32SymbolBinding {
      * undefined reference to the same global symbol.
      */
     @ElfApi("STB_GLOBAL")
-    Global(1),
+    public static final Elf32SymbolBinding GLOBAL = new Elf32SymbolBinding(b(1), "GLOBAL");
 
     /**
      * Weak symbols resemble global symbols, but their definitions have lower precedence.
      */
     @ElfApi("STB_WEAK")
-    Weak(2),
+    public static final Elf32SymbolBinding WEAK = new Elf32SymbolBinding(b(2), "WEAK");
+
+    /**
+     * Number of defined types.
+     */
+    @ElfApi("STB_NUM")
+    public static final Elf32SymbolBinding NUMBER_DEFINED_TYPES = new Elf32SymbolBinding(b(3), "NUMBER_DEFINED_TYPES");
+
+    /**
+     * Number of defined types.
+     */
+    @ElfApi("STB_GNU_UNIQUE")
+    public static final Elf32SymbolBinding GNU_UNIQUE = new Elf32SymbolBinding(b(10), "GNU_UNIQUE");
+
+    /**
+     * Values in this inclusive range are reserved for OS-specific semantics.
+     */
+    @ElfApi("STB_LOOS")
+    public static final int LO_OS_SPECIFIC = 10;
+
+    /**
+     * Values in this inclusive range are reserved for OS-specific semantics.
+     */
+    @ElfApi("STB_HIOS")
+    public static final int HI_OS_SPECIFIC = 12;
 
     /**
      * Values in this inclusive range are reserved for processor-specific semantics.
      */
     @ElfApi("STB_LOPROC")
-    LoReservedProcessorSpecific(13),
+    public static final int LO_PROCESSOR_SPECIFIC = 13;
 
     /**
      * Values in this inclusive range are reserved for processor-specific semantics.
      */
     @ElfApi("STB_HIPROC")
-    HiReservedProcessorSpecific(15);
+    public static final int HI_PROCESSOR_SPECIFIC = 15;
 
-    public static Elf32SymbolBinding fromByte(byte v) {
-        for (Elf32SymbolBinding value : Elf32SymbolBinding.values()) {
-            // No sign extension byte -> int
-            if (value.value == (v & 0xff)) {
-                return value;
-            }
-        }
-
-        throw new IllegalArgumentException("Unrecognized byte" + v);
+    private Elf32SymbolBinding(byte value) {
+        super(value);
     }
 
-    private int value;
+    private Elf32SymbolBinding(byte value, String name) {
+        super(value, name, byValue, byName);
+    }
 
-    Elf32SymbolBinding(int value) {
-        this.value = value;
+    public static Elf32SymbolBinding fromValue(byte value) {
+        return BytePartialEnum.fromValueOrCreate(value, byValue, Elf32SymbolBinding::new);
+    }
+
+    public static Elf32SymbolBinding fromName(String name) {
+        return BytePartialEnum.fromName(name, byName);
+    }
+
+    public static Elf32SymbolBinding fromSymbolInfo(byte info) {
+        return fromValue((byte) (info >>> 4));
+    }
+
+    public static Collection<Elf32SymbolBinding> knownValues() {
+        return BytePartialEnum.knownValues(byValue);
     }
 }
