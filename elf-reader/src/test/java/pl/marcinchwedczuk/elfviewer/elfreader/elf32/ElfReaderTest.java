@@ -283,7 +283,9 @@ class ElfReaderTest {
     @Test
     void dynamic_section() {
         Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
-        List<Elf32DynamicStructure> results = ElfReader.readDynamicSection(helloWorldElf);
+        List<Elf32DynamicStructure> results = ElfReader.readDynamicSection2(helloWorldElf)
+                .get()
+                .getTags();
 
         assertThat(results.get(0))
                 .isEqualTo(new Elf32DynamicStructure(

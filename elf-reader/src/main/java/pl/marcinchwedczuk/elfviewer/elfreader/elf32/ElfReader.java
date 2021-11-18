@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
@@ -231,73 +232,10 @@ public class ElfReader {
         return notes;
     }
 
-    public static List<Elf32DynamicStructure> readDynamicSection(Elf32File elfFile) {
-        // There can be at most one (TODO: Verify this)
-        // TODO: Handle segment missing
-        // TODO: Naming segment <-> program header
-        Elf32ProgramHeader dynamicSegment =
-                elfFile.getProgramHeadersOfType(DYNAMIC).get(0);
-
-        StructuredFile sf = new StructuredFile(elfFile, dynamicSegment.fileOffset());
-
-        List<Elf32DynamicStructure> result = new ArrayList<>();
-        // Section ends with NULL entry
-
-        Set<Elf32DynamicArrayTag> tagsWithValue = Set.of(
-                Elf32DynamicArrayTag.NEEDED,
-                Elf32DynamicArrayTag.PLT_REL_SZ,
-                Elf32DynamicArrayTag.RELA_SZ,
-                Elf32DynamicArrayTag.RELA_ENT,
-                Elf32DynamicArrayTag.STRSZ,
-                Elf32DynamicArrayTag.SYMENT,
-                Elf32DynamicArrayTag.SONAME,
-                Elf32DynamicArrayTag.RPATH,
-                Elf32DynamicArrayTag.RELSZ,
-                Elf32DynamicArrayTag.RELENT,
-                Elf32DynamicArrayTag.PLTREL,
-                Elf32DynamicArrayTag.INIT_ARRAYSZ,
-                Elf32DynamicArrayTag.FINI_ARRAYSZ
-        );
-        Set<Elf32DynamicArrayTag> tagsWithPtr = Set.of(
-                Elf32DynamicArrayTag.PLT_GOT,
-                Elf32DynamicArrayTag.HASH,
-                Elf32DynamicArrayTag.STR_TAB,
-                Elf32DynamicArrayTag.SYM_TAB,
-                Elf32DynamicArrayTag.RELA,
-                Elf32DynamicArrayTag.INIT,
-                Elf32DynamicArrayTag.FINI,
-                Elf32DynamicArrayTag.REL,
-                Elf32DynamicArrayTag.DEBUG,
-                Elf32DynamicArrayTag.JMPREL,
-                Elf32DynamicArrayTag.INIT_ARRAY,
-                Elf32DynamicArrayTag.FINI_ARRAY,
-                Elf32DynamicArrayTag.GNU_HASH,
-                Elf32DynamicArrayTag.VERNEED,
-                Elf32DynamicArrayTag.VERSYM
-        );
-
-        Elf32DynamicArrayTag tag = null;
-        do {
-            tag = Elf32DynamicArrayTag.fromUnsignedInt(sf.readUnsignedInt());
-
-            if (tagsWithValue.contains(tag)) {
-                int value = sf.readUnsignedInt();
-                result.add(new Elf32DynamicStructure(tag, value, null));
-            } else if (tagsWithPtr.contains(tag)) {
-                Elf32Address addr = sf.readAddress();
-                result.add(new Elf32DynamicStructure(tag, null, addr));
-            } else {
-                sf.readUnsignedInt(); // drop data
-                result.add(new Elf32DynamicStructure(tag, null, null));
-            }
-            // TODO: Add some sane default stop condition
-            Elf32Offset segmentEnd = dynamicSegment.fileOffset()
-                    .plus(dynamicSegment.fileSize());
-            if (sf.currentPositionInFile().isAfterOrAt(segmentEnd))
-                throw new RuntimeException("Invalid .dynamic section!");
-        } while(!tag.equals(Elf32DynamicArrayTag.NULL));
-
-        return result;
+    public static Optional<Elf32DynamicTags> readDynamicSection2(Elf32File elfFile) {
+        return elfFile
+                .getSectionHeader(SectionNames.DYNAMIC)
+                .map(sh -> new Elf32DynamicTags(elfFile, sh));
     }
 
     public static Elf32GnuHash readGnuHashSection(Elf32File file,
