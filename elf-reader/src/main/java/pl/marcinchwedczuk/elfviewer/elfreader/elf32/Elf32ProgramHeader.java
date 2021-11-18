@@ -131,4 +131,8 @@ public class Elf32ProgramHeader {
                 type, fileOffset, virtualAddress, physicalAddress,
                 fileSize, memorySize, flags, alignment);
     }
+
+    public Elf32Address endVirtualAddressInFile() {
+        return virtualAddress.plus(fileSize);
+    }
 }

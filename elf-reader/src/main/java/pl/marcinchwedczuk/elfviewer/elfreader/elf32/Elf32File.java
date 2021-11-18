@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.LOAD;
 
 public class Elf32File {
     public final AbstractFile storage;
@@ -51,5 +52,19 @@ public class Elf32File {
                 .collect(toList());
 
         return programHeaders;
+    }
+
+    public Elf32Offset virtualAddressToFileOffset(Elf32Address addr) {
+        for (Elf32ProgramHeader header : programHeaders) {
+            if (header.type().isNot(LOAD)) continue;
+
+            if (addr.isAfterOrAt(header.virtualAddress()) &&
+                addr.isBefore(header.endVirtualAddressInFile())) {
+
+                long offset = addr.minus(header.virtualAddress());
+                return header.fileOffset().plus(offset);
+            }
+        }
+        return Elf32Offset.ZERO;
     }
 }

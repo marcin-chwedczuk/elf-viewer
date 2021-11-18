@@ -33,4 +33,25 @@ public class Elf32Address {
     public String toString() {
         return String.format("0x%08x", address);
     }
+
+    public boolean isAfter(Elf32Address addr) {
+        return this.address > addr.address;
+    }
+
+    public boolean isBefore(Elf32Address addr) {
+        return this.address < addr.address;
+    }
+
+    public Elf32Address plus(int bytes) {
+        // TODO: Check overflow
+        return new Elf32Address(this.address + bytes);
+    }
+
+    public boolean isAfterOrAt(Elf32Address addr) {
+        return this.address >= addr.address;
+    }
+
+    public long minus(Elf32Address addr) {
+        return this.address - addr.address;
+    }
 }

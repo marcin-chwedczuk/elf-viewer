@@ -6,6 +6,8 @@ import java.util.Objects;
 
 @ElfApi("Elf32_Off")
 public class Elf32Offset {
+    public static final Elf32Offset ZERO = new Elf32Offset(0);
+
     private final long offset;
 
     public Elf32Offset(long offset) {
@@ -16,7 +18,7 @@ public class Elf32Offset {
         return offset;
     }
 
-    public Elf32Offset plus(int nbytes) {
+    public Elf32Offset plus(long nbytes) {
         return new Elf32Offset(offset + nbytes);
     }
 

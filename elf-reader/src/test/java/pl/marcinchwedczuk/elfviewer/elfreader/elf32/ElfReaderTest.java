@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.*;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolBinding.GLOBAL;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.FUNCTION;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolVisibility.DEFAULT;
@@ -288,21 +289,31 @@ class ElfReaderTest {
                 .getTags();
 
         assertThat(results.get(0))
-                .isEqualTo(new Elf32DynamicTag(Elf32DynamicTagType.NEEDED, 1));
+                .isEqualTo(new Elf32DynamicTag(NEEDED, 1));
 
         assertThat(results.get(1))
-                .isEqualTo(new Elf32DynamicTag(Elf32DynamicTagType.INIT, 0x80482a8));
+                .isEqualTo(new Elf32DynamicTag(INIT, 0x80482a8));
 
         // Read library name
         Elf32DynamicTag strTabPtr = results.stream()
-                .filter(x -> x.type().equals(Elf32DynamicTagType.STRTAB))
+                .filter(x -> x.type().is(STRTAB))
                 .findFirst()
                 .get();
 
-        int offset = results.get(0).value();
-        // TODO: Translate STRTAB memory address -> physical file offset
+        // TODO: virtualAddressToLoadedSegment Segment(start, end)
+        Elf32Offset strOffset =
+                helloWorldElf.virtualAddressToFileOffset(strTabPtr.address());
 
-        // Read using StringTable ...
+        // TODO: Get end address
+        StringTable stringTable = new StringTable(helloWorld32,
+                strOffset, new Elf32Offset(Integer.MAX_VALUE));
+
+        // from NEEDED (library) section, offset into in-memory string table
+        int libNameIndex = results.get(0).value();
+        String libName = stringTable.getStringAtIndex(
+                new StringTableIndex(libNameIndex));
+
+        assertThat(libName).isEqualTo("libc.so.6");
 
         // See: https://stackoverflow.com/a/22613627/1779504
     }

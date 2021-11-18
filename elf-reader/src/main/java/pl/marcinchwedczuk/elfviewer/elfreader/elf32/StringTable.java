@@ -18,7 +18,8 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING
  */
 public class StringTable {
     private final AbstractFile file;
-    private final Elf32SectionHeader section;
+    private final Elf32Offset offsetInFile;
+    private final Elf32Offset endOffsetInFile;
 
     public StringTable(AbstractFile file,
                        Elf32SectionHeader section) {
@@ -28,12 +29,22 @@ public class StringTable {
         Args.checkSectionType(section, STRING_TABLE);
 
         this.file = file;
-        this.section = section;
+        this.offsetInFile = section.offsetInFile();
+        this.endOffsetInFile = section.sectionEndOffsetInFile();
+    }
+
+    public StringTable(AbstractFile file,
+                       Elf32Offset offsetInFile,
+                       Elf32Offset endOffsetInFile) {
+        // TODO: Improve
+        this.file = file;
+        this.offsetInFile = offsetInFile;
+        this.endOffsetInFile = endOffsetInFile;
     }
 
     String getStringAtIndex(StringTableIndex index) {
-        long startOffset = section.offsetInFile().longValue() + index.intValue();
-        long sectionEndOffset = section.sectionEndOffsetInFile().longValue();
+        long startOffset = offsetInFile.longValue() + index.intValue();
+        long sectionEndOffset = endOffsetInFile.longValue();
 
         ByteList buffer = new ByteList();
 
