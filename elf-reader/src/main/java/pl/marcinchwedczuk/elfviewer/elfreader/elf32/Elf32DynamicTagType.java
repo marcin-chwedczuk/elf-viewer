@@ -196,12 +196,12 @@ public class Elf32DynamicTagType extends IntPartialEnum<Elf32DynamicTagType> {
     @ElfApi("DT_FLAGS")
     public static final Elf32DynamicTagType FLAGS = new Elf32DynamicTagType(30, "FLAGS");
 
+    // See: https://docs.oracle.com/cd/E53394_01/html/E54813/chapter6-42444.html#scrolltoc
     /**
-     * Start of encoded range
+     * Start of encoded range.
      */
     @ElfApi("DT_ENCODING")
-    // TODO: Possible bug: https://4programmers.net/Forum/C_i_C++/356530-elf_dynamic_section_types_possible_bug_in_the_header?p=1806319#id1806319
-    public static final Elf32DynamicTagType ENCODING = new Elf32DynamicTagType(31, "ENCODING");
+    public static final int ENCODING = 31;
 
     /**
      * Array with addresses of preinit fct
