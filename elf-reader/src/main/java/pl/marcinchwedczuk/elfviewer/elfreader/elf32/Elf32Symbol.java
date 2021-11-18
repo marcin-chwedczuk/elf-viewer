@@ -96,6 +96,11 @@ public class Elf32Symbol {
         return Elf32SymbolVisibility.fromSymbolOther(other);
     }
 
+    /**
+     * Every symbol table entry is "defined" in relation to some
+     * section.  This member holds the relevant section header
+     * table index.
+     */
     public SectionHeaderIndex index() {
         return index;
     }
