@@ -32,6 +32,9 @@ public class Elf32File {
         this.header = header;
         this.sectionHeaders = sectionHeaders;
         this.programHeaders = programHeaders;
+
+        // Fix circular references
+        this.sectionHeaders.forEach(sh -> sh.setElfFile(this));
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {

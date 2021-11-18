@@ -2,7 +2,13 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+
 public class Elf32SectionHeader {
+    private Elf32File elfFile;
+
     @ElfApi("sh_name")
     private final StringTableIndex nameIndex;
 
@@ -46,18 +52,27 @@ public class Elf32SectionHeader {
                               int info,
                               int addressAlignment,
                               int containedEntrySize) {
-        // TODO: Add arguments checks
+        this.elfFile = null;
         this.nameIndex = nameIndex;
-        this.name = name;
-        this.type = type;
-        this.flags = flags;
-        this.inMemoryAddress = inMemoryAddress;
-        this.offsetInFile = offsetInFile;
+        this.name = requireNonNull(name);
+        this.type = requireNonNull(type);
+        this.flags = requireNonNull(flags);
+        this.inMemoryAddress = requireNonNull(inMemoryAddress);
+        this.offsetInFile = requireNonNull(offsetInFile);
         this.sectionSize = sectionSize;
         this.link = link;
         this.info = info;
         this.addressAlignment = addressAlignment;
         this.containedEntrySize = containedEntrySize;
+    }
+
+    public Elf32File elfFile() {
+        return elfFile;
+    }
+    void setElfFile(Elf32File elfFile) {
+        if (this.elfFile != null)
+            throw new IllegalStateException("Elf file is already set.");
+        this.elfFile = requireNonNull(elfFile);
     }
 
     /**
