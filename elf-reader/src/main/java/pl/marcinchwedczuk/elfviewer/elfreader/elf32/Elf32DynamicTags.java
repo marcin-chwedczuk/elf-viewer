@@ -37,9 +37,9 @@ public class Elf32DynamicTags {
 
         Set<Elf32DynamicArrayTag> tagsWithValue = Set.of(
                 Elf32DynamicArrayTag.NEEDED,
-                Elf32DynamicArrayTag.PLT_REL_SZ,
-                Elf32DynamicArrayTag.RELA_SZ,
-                Elf32DynamicArrayTag.RELA_ENT,
+                Elf32DynamicArrayTag.PLTRELSZ,
+                Elf32DynamicArrayTag.RELASZ,
+                Elf32DynamicArrayTag.RELAENT,
                 Elf32DynamicArrayTag.STRSZ,
                 Elf32DynamicArrayTag.SYMENT,
                 Elf32DynamicArrayTag.SONAME,
@@ -51,10 +51,10 @@ public class Elf32DynamicTags {
                 Elf32DynamicArrayTag.FINI_ARRAYSZ
         );
         Set<Elf32DynamicArrayTag> tagsWithPtr = Set.of(
-                Elf32DynamicArrayTag.PLT_GOT,
+                Elf32DynamicArrayTag.PLTGOT,
                 Elf32DynamicArrayTag.HASH,
-                Elf32DynamicArrayTag.STR_TAB,
-                Elf32DynamicArrayTag.SYM_TAB,
+                Elf32DynamicArrayTag.STRTAB,
+                Elf32DynamicArrayTag.SYMTAB,
                 Elf32DynamicArrayTag.RELA,
                 Elf32DynamicArrayTag.INIT,
                 Elf32DynamicArrayTag.FINI,
@@ -70,7 +70,7 @@ public class Elf32DynamicTags {
 
         for (int i = 0; i < tableHelper.tableSize(); i++) {
             Elf32DynamicArrayTag tag =
-                    Elf32DynamicArrayTag.fromUnsignedInt(sf.readUnsignedInt());
+                    Elf32DynamicArrayTag.fromValue(sf.readUnsignedInt());
 
             if (tagsWithValue.contains(tag)) {
                 int value = sf.readUnsignedInt();

@@ -301,7 +301,7 @@ class ElfReaderTest {
 
         // Read library name
         Elf32DynamicStructure strTabPtr = results.stream()
-                .filter(x -> x.tag().equals(Elf32DynamicArrayTag.STR_TAB))
+                .filter(x -> x.tag().equals(Elf32DynamicArrayTag.STRTAB))
                 .findFirst()
                 .get();
 

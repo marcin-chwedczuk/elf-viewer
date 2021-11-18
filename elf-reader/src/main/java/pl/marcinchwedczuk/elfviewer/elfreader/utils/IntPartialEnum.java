@@ -25,7 +25,8 @@ public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
 
         if (byValueMap.containsKey(value))
             throw new IllegalArgumentException(
-                    "Attempt to redefine enum value: 0x" + Integer.toHexString(value) + ".");
+                    "Attempt to redefine enum value: 0x" + Integer.toHexString(value) + "."
+                    + " Class name: " + this.getClass().getSimpleName() + ".");
 
         if (byNameMap.containsKey(name))
             throw new IllegalArgumentException(

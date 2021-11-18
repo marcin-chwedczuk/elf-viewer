@@ -1,275 +1,469 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
-public enum Elf32DynamicArrayTag {
+import java.util.Collection;
+import java.util.Map;
+
+public class Elf32DynamicArrayTag extends IntPartialEnum<Elf32DynamicArrayTag> {
+    private static final Map<Integer, Elf32DynamicArrayTag> byValue = mkByValueMap();
+    private static final Map<String, Elf32DynamicArrayTag> byName = mkByNameMap();
+
     /**
-     * An entry with a DT_NULL tag marks the end of the _DYNAMIC array.
+     * Marks end of dynamic section
      */
     @ElfApi("DT_NULL")
-    NULL(0),
+    public static final Elf32DynamicArrayTag NULL = new Elf32DynamicArrayTag(0, "NULL");
 
     /**
-     * This element holds the string table offset of a null-terminated string,
-     * giving the name of a needed library. The offset is an index into the table
-     * recorded in the DT_STRTAB entry.
-     * See "Shared Object Dependencies'' for more information about these names.
-     * The dynamic array may contain multiple entries with this type.
-     * These entries' relative order is significant,
-     * though their relation to entries of other types is not.
+     * Name of needed library
      */
     @ElfApi("DT_NEEDED")
-    NEEDED(1),
+    public static final Elf32DynamicArrayTag NEEDED = new Elf32DynamicArrayTag(1, "NEEDED");
 
     /**
-     * This element holds the total size, in bytes,
-     * of the relocation entries associated with the procedure linkage table.
-     * If an entry of type DT_JMPREL is present, a DT_PLTRELSZ must accompany it.
+     * Size in bytes of PLT relocs
      */
     @ElfApi("DT_PLTRELSZ")
-    PLT_REL_SZ(2),
+    public static final Elf32DynamicArrayTag PLTRELSZ = new Elf32DynamicArrayTag(2, "PLTRELSZ");
 
     /**
-     * This element holds an address associated with the procedure linkage
-     * table and/or the global offset table.
+     * Processor defined value
      */
     @ElfApi("DT_PLTGOT")
-    PLT_GOT(3),
+    public static final Elf32DynamicArrayTag PLTGOT = new Elf32DynamicArrayTag(3, "PLTGOT");
 
     /**
-     * This element holds the address of the symbol hash table,
-     * described in "Hash Table".
-     * This hash table refers to the symbol table referenced by
-     * the DT_SYMTAB element.
+     * Address of symbol hash table
      */
     @ElfApi("DT_HASH")
-    HASH(4),
+    public static final Elf32DynamicArrayTag HASH = new Elf32DynamicArrayTag(4, "HASH");
 
     /**
-     * This element holds the address of the string table, described in Chapter 1.
-     * Symbol names, library names, and other strings reside in this table.
+     * Address of string table
      */
     @ElfApi("DT_STRTAB")
-    STR_TAB(5),
+    public static final Elf32DynamicArrayTag STRTAB = new Elf32DynamicArrayTag(5, "STRTAB");
 
     /**
-     * This element holds the address of the symbol table, described in Chapter 1,
-     * with Elf32_Sym entries for the 32-bit class of files.
+     * Address of symbol table
      */
     @ElfApi("DT_SYMTAB")
-    SYM_TAB(6),
+    public static final Elf32DynamicArrayTag SYMTAB = new Elf32DynamicArrayTag(6, "SYMTAB");
 
     /**
-     * This element holds the address of a relocation table, described in Chapter 1.
-     * Entries in the table have explicit addends,
-     * such as Elf32_Rela for the 32-bit file class.
-     * An object file may have multiple relocation sections.
-     * When building the relocation table for an executable or shared object file,
-     * the link editor catenates those sections to form a single table.
-     * Although the sections remain independent in the object file,
-     * the dynamic linker sees a single table. When the dynamic linker creates
-     * the process image for an executable file or adds a shared object to the
-     * process image, it reads the relocation table and performs the associated
-     * actions. If this element is present, the dynamic structure must
-     * also have DT_RELASZ and DT_RELAENT elements.
-     * When relocation is "mandatory" for a file, either DT_RELA or DT_REL may occur
-     * (both are permitted but not required).
+     * Address of Rela relocs
      */
     @ElfApi("DT_RELA")
-    RELA(7),
+    public static final Elf32DynamicArrayTag RELA = new Elf32DynamicArrayTag(7, "RELA");
 
     /**
-     * This element holds the total size, in bytes, of the DT_RELA relocation table.
+     * Total size of Rela relocs
      */
     @ElfApi("DT_RELASZ")
-    RELA_SZ(8),
+    public static final Elf32DynamicArrayTag RELASZ = new Elf32DynamicArrayTag(8, "RELASZ");
 
     /**
-     * This element holds the size, in bytes, of the DT_RELA relocation entry.
+     * Size of one Rela reloc
      */
     @ElfApi("DT_RELAENT")
-    RELA_ENT(9),
+    public static final Elf32DynamicArrayTag RELAENT = new Elf32DynamicArrayTag(9, "RELAENT");
 
     /**
-     * This element holds the size, in bytes, of the string table.
+     * Size of string table
      */
     @ElfApi("DT_STRSZ")
-    STRSZ(10),
+    public static final Elf32DynamicArrayTag STRSZ = new Elf32DynamicArrayTag(10, "STRSZ");
 
     /**
-     * This element holds the size, in bytes, of a symbol table entry.
+     * Size of one symbol table entry
      */
     @ElfApi("DT_SYMENT")
-    SYMENT(11),
+    public static final Elf32DynamicArrayTag SYMENT = new Elf32DynamicArrayTag(11, "SYMENT");
 
     /**
-     * This element holds the address of the initialization function,
-     * discussed in "Initialization and Termination Functions" below.
+     * Address of init function
      */
     @ElfApi("DT_INIT")
-    INIT(12),
+    public static final Elf32DynamicArrayTag INIT = new Elf32DynamicArrayTag(12, "INIT");
 
     /**
-     * This element holds the address of the termination function,
-     * discussed in "Initialization and Termination Functions" below.
+     * Address of termination function
      */
     @ElfApi("DT_FINI")
-    FINI(13),
+    public static final Elf32DynamicArrayTag FINI = new Elf32DynamicArrayTag(13, "FINI");
 
     /**
-     * This element holds the string table offset of a null-terminated string,
-     * giving the name of the shared object. The offset is an index into
-     * the table recorded intheDT_STRTABentry.
-     * See "SharedObjectDependencies" below for more information about these names.
+     * Name of shared object
      */
     @ElfApi("DT_SONAME")
-    SONAME(14),
+    public static final Elf32DynamicArrayTag SONAME = new Elf32DynamicArrayTag(14, "SONAME");
 
     /**
-     * This element holds the string table offset of a null-terminated search
-     * library search path string, discussed in "Shared Object Dependencies".
-     * The offset is an index into the table recorded in the DT_STRTAB entry.
+     * Library search path (deprecated)
      */
     @ElfApi("DT_RPATH")
-    RPATH(15),
+    public static final Elf32DynamicArrayTag RPATH = new Elf32DynamicArrayTag(15, "RPATH");
 
     /**
-     * This element's presence in a shared object library alters the dynamic
-     * linker's symbol resolution algorithm for references within the library.
-     * Instead of starting a symbol search with the executable file,
-     * the dynamic linker starts from the shared object itself.
-     * If the shared object fails to supply the referenced symbol,
-     * the dynamic linker then searches the executable file and other
-     * shared objects as usual.
+     * Start symbol search here
      */
     @ElfApi("DT_SYMBOLIC")
-    SYMBOLIC(16),
+    public static final Elf32DynamicArrayTag SYMBOLIC = new Elf32DynamicArrayTag(16, "SYMBOLIC");
 
     /**
-     * This element is similar to DT_RELA, except its table has implicit addends,
-     * such as Elf32_Rel for the 32-bit file class.
-     * If this element is present, the dynamic structure must also have
-     * DT_RELSZ and DT_RELENT elements.
+     * Address of Rel relocs
      */
     @ElfApi("DT_REL")
-    REL(17),
+    public static final Elf32DynamicArrayTag REL = new Elf32DynamicArrayTag(17, "REL");
 
     /**
-     * This element holds the total size, in bytes, of the DT_REL relocation table.
+     * Total size of Rel relocs
      */
     @ElfApi("DT_RELSZ")
-    RELSZ(18),
+    public static final Elf32DynamicArrayTag RELSZ = new Elf32DynamicArrayTag(18, "RELSZ");
 
     /**
-     * This element holds the size, in bytes, of the DT_REL relocation entry.
+     * Size of one Rel reloc
      */
     @ElfApi("DT_RELENT")
-    RELENT(19),
+    public static final Elf32DynamicArrayTag RELENT = new Elf32DynamicArrayTag(19, "RELENT");
 
     /**
-     * This member specifies the type of relocation entry to which
-     * the procedure linkage table refers. The d_val member holds DT_REL or
-     * DT_RELA, as appropriate. All relocations in a procedure linkage
-     * table must use the same relocation.
+     * Type of reloc in PLT
      */
     @ElfApi("DT_PLTREL")
-    PLTREL(20),
+    public static final Elf32DynamicArrayTag PLTREL = new Elf32DynamicArrayTag(20, "PLTREL");
 
     /**
-     * This member is used for debugging.
-     * Its contents are not specified in this document.
+     * For debugging; unspecified
      */
     @ElfApi("DT_DEBUG")
-    DEBUG(21),
+    public static final Elf32DynamicArrayTag DEBUG = new Elf32DynamicArrayTag(21, "DEBUG");
 
     /**
-     * This member's absence signifies that no relocation entry should cause a
-     * modification to a non-writable segment, as specified by the segment
-     * permissions in the program header table. If this member is present,
-     * one or more relocation entries might request modifications to a non-writable
-     * segment, and the dynamic linker can prepare accordingly.
+     * Reloc might modify .text
      */
     @ElfApi("DT_TEXTREL")
-    TEXTREL(22),
+    public static final Elf32DynamicArrayTag TEXTREL = new Elf32DynamicArrayTag(22, "TEXTREL");
 
     /**
-     * If present, this entries d_ptr member holds the address of relocation
-     * entries associated solely with the procedure linkage table.
-     * Separating these relocation entries lets the dynamic linker ignore them
-     * during process initialization, if lazy binding is enabled. If this entry
-     * is present, the related entries of types DT_PLTRELSZ and DT_PLTREL
-     * must also be present.
+     * Address of PLT relocs
      */
     @ElfApi("DT_JMPREL")
-    JMPREL(23),
+    public static final Elf32DynamicArrayTag JMPREL = new Elf32DynamicArrayTag(23, "JMPREL");
 
     /**
-     * If present in a shared object or executable, this entry instructs the dynamic
-     * linker to process all relocations for the object containing this entry
-     * before transferring control to the program. The presence of this entry
-     * takes precedence over a directive to use lazy binding for this object
-     * when specified through the environment or via dlopen(BA_LIB).
+     * Process relocations of object
      */
     @ElfApi("DT_BIND_NOW")
-    BIND_NOW(24),
-
-    // TODO: Add extra constants from: https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-42444.html
-
-    @ElfApi("DT_INIT_ARRAY")
-    INIT_ARRAY(25),
-
-    @ElfApi("DT_FINI_ARRAY")
-    FINI_ARRAY(26),
-
-    @ElfApi("DT_INIT_ARRAYSZ")
-    INIT_ARRAYSZ(27),
-
-    @ElfApi("DT_FINI_ARRAYSZ")
-    FINI_ARRAYSZ(28),
-
-    // TODO: Add extra entries from https://github.com/lattera/glibc/blob/master/elf/elf.h
-
-    @ElfApi("DT_GNU_HASH")
-    GNU_HASH(0x6ffffef5),
-
-    @ElfApi("DT_VERNEED")
-    VERNEED(0x6ffffffe),
-
-    @ElfApi("DT_VERNEEDNUM")
-    VERNEEDNUM(0x6fffffff),
-
-    // TODO: Add entries from: https://refspecs.linuxfoundation.org/LSB_2.1.0/LSB-Core-generic/LSB-Core-generic/dynsectent.html
-
-    @ElfApi("DT_VERSYM")
-    VERSYM(0x6ffffff0),
+    public static final Elf32DynamicArrayTag BIND_NOW = new Elf32DynamicArrayTag(24, "BIND_NOW");
 
     /**
-     * Values in this inclusive range are reserved for processor-specific semantics.
-     * If meanings are specified, the processor supplement explains them.
+     * Array with addresses of init fct
+     */
+    @ElfApi("DT_INIT_ARRAY")
+    public static final Elf32DynamicArrayTag INIT_ARRAY = new Elf32DynamicArrayTag(25, "INIT_ARRAY");
+
+    /**
+     * Array with addresses of fini fct
+     */
+    @ElfApi("DT_FINI_ARRAY")
+    public static final Elf32DynamicArrayTag FINI_ARRAY = new Elf32DynamicArrayTag(26, "FINI_ARRAY");
+
+    /**
+     * Size in bytes of DT_INIT_ARRAY
+     */
+    @ElfApi("DT_INIT_ARRAYSZ")
+    public static final Elf32DynamicArrayTag INIT_ARRAYSZ = new Elf32DynamicArrayTag(27, "INIT_ARRAYSZ");
+
+    /**
+     * Size in bytes of DT_FINI_ARRAY
+     */
+    @ElfApi("DT_FINI_ARRAYSZ")
+    public static final Elf32DynamicArrayTag FINI_ARRAYSZ = new Elf32DynamicArrayTag(28, "FINI_ARRAYSZ");
+
+    /**
+     * Library search path
+     */
+    @ElfApi("DT_RUNPATH")
+    public static final Elf32DynamicArrayTag RUNPATH = new Elf32DynamicArrayTag(29, "RUNPATH");
+
+    /**
+     * Flags for the object being loaded
+     */
+    @ElfApi("DT_FLAGS")
+    public static final Elf32DynamicArrayTag FLAGS = new Elf32DynamicArrayTag(30, "FLAGS");
+
+    /**
+     * Start of encoded range
+     */
+    @ElfApi("DT_ENCODING")
+    // TODO: Possible bug: https://4programmers.net/Forum/C_i_C++/356530-elf_dynamic_section_types_possible_bug_in_the_header?p=1806319#id1806319
+    public static final Elf32DynamicArrayTag ENCODING = new Elf32DynamicArrayTag(31, "ENCODING");
+
+    /**
+     * Array with addresses of preinit fct
+     */
+    @ElfApi("DT_PREINIT_ARRAY")
+    public static final Elf32DynamicArrayTag PREINIT_ARRAY = new Elf32DynamicArrayTag(32, "PREINIT_ARRAY");
+
+    /**
+     * size in bytes of DT_PREINIT_ARRAY
+     */
+    @ElfApi("DT_PREINIT_ARRAYSZ")
+    public static final Elf32DynamicArrayTag PREINIT_ARRAYSZ = new Elf32DynamicArrayTag(33, "PREINIT_ARRAYSZ");
+
+    /**
+     * Address of SYMTAB_SHNDX section
+     */
+    @ElfApi("DT_SYMTAB_SHNDX")
+    public static final Elf32DynamicArrayTag SYMTAB_SHNDX = new Elf32DynamicArrayTag(34, "SYMTAB_SHNDX");
+
+    /**
+     * Start of OS-specific
+     */
+    @ElfApi("DT_LOOS")
+    public static final int LO_OS_SPECIFIC = 0x6000000d;
+
+    /**
+     * End of OS-specific
+     */
+    @ElfApi("DT_HIOS")
+    public static final int HI_OS_SPECIFIC = 0x6ffff000;
+
+    /**
+     * Start of processor-specific
      */
     @ElfApi("DT_LOPROC")
-    LoProcessorSpecific(0x70000000),
+    public static final int LO_PROCESSOR_SPECIFIC = 0x70000000;
 
     /**
-     * Values in this inclusive range are reserved for processor-specific semantics.
-     * If meanings are specified, the processor supplement explains them.
+     * End of processor-specific
      */
     @ElfApi("DT_HIPROC")
-    HiProcessorSpecific(0x7fffffff);
+    public static final int HI_PROCESSOR_SPECIFIC = 0x7fffffff;
 
-    private final int value;
+    /**
+     * DT_* entries which fall between DT_VALRNGHI & DT_VALRNGLO use the
+     * Dyn.d_un.d_val field of the Elf*_Dyn structure.  This follows Sun's
+     * approach.
+     */
+    @ElfApi("DT_VALRNGLO")
+    public static final int VALRNGLO = 0x6ffffd00;
 
-    Elf32DynamicArrayTag(int v) {
-        this.value = v;
+    /**
+     * Prelinking timestamp
+     */
+    @ElfApi("DT_GNU_PRELINKED")
+    public static final Elf32DynamicArrayTag GNU_PRELINKED = new Elf32DynamicArrayTag(0x6ffffdf5, "GNU_PRELINKED");
+
+    /**
+     * Size of conflict section
+     */
+    @ElfApi("DT_GNU_CONFLICTSZ")
+    public static final Elf32DynamicArrayTag GNU_CONFLICTSZ = new Elf32DynamicArrayTag(0x6ffffdf6, "GNU_CONFLICTSZ");
+
+    /**
+     * Size of library list
+     */
+    @ElfApi("DT_GNU_LIBLISTSZ")
+    public static final Elf32DynamicArrayTag GNU_LIBLISTSZ = new Elf32DynamicArrayTag(0x6ffffdf7, "GNU_LIBLISTSZ");
+
+    @ElfApi("DT_CHECKSUM")
+    public static final Elf32DynamicArrayTag CHECKSUM = new Elf32DynamicArrayTag(0x6ffffdf8, "CHECKSUM");
+
+    @ElfApi("DT_PLTPADSZ")
+    public static final Elf32DynamicArrayTag PLTPADSZ = new Elf32DynamicArrayTag(0x6ffffdf9, "PLTPADSZ");
+
+    @ElfApi("DT_MOVEENT")
+    public static final Elf32DynamicArrayTag MOVEENT = new Elf32DynamicArrayTag(0x6ffffdfa, "MOVEENT");
+
+    @ElfApi("DT_MOVESZ")
+    public static final Elf32DynamicArrayTag MOVESZ = new Elf32DynamicArrayTag(0x6ffffdfb, "MOVESZ");
+
+    /**
+     * Feature selection (DTF_*).
+     */
+    @ElfApi("DT_FEATURE_1")
+    public static final Elf32DynamicArrayTag FEATURE_1 = new Elf32DynamicArrayTag(0x6ffffdfc, "FEATURE_1");
+
+    /**
+     * Flags for DT_* entries, effecting the following DT_* entry.
+     */
+    @ElfApi("DT_POSFLAG_1")
+    public static final Elf32DynamicArrayTag POSFLAG_1 = new Elf32DynamicArrayTag(0x6ffffdfd, "POSFLAG_1");
+
+    /**
+     * Size of syminfo table (in bytes)
+     */
+    @ElfApi("DT_SYMINSZ")
+    public static final Elf32DynamicArrayTag SYMINSZ = new Elf32DynamicArrayTag(0x6ffffdfe, "SYMINSZ");
+
+    /**
+     * Entry size of syminfo
+     */
+    @ElfApi("DT_SYMINENT")
+    public static final Elf32DynamicArrayTag SYMINENT = new Elf32DynamicArrayTag(0x6ffffdff, "SYMINENT");
+
+    /**
+     * no info
+     */
+    @ElfApi("DT_VALRNGHI")
+    public static final int VALRNGHI = 0x6ffffdff;
+
+    /**
+     * DT_* entries which fall between DT_ADDRRNGHI & DT_ADDRRNGLO use the
+     * Dyn.d_un.d_ptr field of the Elf*_Dyn structure.
+     * If any adjustment is made to the ELF object after it has been
+     * built these entries will need to be adjusted.
+     */
+    @ElfApi("DT_ADDRRNGLO")
+    public static final int ADDRRNGLO = 0x6ffffe00;
+
+    /**
+     * GNU-style hash table.
+     */
+    @ElfApi("DT_GNU_HASH")
+    public static final Elf32DynamicArrayTag GNU_HASH = new Elf32DynamicArrayTag(0x6ffffef5, "GNU_HASH");
+
+    @ElfApi("DT_TLSDESC_PLT")
+    public static final Elf32DynamicArrayTag TLSDESC_PLT = new Elf32DynamicArrayTag(0x6ffffef6, "TLSDESC_PLT");
+
+    @ElfApi("DT_TLSDESC_GOT")
+    public static final Elf32DynamicArrayTag TLSDESC_GOT = new Elf32DynamicArrayTag(0x6ffffef7, "TLSDESC_GOT");
+
+    /**
+     * Start of conflict section
+     */
+    @ElfApi("DT_GNU_CONFLICT")
+    public static final Elf32DynamicArrayTag GNU_CONFLICT = new Elf32DynamicArrayTag(0x6ffffef8, "GNU_CONFLICT");
+
+    /**
+     * Library list
+     */
+    @ElfApi("DT_GNU_LIBLIST")
+    public static final Elf32DynamicArrayTag GNU_LIBLIST = new Elf32DynamicArrayTag(0x6ffffef9, "GNU_LIBLIST");
+
+    /**
+     * Configuration information.
+     */
+    @ElfApi("DT_CONFIG")
+    public static final Elf32DynamicArrayTag CONFIG = new Elf32DynamicArrayTag(0x6ffffefa, "CONFIG");
+
+    /**
+     * Dependency auditing.
+     */
+    @ElfApi("DT_DEPAUDIT")
+    public static final Elf32DynamicArrayTag DEPAUDIT = new Elf32DynamicArrayTag(0x6ffffefb, "DEPAUDIT");
+
+    /**
+     * Object auditing.
+     */
+    @ElfApi("DT_AUDIT")
+    public static final Elf32DynamicArrayTag AUDIT = new Elf32DynamicArrayTag(0x6ffffefc, "AUDIT");
+
+    /**
+     * PLT padding.
+     */
+    @ElfApi("DT_PLTPAD")
+    public static final Elf32DynamicArrayTag PLTPAD = new Elf32DynamicArrayTag(0x6ffffefd, "PLTPAD");
+
+    /**
+     * Move table.
+     */
+    @ElfApi("DT_MOVETAB")
+    public static final Elf32DynamicArrayTag MOVETAB = new Elf32DynamicArrayTag(0x6ffffefe, "MOVETAB");
+
+    /**
+     * Syminfo table.
+     */
+    @ElfApi("DT_SYMINFO")
+    public static final Elf32DynamicArrayTag SYMINFO = new Elf32DynamicArrayTag(0x6ffffeff, "SYMINFO");
+
+    @ElfApi("DT_ADDRRNGHI")
+    public static final int ADDRRNGHI = 0x6ffffeff;
+
+    /* The versioning entry types.  The next are defined as part of the GNU extension.  */
+
+    @ElfApi("DT_RELACOUNT")
+    public static final Elf32DynamicArrayTag RELACOUNT = new Elf32DynamicArrayTag(0x6ffffff9, "RELACOUNT");
+
+    @ElfApi("DT_RELCOUNT")
+    public static final Elf32DynamicArrayTag RELCOUNT = new Elf32DynamicArrayTag(0x6ffffffa, "RELCOUNT");
+
+
+    /**
+     * These were chosen by Sun.
+     */
+    @ElfApi("DT_VERSYM")
+    public static final Elf32DynamicArrayTag VERSYM = new Elf32DynamicArrayTag(0x6ffffff0, "VERSYM");
+
+    /**
+     * State flags, see DF_1_* below.
+     */
+    @ElfApi("DT_FLAGS_1")
+    public static final Elf32DynamicArrayTag FLAGS_1 = new Elf32DynamicArrayTag(0x6ffffffb, "FLAGS_1");
+
+    /**
+     * Address of version definition table
+     */
+    @ElfApi("DT_VERDEF")
+    public static final Elf32DynamicArrayTag VERDEF = new Elf32DynamicArrayTag(0x6ffffffc, "VERDEF");
+
+    /**
+     * Number of version definitions
+     */
+    @ElfApi("DT_VERDEFNUM")
+    public static final Elf32DynamicArrayTag VERDEFNUM = new Elf32DynamicArrayTag(0x6ffffffd, "VERDEFNUM");
+
+    /**
+     * Address of table with needed versions
+     */
+    @ElfApi("DT_VERNEED")
+    public static final Elf32DynamicArrayTag VERNEED = new Elf32DynamicArrayTag(0x6ffffffe, "VERNEED");
+
+    /**
+     * Number of needed versions
+     */
+    @ElfApi("DT_VERNEEDNUM")
+    public static final Elf32DynamicArrayTag VERNEEDNUM = new Elf32DynamicArrayTag(0x6fffffff, "VERNEEDNUM");
+
+    /* Sun added these machine-independent extensions in the "processor-specific"
+     range.  Be compatible.  */
+
+    /**
+     * Shared object to load before self
+     */
+    @ElfApi("DT_AUXILIARY")
+    public static final Elf32DynamicArrayTag AUXILIARY = new Elf32DynamicArrayTag(0x7ffffffd, "AUXILIARY");
+
+    /**
+     * Shared object to get values from
+     */
+    @ElfApi("DT_FILTER")
+    public static final Elf32DynamicArrayTag FILTER = new Elf32DynamicArrayTag(0x7fffffff, "FILTER");
+
+
+    private Elf32DynamicArrayTag(int value) {
+        super(value);
     }
 
-    public static Elf32DynamicArrayTag fromUnsignedInt(int v) {
-        for (Elf32DynamicArrayTag value : Elf32DynamicArrayTag.values()) {
-            if (value.value == v) {
-                return value;
-            }
-        }
+    private Elf32DynamicArrayTag(int value, String name) {
+        super(value, name, byValue, byName);
+    }
 
-        throw new IllegalArgumentException("Unrecognized uint: " + Integer.toHexString(v));
+    public static Elf32DynamicArrayTag fromValue(int value) {
+        return IntPartialEnum.fromValueOrCreate(value, byValue, Elf32DynamicArrayTag::new);
+    }
+
+    public static Elf32DynamicArrayTag fromName(String name) {
+        return IntPartialEnum.fromName(name, byName);
+    }
+
+    public static Collection<Elf32DynamicArrayTag> knownValues() {
+        return IntPartialEnum.knownValues(byValue);
     }
 }
+
