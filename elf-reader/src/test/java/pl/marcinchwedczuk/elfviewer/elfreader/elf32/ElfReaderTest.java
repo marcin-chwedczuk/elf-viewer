@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -258,10 +259,17 @@ class ElfReaderTest {
     void elf32_notes() {
         Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
 
+        // Test ABI-Tag
         List<Elf32Note> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
         Elf32NoteGnuABITag gnuAbi = (Elf32NoteGnuABITag) notes.get(0);
         assertThat(gnuAbi.minSupportedKernelVersion())
                 .isEqualTo("2.6.32");
+
+        // Test build-id
+        notes = ElfReader.readNotes(helloWorldElf, ".note.gnu.build-id");
+        Elf32NoteGnuBuildId buildId = (Elf32NoteGnuBuildId) notes.get(0);
+        assertThat(buildId.buildId())
+                .isEqualTo("70faabdeb335c923041b807b56a05bc131883779");
     }
 
     @Test
