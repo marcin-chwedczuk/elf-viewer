@@ -6,4 +6,5 @@ module pl.marcinchwedczuk.elfviewer.elfreader {
     exports pl.marcinchwedczuk.elfviewer.elfreader.io;
     exports pl.marcinchwedczuk.elfviewer.elfreader.endianness;
     exports pl.marcinchwedczuk.elfviewer.elfreader.utils;
+    exports pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes;
 }

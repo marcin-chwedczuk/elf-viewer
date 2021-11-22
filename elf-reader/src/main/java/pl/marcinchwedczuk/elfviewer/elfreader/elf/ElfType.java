@@ -24,7 +24,7 @@ public class ElfType extends ShortPartialEnum<ElfType> {
     public static final ElfType SHARED_OBJECT = new ElfType(s(3), "SHARED_OBJECT");
 
     @ElfApi("ET_CORE")
-    public static final ElfType CORE_DUMP = new ElfType(s(4), "CORE_DUMP");
+    public static final ElfType COREDUMP = new ElfType(s(4), "COREDUMP");
 
     @ElfApi("ET_LOOS")
     public static final short LO_OS_SPECIFIC = s(0xfe00);

@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -257,12 +258,10 @@ class ElfReaderTest {
     void elf32_notes() {
         Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
 
-        List<Elf32NoteInformation> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
-
-        // TODO: Fix it
-        for (Elf32NoteInformation note : notes) {
-            // System.out.println(note);
-        }
+        List<Elf32Note> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
+        Elf32NoteGnuABITag gnuAbi = (Elf32NoteGnuABITag) notes.get(0);
+        assertThat(gnuAbi.minSupportedKernelVersion())
+                .isEqualTo("2.6.32");
     }
 
     @Test

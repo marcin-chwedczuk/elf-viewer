@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
 
 import java.nio.charset.StandardCharsets;
 
@@ -76,26 +77,50 @@ public class StructuredFile {
     }
 
     public String readStringNullTerminatedWithAlignment(int alignment) {
-        // TODO: Make the buffer dynamic
-        byte[] buf = new byte[4096];
+        ByteList buffer = new ByteList();
 
-        int curr = 0;
         while(true) {
-            buf[curr] = readByte();
-            if (buf[curr] == 0) break;
-            curr++;
+            byte b = readByte();
+            if (b == 0) break;
+
+            buffer.add(b);
         }
 
-        int strLen = curr;
+        int bytesRead = buffer.size() + 1; // +1 for NUL
+        readUpToAlignment(bytesRead, alignment);
 
-        // read padding
-        int bytesRead = strLen + 1; // +1 for NUL
+        return buffer.toAsciiString();
+    }
+
+    public String readFixedSizeStringWithAlignment(int stringLength, int alignment) {
+        byte[] bytes = readFixedSizeByteArrayWithAlignment(stringLength, alignment);
+        if (bytes.length == 0) {
+            return "";
+        }
+
+        // The last byte should be 0 - we just skip it here
+        // TODO: Think about handling malformed strings
+        // TODO: Think about invalid string lengths that stick out after the sections end
+        return new String(bytes, 0, bytes.length - 1, StandardCharsets.US_ASCII);
+    }
+
+    public byte[] readFixedSizeByteArrayWithAlignment(int nbytes, int alignment) {
+        if (nbytes == 0) {
+            // Current position should be already aligned
+            // TODO: Verify above
+            return new byte[] { };
+        }
+
+        byte[] bytes = readNext(nbytes);
+        readUpToAlignment(bytes.length, alignment);
+        return bytes;
+    }
+
+    private void readUpToAlignment(int bytesRead, int alignment) {
         while ((bytesRead % alignment) != 0) {
             bytesRead++;
             readByte();
         }
-
-        return new String(buf, 0, strLen, StandardCharsets.US_ASCII);
     }
 
     public int[] readIntArray(int size) {

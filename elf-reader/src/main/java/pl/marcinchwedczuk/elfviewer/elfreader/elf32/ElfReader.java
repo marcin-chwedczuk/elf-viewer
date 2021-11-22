@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
@@ -11,9 +12,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.DYNAMIC;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.NOTE;
 
 public class ElfReader {
@@ -192,7 +191,7 @@ public class ElfReader {
     }
 
 
-    public static List<Elf32NoteInformation> readNotes(Elf32File elfFile, String sectionName) {
+    public static List<Elf32Note> readNotes(Elf32File elfFile, String sectionName) {
         Elf32SectionHeader noteSection = elfFile.getSectionHeader(sectionName)
                 .orElseThrow(() ->
                     new IllegalArgumentException("Section with name " + sectionName + " not found."));
@@ -203,7 +202,7 @@ public class ElfReader {
         Elf32Offset startOffset = noteSection.offsetInFile();
         Elf32Offset endOffset = startOffset.plus(noteSection.sectionSize());
 
-        List<Elf32NoteInformation> notes = new ArrayList<>();
+        List<Elf32Note> notes = new ArrayList<>();
         Elf32Offset curr = startOffset;
         while (curr.isBefore(endOffset)) {
             StructuredFile noteFile = new StructuredFile(elfFile.storage, elfFile.endianness,
@@ -213,18 +212,20 @@ public class ElfReader {
             int descLen = noteFile.readUnsignedInt();
             int type = noteFile.readUnsignedInt();
 
-            String name = (nameLen > 0)
-                    ? noteFile.readStringNullTerminatedWithAlignment(4)
-                    : null;
+            String name = noteFile.readFixedSizeStringWithAlignment(nameLen, 4);
+            byte[] descriptor = noteFile.readFixedSizeByteArrayWithAlignment(descLen, 4);
 
-            String description = (descLen > 0)
-                    ? noteFile.readStringNullTerminatedWithAlignment(4)
-                    : null;
-
-            notes.add(new Elf32NoteInformation(
-                    nameLen, name,
-                    descLen, description,
-                    type));
+            if ("GNU".equals(name)) {
+                notes.add(Elf32NoteGnu.createGnuNote(
+                        nameLen, name,
+                        descLen, descriptor,
+                        type));
+            } else {
+                notes.add(new Elf32Note(
+                        nameLen, name,
+                        descLen, descriptor,
+                        type));
+            }
 
             curr = noteFile.currentPositionInFile();
         }

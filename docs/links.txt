@@ -1,0 +1,4 @@
+
+https://refspecs.linuxbase.org/LSB_3.0.0/LSB-PDA/LSB-PDA/generic-elf.html
+
+https://docs.oracle.com/cd/E53394_01/html/E54813/chapter6-18048.html#OSLLGchapter6-fig-36
