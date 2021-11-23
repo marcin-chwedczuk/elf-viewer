@@ -20,8 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
 
 public class MainWindow implements Initializable {
@@ -128,6 +132,10 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showStringTable = new TreeItem<>(new DisplayAction(
                         "String Table", () -> displayStringTable(sh)));
                 showSection.getChildren().add(showStringTable);
+            } else if (sh.type().is(DYNAMIC)) {
+                TreeItem<DisplayAction> showDynamicTags = new TreeItem<>(new DisplayAction(
+                        "Dynamic Tags", () -> displayDynamicTags(sh)));
+                showSection.getChildren().add(showDynamicTags);
             }
         }
 
@@ -147,12 +155,24 @@ public class MainWindow implements Initializable {
         tableView.getColumns().clear();
     }
 
-    private TableColumn<Object, String> mkColumn(String caption, String propertyName) {
-        TableColumn<Object, String> column = new TableColumn<>(caption);
-        column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+    private void setupColumn(TableColumn<?,?> column) {
         column.setSortable(false);
         column.setEditable(false);
         column.setResizable(true);
+    }
+
+    private TableColumn<Object, String> mkColumn(String caption, String propertyName) {
+        TableColumn<Object, String> column = new TableColumn<>(caption);
+        column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
+        setupColumn(column);
+        return column;
+    }
+
+    private <T> TableColumn<Object, String> mkColumn(String caption, Function<T, Object> mapper) {
+        TableColumn<Object, String> column = new TableColumn<>(caption);
+        column.setCellValueFactory(new LambdaValueFactory<>(
+                x -> Objects.toString(mapper.apply((T) x))));
+        setupColumn(column);
         return column;
     }
 
@@ -160,7 +180,7 @@ public class MainWindow implements Initializable {
         clearTable();
 
         TableColumn<Object, String> fieldNameColumn = mkColumn("Field Name", "fieldName");
-        TableColumn<Object, String> hexValueColumn = mkColumn("Value Hex", "hexValue");
+        TableColumn<Object, String> hexValueColumn = mkColumn("Value Hex\nEnum Value", "hexValue");
         TableColumn<Object, String> intValueColumn = mkColumn("Value Int", "intValue");
         TableColumn<Object, String> descriptionColumn = mkColumn("Description", "description");
 
@@ -256,6 +276,28 @@ public class MainWindow implements Initializable {
                     entry.index.toString(),
                     entry.value));
         }
+    }
+
+    private void setupDynamicTagsTable() {
+        clearTable();
+
+        TableColumn<Object, String> tagColumn = mkColumn("Tag Type", Elf32DynamicTag::type);
+        TableColumn<Object, String> hexValueColumn = mkColumn("Value Hex",
+                (Elf32DynamicTag t) -> String.format("0x%08x", t.value()));
+
+        TableColumn<Object, String> intValueColumn = mkColumn("Value Int",
+                (Elf32DynamicTag t) -> String.format("%010d", t.value()));
+
+        tableView.getColumns().addAll(
+                tagColumn, hexValueColumn, intValueColumn
+        );
+    }
+
+    private void displayDynamicTags(Elf32SectionHeader sh) {
+        setupDynamicTagsTable();
+
+        List<Elf32DynamicTag> tags = new Elf32DynamicTags(currentElfFile, sh).getTags();
+        tableView.getItems().addAll(tags);
     }
 
     @FXML

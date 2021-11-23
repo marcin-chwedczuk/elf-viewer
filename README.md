@@ -1,5 +1,7 @@
 # Elf Viewer
 
+![Main Window](./docs/screen1.png)
+
 !!! PROJECT UNDER CONSTRUCTION !!!
 
 Current status:

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NULL;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
 
 public class Elf32DynamicTags {
@@ -36,6 +37,9 @@ public class Elf32DynamicTags {
         for (int i = 0; i < tableHelper.tableSize(); i++) {
             Elf32DynamicTagType tag =
                     Elf32DynamicTagType.fromValue(sf.readUnsignedInt());
+
+            // NULL tag marks end of the dynamic section
+            if (tag.is(NULL)) break;
 
             int value = sf.readUnsignedInt();
             result.add(new Elf32DynamicTag(tag, value));

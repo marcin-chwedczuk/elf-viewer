@@ -5,14 +5,12 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 
 <BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow">
    <center>
@@ -21,7 +19,7 @@
             <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" />
             <VBox>
                <children>
-                  <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="tableView" style="-fx-font-family: monospaced;" VBox.vgrow="ALWAYS">
 
                   </TableView>
                </children>
