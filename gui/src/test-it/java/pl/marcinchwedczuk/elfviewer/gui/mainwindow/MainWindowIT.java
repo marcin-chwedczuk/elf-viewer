@@ -25,7 +25,7 @@ public class MainWindowIT {
         FxToolkit.cleanupStages();
     }
 
-    @Test
+    // @Test
     public void application_starts_properly() {
         // Visit https://github.com/TestFX/TestFX
         // to learn how to test.
