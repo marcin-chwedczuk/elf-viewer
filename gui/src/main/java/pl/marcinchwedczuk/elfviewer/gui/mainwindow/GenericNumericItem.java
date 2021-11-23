@@ -14,6 +14,13 @@ public class GenericNumericItem {
     private final String intValue;
     private final String description;
 
+    public GenericNumericItem(String fieldName, String value) {
+        this.fieldName = fieldName;
+        this.hexValue = value;
+        this.intValue = "";
+        this.description = "TODO";
+    }
+
     public GenericNumericItem(String fieldName, int value) {
         this.fieldName = fieldName;
         this.hexValue = String.format("0x%08x", value);

@@ -15,6 +15,7 @@ import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfReader;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 
@@ -114,6 +115,16 @@ public class MainWindow implements Initializable {
                     displayInTable(currentElfFile.header.identification());
                 }));
         elfHeader.getChildren().add(identificationBytes);
+
+        // Sections
+        TreeItem<DisplayAction> sections = new TreeItem<>(new DisplayAction("Sections"));
+        rootItem.getChildren().add(sections);
+
+        for (Elf32SectionHeader sh : currentElfFile.sectionHeaders) {
+            TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
+                    sh.name(), () -> displayInTable(sh)));
+            sections.getChildren().add(showSection);
+        }
     }
 
     private void clearTable() {
@@ -188,6 +199,24 @@ public class MainWindow implements Initializable {
                 new GenericStringItem("Padding bytes", Arrays.toString(identification.paddingBytes()))
         );
     }
+
+    private void displayInTable(Elf32SectionHeader sh) {
+        setupTableGenericNumericItem();
+
+        tableView.getItems().addAll(
+                new GenericNumericItem("sh_name", sh.nameIndex().intValue()),
+                new GenericNumericItem("name", sh.name()),
+                new GenericNumericItem("sh_type", sh.type()),
+                new GenericNumericItem("sh_flags", sh.flags().toString()),
+                new GenericNumericItem("sh_addr", sh.inMemoryAddress()),
+                new GenericNumericItem("sh_offset", sh.offsetInFile()),
+                new GenericNumericItem("sh_size", sh.sectionSize()),
+                new GenericNumericItem("sh_link", sh.link()),
+                new GenericNumericItem("sh_info", sh.info()),
+                new GenericNumericItem("sh_addralign", sh.addressAlignment()),
+                new GenericNumericItem("sh_entsize", sh.containedEntrySize()));
+    }
+
 
     @FXML
     private void guiOpen() {
