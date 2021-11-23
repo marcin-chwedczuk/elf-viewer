@@ -4,6 +4,10 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
 
@@ -42,7 +46,33 @@ public class StringTable {
         this.endOffsetInFile = endOffsetInFile;
     }
 
-    String getStringAtIndex(StringTableIndex index) {
+    public boolean isValidIndex(StringTableIndex index) {
+        long startOffset = offsetInFile.longValue();
+        long sectionEndOffset = endOffsetInFile.longValue();
+
+        return (index.intValue() < (sectionEndOffset - startOffset));
+    }
+
+    public Collection<StringTableEntry> getContents() {
+        long sectionStartOffset = offsetInFile.longValue();
+        long sectionEndOffset = endOffsetInFile.longValue();
+        long curr = 0;
+
+        List<StringTableEntry> result = new ArrayList<>();
+
+        while ((sectionStartOffset + curr) < sectionEndOffset) {
+            // TODO: int or long?
+            StringTableIndex index = new StringTableIndex((int)curr);
+            String s = getStringAtIndex(index);
+            result.add(new StringTableEntry(index, s));
+
+            curr += s.length() + 1; // +1 for NULL termination
+        }
+
+        return result;
+    }
+
+    public String getStringAtIndex(StringTableIndex index) {
         long startOffset = offsetInFile.longValue() + index.intValue();
         long sectionEndOffset = endOffsetInFile.longValue();
 

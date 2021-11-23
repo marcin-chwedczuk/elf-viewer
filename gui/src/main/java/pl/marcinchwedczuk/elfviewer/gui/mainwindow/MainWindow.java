@@ -22,6 +22,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
+
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
         try {
@@ -121,6 +123,12 @@ public class MainWindow implements Initializable {
             TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
                     sh.name(), () -> displayInTable(sh)));
             sections.getChildren().add(showSection);
+
+            if (sh.type().is(STRING_TABLE)) {
+                TreeItem<DisplayAction> showStringTable = new TreeItem<>(new DisplayAction(
+                        "String Table", () -> displayStringTable(sh)));
+                showSection.getChildren().add(showStringTable);
+            }
         }
 
         // Program Headers
@@ -236,6 +244,18 @@ public class MainWindow implements Initializable {
                 new GenericNumericItem("p_memsz", ph.memorySize()),
                 new GenericNumericItem("p_flags", ph.flags().toString()),
                 new GenericNumericItem("p_align", ph.alignment()));
+    }
+
+    private void displayStringTable(Elf32SectionHeader sh) {
+        setupTableGenericStringItem();
+
+        StringTable st = new StringTable(currentElfFile.storage, sh);
+
+        for (StringTableEntry entry : st.getContents()) {
+            tableView.getItems().add(new GenericStringItem(
+                    entry.index.toString(),
+                    entry.value));
+        }
     }
 
     @FXML
