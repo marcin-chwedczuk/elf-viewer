@@ -3,6 +3,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
@@ -32,7 +35,7 @@ public class RelocationsTable {
         return tableHelper.tableSize();
     }
 
-    Elf32Relocation get(int index) {
+    public Elf32Relocation get(int index) {
         Elf32Offset startOffset = tableHelper.offsetForEntry(index);
         StructuredFile sf = new StructuredFile(elfFile, startOffset);
 
@@ -42,5 +45,15 @@ public class RelocationsTable {
         return new Elf32Relocation(
                 offset,
                 info);
+    }
+
+    public Collection<Elf32Relocation> relocations() {
+        List<Elf32Relocation> result = new ArrayList<>(size());
+
+        for (int i = 0; i < size(); i++) {
+            result.add(get(i));
+        }
+
+        return result;
     }
 }

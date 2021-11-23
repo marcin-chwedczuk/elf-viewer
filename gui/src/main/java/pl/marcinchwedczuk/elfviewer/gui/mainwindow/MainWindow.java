@@ -19,14 +19,10 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.Function;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
 
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
@@ -136,6 +132,10 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showDynamicTags = new TreeItem<>(new DisplayAction(
                         "Dynamic Tags", () -> displayDynamicTags(sh)));
                 showSection.getChildren().add(showDynamicTags);
+            } else if (sh.type().is(REL)) {
+                TreeItem<DisplayAction> showRelocations = new TreeItem<>(new DisplayAction(
+                        "Relocations", () -> displayRelocations(sh)));
+                showSection.getChildren().add(showRelocations);
             }
         }
 
@@ -149,6 +149,7 @@ public class MainWindow implements Initializable {
             segments.getChildren().add(showSection);
         }
     }
+
 
     private void clearTable() {
         tableView.getItems().clear();
@@ -298,6 +299,35 @@ public class MainWindow implements Initializable {
 
         List<Elf32DynamicTag> tags = new Elf32DynamicTags(currentElfFile, sh).getTags();
         tableView.getItems().addAll(tags);
+    }
+
+    // TODO: Extract to renderer class RelocationsRenderer.render(tv, sh);
+    private void setupRelocationsTable() {
+        clearTable();
+
+        TableColumn<Object, String> offsetColumn = mkColumn("Offset", Elf32Relocation::offset);
+        TableColumn<Object, String> infoColumn = mkColumn("Info",
+                (Elf32Relocation r) -> String.format("0x%08x", r.info()));
+        TableColumn<Object, String> symbolColumn = mkColumn("Symbol", Elf32Relocation::symbol);
+        TableColumn<Object, String> typeColumn = mkColumn("Type", Elf32Relocation::type);
+
+        // TODO: Intel relocation type - change when viewing other platforms
+        TableColumn<Object, String> intelTypeColumn = mkColumn("Intel Type",
+                Elf32Relocation::intel386RelocationType);
+
+
+        tableView.getColumns().addAll(
+                offsetColumn, infoColumn, symbolColumn, typeColumn,
+                intelTypeColumn
+        );
+    }
+
+    private void displayRelocations(Elf32SectionHeader sh) {
+        RelocationsTable relTable = new RelocationsTable(sh, currentElfFile);
+        Collection<Elf32Relocation> relocations = relTable.relocations();
+
+        setupRelocationsTable();
+        tableView.getItems().addAll(relocations);
     }
 
     @FXML
