@@ -132,7 +132,21 @@ public class Elf32ProgramHeader {
                 fileSize, memorySize, flags, alignment);
     }
 
+    public Elf32Address endVirtualAddress() {
+        return virtualAddress.plus(memorySize);
+    }
+
     public Elf32Address endVirtualAddressInFile() {
         return virtualAddress.plus(fileSize);
+    }
+
+    public Elf32Offset endOffsetInFile() {
+        return fileOffset.plus(fileSize);
+    }
+
+    public boolean containsSection(Elf32SectionHeader section) {
+        return this.fileOffset.isBeforeOrAt(section.offsetInFile())
+                && section.sectionEndOffsetInFile().isBeforeOrAt(this.endOffsetInFile());
+
     }
 }

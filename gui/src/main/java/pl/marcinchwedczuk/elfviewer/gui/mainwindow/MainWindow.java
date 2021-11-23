@@ -154,9 +154,23 @@ public class MainWindow implements Initializable {
         rootItem.getChildren().add(segments);
 
         for (Elf32ProgramHeader ph : currentElfFile.programHeaders) {
-            TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
-                    ph.virtualAddress().toString(), () -> displayInTable(ph)));
-            segments.getChildren().add(showSection);
+            String segmentName = ph.type() + " (" +
+                    ph.virtualAddress().toString() + " - " + ph.endVirtualAddress() + ")";
+            TreeItem<DisplayAction> showSegment = new TreeItem<>(new DisplayAction(
+                    segmentName, () -> displayInTable(ph)));
+
+            // Attach contained sections
+            for (Elf32SectionHeader sh : currentElfFile.sectionHeaders) {
+                if (sh.type().is(NULL)) continue;
+
+                if (ph.containsSection(sh)) {
+                    TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
+                            sh.name(), () -> displayInTable(sh)));
+                    showSegment.getChildren().add(showSection);
+                }
+            }
+
+            segments.getChildren().add(showSegment);
         }
     }
 
