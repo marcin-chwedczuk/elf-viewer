@@ -157,6 +157,22 @@ public class MainWindow implements Initializable {
 
     private void displayInTable(Elf32Header header) {
         setupTableGenericNumericItem();
+
+        tableView.getItems().addAll(
+                new GenericNumericItem("e_type", header.type()),
+                new GenericNumericItem("e_machine", header.machine()),
+                new GenericNumericItem("e_version", header.version()),
+                new GenericNumericItem("e_entry", header.entry()),
+                new GenericNumericItem("e_phoff", header.programHeaderTableOffset()),
+                new GenericNumericItem("e_shoff", header.sectionHeaderTableOffset()),
+                new GenericNumericItem("e_flags", header.flags()),
+                new GenericNumericItem("e_ehsize", header.headerSize()),
+                new GenericNumericItem("e_phentsize", header.programHeaderSize()),
+                new GenericNumericItem("e_phnum", header.numberOfProgramHeaders()),
+                new GenericNumericItem("e_shentsize", header.sectionHeaderSize()),
+                new GenericNumericItem("e_shnum", header.numberOfSectionHeaders()),
+                new GenericNumericItem("e_shstrndx", header.sectionContainingSectionNames().intValue())
+        );
     }
 
     private void displayInTable(ElfIdentification identification) {

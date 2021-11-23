@@ -12,6 +12,8 @@ public class Elf32Address {
         this.address = address;
     }
 
+    public int intValue() { return address; }
+
     public boolean isNull() {
         return (address == 0);
     }
