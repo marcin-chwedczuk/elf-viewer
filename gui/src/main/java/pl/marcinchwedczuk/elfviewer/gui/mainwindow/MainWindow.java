@@ -12,6 +12,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
@@ -22,6 +23,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 
+import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.STRTAB;
+import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.SYMTAB;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
 
 public class MainWindow implements Initializable {
@@ -136,6 +139,13 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showRelocations = new TreeItem<>(new DisplayAction(
                         "Relocations", () -> displayRelocations(sh)));
                 showSection.getChildren().add(showRelocations);
+            } else if (sh.type().is(SYMBOL_TABLE) && sh.hasName(SYMTAB)) {
+                Optional<Elf32SectionHeader> maybeStrTab = currentElfFile.getSectionHeader(STRTAB);
+                if (maybeStrTab.isEmpty()) continue;
+
+                TreeItem<DisplayAction> showSymbols = new TreeItem<>(new DisplayAction(
+                        "Symbols", () -> displaySymbols(sh, maybeStrTab.get())));
+                showSection.getChildren().add(showSymbols);
             }
         }
 
@@ -328,6 +338,43 @@ public class MainWindow implements Initializable {
 
         setupRelocationsTable();
         tableView.getItems().addAll(relocations);
+    }
+
+    private void setupSymbolTable() {
+        clearTable();
+
+        // TODO: Refactor this shit...
+        Function<Function<Elf32Symbol, Object>, Function<SymbolTableEntry, Object>> s =
+                (Function<Elf32Symbol, Object> symbolAccessor) ->
+                        (SymbolTableEntry entry) ->
+                                symbolAccessor.apply(entry.symbol);
+
+        TableColumn<Object, String> symbolIndex = mkColumn("Symbol Index", (SymbolTableEntry e) ->
+                String.format("0x%08x", e.index.intValue()));
+        TableColumn<Object, String> nameIndex = mkColumn("Name Index", s.apply(Elf32Symbol::nameIndex));
+        TableColumn<Object, String> name = mkColumn("Name", s.apply(Elf32Symbol::name));
+        TableColumn<Object, String> value = mkColumn("Value", s.apply(Elf32Symbol::value));
+        TableColumn<Object, String> info = mkColumn("Info", s.apply(Elf32Symbol::info));
+        TableColumn<Object, String> binding = mkColumn("Info/Binding", s.apply(Elf32Symbol::binding));
+        TableColumn<Object, String> symbolType = mkColumn("Info/Symbol Type", s.apply(Elf32Symbol::symbolType));
+        TableColumn<Object, String> other = mkColumn("Other", s.apply(Elf32Symbol::other));
+        TableColumn<Object, String> visibility = mkColumn("Other/Visibility", s.apply(Elf32Symbol::visibility));
+        TableColumn<Object, String> section = mkColumn("Section Index", s.apply(Elf32Symbol::index));
+
+        tableView.getColumns().addAll(
+                symbolIndex,
+                nameIndex, name, value, info, binding, symbolType, other, visibility, section);
+    }
+    private void displaySymbols(Elf32SectionHeader symtab,
+                                Elf32SectionHeader strtab) {
+
+        setupSymbolTable();
+
+        // Contains symbol names
+        StringTable strTab = new StringTable(currentElfFile.storage, strtab);
+        SymbolTable symTab = new SymbolTable(currentElfFile, symtab, strTab);
+
+        tableView.getItems().addAll(symTab.symbols());
     }
 
     @FXML

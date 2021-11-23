@@ -3,6 +3,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -79,5 +82,16 @@ public class SymbolTable {
 
     private boolean isSectionSymbol(StringTableIndex nameIndex, Elf32SymbolType type) {
         return (nameIndex.intValue() == 0) && type.is(SECTION);
+    }
+
+    public Collection<SymbolTableEntry> symbols() {
+        List<SymbolTableEntry> result = new ArrayList<>();
+
+        for (int i = 0; i < size(); i++) {
+            SymbolTableIndex index = new SymbolTableIndex(i);
+            result.add(new SymbolTableEntry(index, get(index)));
+        }
+
+        return result;
     }
 }

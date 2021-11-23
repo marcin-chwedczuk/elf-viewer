@@ -88,6 +88,10 @@ public class Elf32SectionHeader {
         return name;
     }
 
+    public boolean hasName(String name) {
+        return Objects.equals(this.name(), name);
+    }
+
     public ElfSectionType type() {
         return type;
     }
