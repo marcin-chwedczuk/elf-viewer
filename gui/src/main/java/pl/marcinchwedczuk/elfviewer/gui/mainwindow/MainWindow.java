@@ -13,10 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfReader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 
 import java.io.File;
@@ -125,6 +122,16 @@ public class MainWindow implements Initializable {
                     sh.name(), () -> displayInTable(sh)));
             sections.getChildren().add(showSection);
         }
+
+        // Program Headers
+        TreeItem<DisplayAction> segments = new TreeItem<>(new DisplayAction("Segments (Program Headers)"));
+        rootItem.getChildren().add(segments);
+
+        for (Elf32ProgramHeader ph : currentElfFile.programHeaders) {
+            TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
+                    ph.virtualAddress().toString(), () -> displayInTable(ph)));
+            segments.getChildren().add(showSection);
+        }
     }
 
     private void clearTable() {
@@ -217,6 +224,19 @@ public class MainWindow implements Initializable {
                 new GenericNumericItem("sh_entsize", sh.containedEntrySize()));
     }
 
+    private void displayInTable(Elf32ProgramHeader ph) {
+        setupTableGenericNumericItem();
+
+        tableView.getItems().addAll(
+                new GenericNumericItem("p_type", ph.type()),
+                new GenericNumericItem("p_offset", ph.fileOffset()),
+                new GenericNumericItem("p_vaddr", ph.virtualAddress()),
+                new GenericNumericItem("p_paddr", ph.physicalAddress()),
+                new GenericNumericItem("p_filesz", ph.fileSize()),
+                new GenericNumericItem("p_memsz", ph.memorySize()),
+                new GenericNumericItem("p_flags", ph.flags().toString()),
+                new GenericNumericItem("p_align", ph.alignment()));
+    }
 
     @FXML
     private void guiOpen() {
