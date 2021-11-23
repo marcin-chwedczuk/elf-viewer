@@ -40,6 +40,9 @@ class ElfReaderTest {
         assertThat(identification.magicString())
                 .isEqualTo("\u007fELF");
 
+        assertThat(identification.printableMagicString())
+                .isEqualTo(".ELF");
+
         // 32 bit elf
         assertThat(identification.elfClass())
                 .isEqualTo(ElfClass.ELF_CLASS_32);

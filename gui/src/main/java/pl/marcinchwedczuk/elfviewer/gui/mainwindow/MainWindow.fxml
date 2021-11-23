@@ -1,16 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<VBox minHeight="100" minWidth="300"
-      styleClass="mainWindow" stylesheets="@MainWindow.css"
-      xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/"
-      fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow"
-      fx:id="mainWindow">
-    <children>
-        <Button>Click me!</Button>
-        <Label fx:id="label" />
-    </children>
-</VBox>
+
+
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow">
+   <center>
+      <SplitPane dividerPositions="0.35888738127544095" prefHeight="553.0" prefWidth="739.0">
+         <items>
+            <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" />
+            <VBox>
+               <children>
+                  <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+
+                  </TableView>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </center>
+   <bottom>
+      <HBox prefHeight="24.0" BorderPane.alignment="CENTER" />
+   </bottom>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#guiOpen" text="Open...">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem onAction="#guiExit" text="E_xit">
+                  </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#guiAbout" text="About..." />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>

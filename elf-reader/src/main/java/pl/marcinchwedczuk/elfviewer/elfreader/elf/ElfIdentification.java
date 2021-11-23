@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.AsciiStrings;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -32,12 +34,12 @@ public class ElfIdentification {
 
     public String magicString() {
         byte[] bytes = magicBytes();
+        return AsciiStrings.toAsciiString(bytes);
+    }
 
-        return new String(
-                bytes,
-                0,
-                bytes.length,
-                StandardCharsets.US_ASCII);
+    public String printableMagicString() {
+        byte[] bytes = magicBytes();
+        return AsciiStrings.toPrintableAsciiString(bytes);
     }
 
     /**
