@@ -1,7 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
-import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
@@ -9,6 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -333,11 +334,11 @@ class ElfReaderTest {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Elf32SectionHeader dynsymSection = elfFile
-                .getSectionHeader(SectionNames.DYNSYM)
+                .getSectionHeader(ElfSectionNames.DYNSYM)
                 .get();
 
         Elf32SectionHeader dymstrSection = elfFile
-                .getSectionHeader(SectionNames.DYNSTR)
+                .getSectionHeader(ElfSectionNames.DYNSTR)
                 .get();
 
         StringTable symbolNames =
@@ -349,7 +350,7 @@ class ElfReaderTest {
         );
 
         Elf32SectionHeader gnuHashSection = elfFile
-                .getSectionHeader(SectionNames.GNU_HASH)
+                .getSectionHeader(ElfSectionNames.GNU_HASH)
                 .get();
 
         Elf32GnuHash gnuHash = ElfReader.readGnuHashSection(
@@ -364,5 +365,21 @@ class ElfReaderTest {
                 .isEqualTo("_IO_stdin_used");
 
         // TODO: Test with library exporting more than 1 symbol
+    }
+
+    @Test
+    void read_comment_section_contents() {
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+
+        Elf32SectionHeader commentSection = elfFile
+                .getSectionHeader(ElfSectionNames.COMMENT)
+                .get();
+
+        Collection<String> comments =
+                ElfReader.readStringsSection(elfFile, commentSection);
+
+        assertThat(comments)
+                .hasSize(1)
+                .contains("GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609");
     }
 }

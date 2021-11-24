@@ -1,6 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader;
 
-public class SectionNames {
+public class ElfSectionNames {
     /**
      * This section holds uninitialized data that contributes to
      * the program's memory image.  By definition, the system

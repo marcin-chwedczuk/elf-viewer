@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
@@ -10,10 +11,12 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.NOTE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
 public class ElfReader {
     private ElfReader() { }
@@ -235,7 +238,7 @@ public class ElfReader {
 
     public static Optional<Elf32DynamicTags> readDynamicSection2(Elf32File elfFile) {
         return elfFile
-                .getSectionHeader(SectionNames.DYNAMIC)
+                .getSectionHeader(ElfSectionNames.DYNAMIC)
                 .map(sh -> new Elf32DynamicTags(elfFile, sh));
     }
 
@@ -279,5 +282,27 @@ public class ElfReader {
     }
     private static <T> T throwElfReaderException(String format, Object... args) {
         throw new RuntimeException(String.format(format, args));
+    }
+
+    public static Collection<String> readStringsSection(
+            Elf32File file,
+            Elf32SectionHeader section) {
+        // TODO: Add asserts
+
+        if (!section.flags().hasFlag(STRINGS))
+            throw new ElfReaderException("Section " + section.name() + " does not contain strings.");
+
+        StructuredFile sf = new StructuredFile(
+                file,
+                section.offsetInFile());
+
+        // TODO: Handle reading past section end - StructuredFile should support
+        // start and end offsets
+        List<String> result = new ArrayList<>();
+        while (sf.currentPositionInFile().isBefore(section.sectionEndOffsetInFile())) {
+            String s = sf.readStringNullTerminated();
+            result.add(s);
+        }
+        return result;
     }
 }

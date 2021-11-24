@@ -24,8 +24,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.STRTAB;
-import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.SYMTAB;
+import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.STRTAB;
+import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.SYMTAB;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
 
 public class MainWindow implements Initializable {
