@@ -24,9 +24,9 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.STRTAB;
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.SYMTAB;
+import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.*;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
 
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
@@ -147,10 +147,14 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showSymbols = new TreeItem<>(new DisplayAction(
                         "Symbols", () -> displaySymbols(sh, maybeStrTab)));
                 showSection.getChildren().add(showSymbols);
-            } else if (sh.type().is(NOTE)) {
+            } else if (sh.type().is(ElfSectionType.NOTE)) {
                 TreeItem<DisplayAction> showNotes = new TreeItem<>(new DisplayAction(
                         "Notes", () -> displayNotes(sh)));
                 showSection.getChildren().add(showNotes);
+            } else if (sh.hasName(INTERP)) {
+                TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
+                        "Interpreter", () -> displayInterpreter(sh)));
+                showSection.getChildren().add(showInterpreter);
             }
 
             /* Various heuristics */
@@ -447,6 +451,21 @@ public class MainWindow implements Initializable {
         tableView.getItems().addAll(strings);
     }
 
+    private void setupsInterpreterTable() {
+        clearTable();
+
+        TableColumn<Object, String> value = mkColumn("Interpreter", (String s) -> s);
+
+        tableView.getColumns().addAll(value);
+    }
+    private void displayInterpreter(Elf32SectionHeader sh) {
+        setupsInterpreterTable();
+
+        Elf32InterpreterProgramHeader iph = new Elf32InterpreterProgramHeader(
+                currentElfFile,
+                sh);
+        tableView.getItems().add(iph.getInterpreterPath());
+    }
 
     @FXML
     private void guiOpen() {
