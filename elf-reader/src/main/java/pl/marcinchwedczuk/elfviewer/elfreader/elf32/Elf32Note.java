@@ -56,7 +56,7 @@ public class Elf32Note {
     }
 
     public byte[] descriptor() {
-        return descriptor;
+        return Arrays.copyOf(descriptor, descriptor.length);
     }
 
     public int type() {

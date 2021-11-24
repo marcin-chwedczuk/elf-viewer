@@ -12,10 +12,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import pl.marcinchwedczuk.elfviewer.elfreader.SectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 
+import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.STRTAB;
 import static pl.marcinchwedczuk.elfviewer.elfreader.SectionNames.SYMTAB;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
@@ -146,6 +147,10 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showSymbols = new TreeItem<>(new DisplayAction(
                         "Symbols", () -> displaySymbols(sh, maybeStrTab.get())));
                 showSection.getChildren().add(showSymbols);
+            } else if (sh.type().is(NOTE)) {
+                TreeItem<DisplayAction> showNotes = new TreeItem<>(new DisplayAction(
+                        "Notes", () -> displayNotes(sh)));
+                showSection.getChildren().add(showNotes);
             }
         }
 
@@ -173,7 +178,6 @@ public class MainWindow implements Initializable {
             segments.getChildren().add(showSegment);
         }
     }
-
 
     private void clearTable() {
         tableView.getItems().clear();
@@ -389,6 +393,37 @@ public class MainWindow implements Initializable {
         SymbolTable symTab = new SymbolTable(currentElfFile, symtab, strTab);
 
         tableView.getItems().addAll(symTab.symbols());
+    }
+
+    private void setupNotesTable() {
+        clearTable();
+
+        TableColumn<Object, String> nameLength = mkColumn("Name Length", (GuiNote e) -> e.nameLength);
+        TableColumn<Object, String> name = mkColumn("Name", (GuiNote e) -> e.name);
+        TableColumn<Object, String> descriptorLength = mkColumn("Descriptor Length", (GuiNote e) -> e.descriptorLength);
+        TableColumn<Object, String> descriptor = mkColumn("Descriptor", (GuiNote e) ->
+                ByteArrays.toHexString(e.descriptor, ":"));
+        TableColumn<Object, String> type = mkColumn("Type",
+                (GuiNote e) -> String.format("0x%08x", e.type));
+        TableColumn<Object, String> parsedType = mkColumn("(Parsed Type)", (GuiNote e) -> e.nameLength);
+
+        TableColumn<Object, String> comment = mkColumn("(Comment)", (GuiNote e) -> e.comment);
+
+        tableView.getColumns().addAll(
+                nameLength, name,
+                descriptorLength, descriptor,
+                type, parsedType,
+                comment);
+    }
+    private void displayNotes(Elf32SectionHeader sh) {
+        setupNotesTable();
+
+        // TODO: Pass sh instead of name
+        List<GuiNote> notes = ElfReader.readNotes(currentElfFile, sh.name()).stream()
+                .map(GuiNote::new)
+                .collect(toList());
+
+        tableView.getItems().addAll(notes);
     }
 
     @FXML

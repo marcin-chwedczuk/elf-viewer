@@ -185,4 +185,11 @@ public class Elf32SectionHeader {
                 nameIndex, name, type, flags, inMemoryAddress, offsetInFile,
                 link, info, addressAlignment, containedEntrySize);
     }
+
+    public boolean hasNameStartingWith(String prefix) {
+        requireNonNull(prefix);
+
+        if (name == null) return false;
+        return name.startsWith(prefix);
+    }
 }
