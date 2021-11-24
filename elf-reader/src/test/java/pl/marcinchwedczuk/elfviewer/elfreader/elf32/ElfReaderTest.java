@@ -160,11 +160,10 @@ class ElfReaderTest {
         assertThat(maybeSymbolTableSection)
                 .isPresent();
 
-        Optional<Elf32SectionHeader> maybeSymbolStringTable = elfFile.getSectionHeader(".strtab");
-        assertThat(maybeSymbolStringTable)
-                .isPresent();
-
-        StringTable symbolNames = new StringTable(helloWorld32, maybeSymbolStringTable.get());
+        // Symbol Table link member contains index of section containing String Table
+        Elf32SectionHeader strTabSection =
+                elfFile.sectionHeaders.get(maybeSymbolTableSection.get().link());
+        StringTable symbolNames = new StringTable(helloWorld32, strTabSection);
 
         Elf32SectionHeader symbolTableSection = maybeSymbolTableSection.get();
         SymbolTable symbols = new SymbolTable(

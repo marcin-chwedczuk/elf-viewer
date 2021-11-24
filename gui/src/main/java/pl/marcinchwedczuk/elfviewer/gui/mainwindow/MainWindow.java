@@ -140,17 +140,24 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showRelocations = new TreeItem<>(new DisplayAction(
                         "Relocations", () -> displayRelocations(sh)));
                 showSection.getChildren().add(showRelocations);
-            } else if (sh.type().is(SYMBOL_TABLE) && sh.hasName(SYMTAB)) {
-                Optional<Elf32SectionHeader> maybeStrTab = currentElfFile.getSectionHeader(STRTAB);
-                if (maybeStrTab.isEmpty()) continue;
+            } else if (sh.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
+                Elf32SectionHeader maybeStrTab = currentElfFile.sectionHeaders.get(sh.link());
+                if (maybeStrTab.type().isNot(STRING_TABLE)) continue; // Something went wrong...
 
                 TreeItem<DisplayAction> showSymbols = new TreeItem<>(new DisplayAction(
-                        "Symbols", () -> displaySymbols(sh, maybeStrTab.get())));
+                        "Symbols", () -> displaySymbols(sh, maybeStrTab)));
                 showSection.getChildren().add(showSymbols);
             } else if (sh.type().is(NOTE)) {
                 TreeItem<DisplayAction> showNotes = new TreeItem<>(new DisplayAction(
                         "Notes", () -> displayNotes(sh)));
                 showSection.getChildren().add(showNotes);
+            }
+
+            /* Various heuristics */
+            if (sh.flags().hasFlag(SectionAttributes.STRINGS)) {
+                TreeItem<DisplayAction> showStrings = new TreeItem<>(new DisplayAction(
+                        "(Null Terminated Strings)", () -> displayStrings(sh)));
+                showSection.getChildren().add(showStrings);
             }
         }
 
@@ -425,6 +432,21 @@ public class MainWindow implements Initializable {
 
         tableView.getItems().addAll(notes);
     }
+
+    private void setupsStringsTable() {
+        clearTable();
+
+        TableColumn<Object, String> value = mkColumn("Value", (String s) -> s);
+
+        tableView.getColumns().addAll(value);
+    }
+    private void displayStrings(Elf32SectionHeader sh) {
+        setupsStringsTable();
+
+        Collection<String> strings = ElfReader.readStringsSection(currentElfFile, sh);
+        tableView.getItems().addAll(strings);
+    }
+
 
     @FXML
     private void guiOpen() {

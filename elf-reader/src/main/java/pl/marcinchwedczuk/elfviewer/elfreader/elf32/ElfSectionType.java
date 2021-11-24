@@ -89,7 +89,7 @@ public class ElfSectionType extends IntPartialEnum<ElfSectionType> {
      * These sections hold a symbol table.
      */
     @ElfApi("SHT_DYNSYM")
-    public static final ElfSectionType DYNAMIC_SYMBOLS = new ElfSectionType(11, "DYNSYM");
+    public static final ElfSectionType DYNAMIC_SYMBOLS = new ElfSectionType(11, "DYNAMIC_SYMBOLS");
 
     /**
      * Array of constructors
