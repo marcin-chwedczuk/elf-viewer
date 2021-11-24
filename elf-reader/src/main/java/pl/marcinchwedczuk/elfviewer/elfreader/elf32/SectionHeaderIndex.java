@@ -77,7 +77,9 @@ public class SectionHeaderIndex {
     public static final SectionHeaderIndex COMMON = new SectionHeaderIndex(0xfff2);
 
     /**
-     * Index is in extra table.
+     * This value is an escape value. It indicates that the actual section header
+     * index is too large to fit in the containing field and is to be found
+     * in another location (specific to the structure where it appears).
      */
     @ElfApi("SHN_XINDEX")
     public static final SectionHeaderIndex XINDEX = new SectionHeaderIndex(0xffff);
