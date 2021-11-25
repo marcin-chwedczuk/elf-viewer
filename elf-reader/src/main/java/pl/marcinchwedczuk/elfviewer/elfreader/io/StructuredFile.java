@@ -14,6 +14,10 @@ public class StructuredFile {
 
     private long offset;
 
+    public StructuredFile(AbstractFile file, Endianness endianness) {
+        this(file, endianness, 0L);
+    }
+
     public StructuredFile(AbstractFile file, Endianness endianness, long initialOffset) {
         this.file = file;
         this.endianness = endianness;

@@ -14,8 +14,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.SectionHeaderRenderer;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,6 +165,20 @@ public class MainWindow implements Initializable {
                         "(Null Terminated Strings)", () -> displayStrings(sh)));
                 showSection.getChildren().add(showStrings);
             }
+        }
+
+        // New Sections
+        TreeItem<DisplayAction> sections2 = new TreeItem<>(new DisplayAction("Sections - NEW"));
+        rootItem.getChildren().add(sections2);
+
+        for (Elf32Section section : currentElfFile.sections()) {
+            SectionHeaderRenderer headerRenderer = new SectionHeaderRenderer(section.header());
+
+            TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
+                    section.name(),
+                    () -> headerRenderer.renderDataOn(tableView)));
+
+            sections2.getChildren().add(showSection);
         }
 
         // Program Headers

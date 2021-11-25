@@ -23,7 +23,7 @@ public class GenericNumericItem {
 
     public GenericNumericItem(String fieldName, int value) {
         this.fieldName = fieldName;
-        this.hexValue = String.format("0x%08x", value);
+        this.hexValue = Integer.toUnsignedString(value);
         this.intValue = Integer.toUnsignedString(value);
         this.description = "TODO";
     }
@@ -31,22 +31,22 @@ public class GenericNumericItem {
     // For displaying enum values in the same table
     public GenericNumericItem(String fieldName, IntPartialEnum<?> value) {
         this.fieldName = fieldName;
-        this.hexValue = String.format("0x%08x", value.value());
-        this.intValue = value.name();
+        this.intValue = String.format("0x%08x", value.value());
+        this.hexValue = value.name();
         this.description = "TODO";
     }
 
     public GenericNumericItem(String fieldName, ShortPartialEnum<?> value) {
         this.fieldName = fieldName;
-        this.hexValue = String.format("0x%04x", 0xffff & value.value());
-        this.intValue = value.name();
+        this.intValue = String.format("0x%04x", 0xffff & value.value());
+        this.hexValue = value.name();
         this.description = "TODO";
     }
 
     public GenericNumericItem(String fieldName, BytePartialEnum<?> value) {
         this.fieldName = fieldName;
-        this.hexValue = String.format("0x%02x", 0xff & value.value());
-        this.intValue = value.name();
+        this.intValue = String.format("0x%02x", 0xff & value.value());
+        this.hexValue = value.name();
         this.description = "TODO";
     }
 
@@ -64,7 +64,7 @@ public class GenericNumericItem {
         return fieldName;
     }
 
-    public String getHexValue() {
+    public String getValue() {
         return hexValue;
     }
 

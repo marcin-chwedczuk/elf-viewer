@@ -1,11 +1,14 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.LOAD;
@@ -14,6 +17,9 @@ public class Elf32File {
     public final AbstractFile storage;
     public final Endianness endianness;
     public final Elf32Header header;
+
+    public final Memoized<List<Elf32Section>> sectionsMemoized = new Memoized<>(() ->
+            new Elf32SectionFactory(this).createSections());
 
     /**
      * The section header for index 0 (SHN_UNDEF) _always_ exists,
@@ -36,6 +42,10 @@ public class Elf32File {
 
         // Fix circular references
         this.sectionHeaders.forEach(sh -> sh.setElfFile(this));
+    }
+
+    public List<Elf32Section> sections() {
+        return sectionsMemoized.get();
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {
