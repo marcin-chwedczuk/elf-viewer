@@ -2,11 +2,13 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.GenericNumericItem;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StructureFieldDto;
 
 import java.util.List;
 
-public class SectionHeaderRenderer extends BaseRenderer<GenericNumericItem> {
+import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
+
+public class SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
     private final Elf32SectionHeader header;
 
     public SectionHeaderRenderer(Elf32SectionHeader header) {
@@ -14,27 +16,40 @@ public class SectionHeaderRenderer extends BaseRenderer<GenericNumericItem> {
     }
 
     @Override
-    protected List<TableColumn<GenericNumericItem, String>> defineColumns() {
+    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
         return List.of(
-                mkColumn("Field", GenericNumericItem::getFieldName),
-                mkColumn("Value", GenericNumericItem::getValue)
+                mkColumn("Field\nName", StructureFieldDto::getFieldName),
+                mkColumn("Value\nRaw", StructureFieldDto::getRawValue, ALIGN_RIGHT),
+                mkColumn("Value\nParsed", StructureFieldDto::getParsedValue),
+                mkColumn("Comment", StructureFieldDto::getComment)
         );
     }
 
     @Override
-    protected List<? extends GenericNumericItem> defineRows() {
+    protected List<? extends StructureFieldDto> defineRows() {
         return List.of(
-                new GenericNumericItem("sh_name", hex(header.nameIndex().intValue())),
-                new GenericNumericItem("name", header.name()),
-                new GenericNumericItem("sh_type", header.type()),
-                new GenericNumericItem("sh_flags", header.flags().toString()),
-                new GenericNumericItem("sh_addr", header.inMemoryAddress()),
-                new GenericNumericItem("sh_offset", header.offsetInFile()),
-                new GenericNumericItem("sh_size", header.sectionSize()),
-                new GenericNumericItem("sh_link", hex(header.link())),
-                new GenericNumericItem("sh_info", hex(header.info())),
-                new GenericNumericItem("sh_addralign", header.addressAlignment()),
-                new GenericNumericItem("sh_entsize", header.containedEntrySize())
+                new StructureFieldDto("sh_name",
+                        hex(header.nameIndex().intValue()),
+                        header.name(),
+                        ""),
+
+                new StructureFieldDto("sh_type",
+                        hex(header.type().value()),
+                        header.type().toString(), // TODO: Api name
+                        ""),
+
+                new StructureFieldDto("sh_flags",
+                        hex(header.flags().intValue()),
+                        header.flags().toString(),
+                        ""),
+
+                new StructureFieldDto("sh_addr", header.inMemoryAddress()),
+                new StructureFieldDto("sh_offset", header.offsetInFile()),
+                new StructureFieldDto("sh_size", header.sectionSize()),
+                new StructureFieldDto("sh_link", hex(header.link())),
+                new StructureFieldDto("sh_info", hex(header.info())),
+                new StructureFieldDto("sh_addralign", header.addressAlignment()),
+                new StructureFieldDto("sh_entsize", header.containedEntrySize())
         );
     }
 }

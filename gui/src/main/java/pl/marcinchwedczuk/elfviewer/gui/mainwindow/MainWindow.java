@@ -15,9 +15,11 @@ import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.SectionHeaderRenderer;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.StringTableRenderer;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,13 +174,23 @@ public class MainWindow implements Initializable {
         rootItem.getChildren().add(sections2);
 
         for (Elf32Section section : currentElfFile.sections()) {
-            SectionHeaderRenderer headerRenderer = new SectionHeaderRenderer(section.header());
+            SectionHeaderRenderer headerRenderer =
+                    new SectionHeaderRenderer(section.header());
 
             TreeItem<DisplayAction> showSection = new TreeItem<>(new DisplayAction(
-                    section.name(),
+                    (section.name() == null || section.name().isEmpty()) ? "(empty)" : section.name(),
                     () -> headerRenderer.renderDataOn(tableView)));
-
             sections2.getChildren().add(showSection);
+
+            // TODO: Visitor pattern???
+            if (section instanceof Elf32StringTableSection) {
+                Elf32StringTableSection stringSection = (Elf32StringTableSection) section;
+
+                StringTableRenderer renderer = new StringTableRenderer(stringSection.stringTable());
+                TreeItem<DisplayAction> showStringTable = new TreeItem<>(new DisplayAction(
+                        "String Table", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showStringTable);
+            }
         }
 
         // Program Headers
@@ -261,19 +273,19 @@ public class MainWindow implements Initializable {
         setupTableGenericNumericItem();
 
         tableView.getItems().addAll(
-                new GenericNumericItem("e_type", header.type()),
-                new GenericNumericItem("e_machine", header.machine()),
-                new GenericNumericItem("e_version", header.version()),
-                new GenericNumericItem("e_entry", header.entry()),
-                new GenericNumericItem("e_phoff", header.programHeaderTableOffset()),
-                new GenericNumericItem("e_shoff", header.sectionHeaderTableOffset()),
-                new GenericNumericItem("e_flags", header.flags()),
-                new GenericNumericItem("e_ehsize", header.headerSize()),
-                new GenericNumericItem("e_phentsize", header.programHeaderSize()),
-                new GenericNumericItem("e_phnum", header.numberOfProgramHeaders()),
-                new GenericNumericItem("e_shentsize", header.sectionHeaderSize()),
-                new GenericNumericItem("e_shnum", header.numberOfSectionHeaders()),
-                new GenericNumericItem("e_shstrndx", header.sectionContainingSectionNames().intValue())
+                new StructureFieldDto("e_type", header.type()),
+                new StructureFieldDto("e_machine", header.machine()),
+                new StructureFieldDto("e_version", header.version()),
+                new StructureFieldDto("e_entry", header.entry()),
+                new StructureFieldDto("e_phoff", header.programHeaderTableOffset()),
+                new StructureFieldDto("e_shoff", header.sectionHeaderTableOffset()),
+                new StructureFieldDto("e_flags", header.flags()),
+                new StructureFieldDto("e_ehsize", header.headerSize()),
+                new StructureFieldDto("e_phentsize", header.programHeaderSize()),
+                new StructureFieldDto("e_phnum", header.numberOfProgramHeaders()),
+                new StructureFieldDto("e_shentsize", header.sectionHeaderSize()),
+                new StructureFieldDto("e_shnum", header.numberOfSectionHeaders()),
+                new StructureFieldDto("e_shstrndx", header.sectionContainingSectionNames().intValue())
         );
     }
 
@@ -281,13 +293,13 @@ public class MainWindow implements Initializable {
         setupTableGenericStringItem();
 
         tableView.getItems().addAll(
-                new GenericStringItem("Magic String", identification.printableMagicString()),
-                new GenericStringItem("Class", identification.elfClass()),
-                new GenericStringItem("Data", identification.elfData()),
-                new GenericStringItem("Version", identification.elfVersion()),
-                new GenericStringItem("OS ABI", identification.osAbi()),
-                new GenericStringItem("OS ABI Version", identification.osAbiVersion()),
-                new GenericStringItem("Padding bytes", Arrays.toString(identification.paddingBytes()))
+                new StringTableEntryDto("Magic String", identification.printableMagicString()),
+                new StringTableEntryDto("Class", identification.elfClass()),
+                new StringTableEntryDto("Data", identification.elfData()),
+                new StringTableEntryDto("Version", identification.elfVersion()),
+                new StringTableEntryDto("OS ABI", identification.osAbi()),
+                new StringTableEntryDto("OS ABI Version", identification.osAbiVersion()),
+                new StringTableEntryDto("Padding bytes", Arrays.toString(identification.paddingBytes()))
         );
     }
 
@@ -295,31 +307,31 @@ public class MainWindow implements Initializable {
         setupTableGenericNumericItem();
 
         tableView.getItems().addAll(
-                new GenericNumericItem("sh_name", sh.nameIndex().intValue()),
-                new GenericNumericItem("name", sh.name()),
-                new GenericNumericItem("sh_type", sh.type()),
-                new GenericNumericItem("sh_flags", sh.flags().toString()),
-                new GenericNumericItem("sh_addr", sh.inMemoryAddress()),
-                new GenericNumericItem("sh_offset", sh.offsetInFile()),
-                new GenericNumericItem("sh_size", sh.sectionSize()),
-                new GenericNumericItem("sh_link", sh.link()),
-                new GenericNumericItem("sh_info", sh.info()),
-                new GenericNumericItem("sh_addralign", sh.addressAlignment()),
-                new GenericNumericItem("sh_entsize", sh.containedEntrySize()));
+                new StructureFieldDto("sh_name", sh.nameIndex().intValue()),
+                new StructureFieldDto("name", sh.name()),
+                new StructureFieldDto("sh_type", sh.type()),
+                new StructureFieldDto("sh_flags", sh.flags().toString()),
+                new StructureFieldDto("sh_addr", sh.inMemoryAddress()),
+                new StructureFieldDto("sh_offset", sh.offsetInFile()),
+                new StructureFieldDto("sh_size", sh.sectionSize()),
+                new StructureFieldDto("sh_link", sh.link()),
+                new StructureFieldDto("sh_info", sh.info()),
+                new StructureFieldDto("sh_addralign", sh.addressAlignment()),
+                new StructureFieldDto("sh_entsize", sh.containedEntrySize()));
     }
 
     private void displayInTable(Elf32ProgramHeader ph) {
         setupTableGenericNumericItem();
 
         tableView.getItems().addAll(
-                new GenericNumericItem("p_type", ph.type()),
-                new GenericNumericItem("p_offset", ph.fileOffset()),
-                new GenericNumericItem("p_vaddr", ph.virtualAddress()),
-                new GenericNumericItem("p_paddr", ph.physicalAddress()),
-                new GenericNumericItem("p_filesz", ph.fileSize()),
-                new GenericNumericItem("p_memsz", ph.memorySize()),
-                new GenericNumericItem("p_flags", ph.flags().toString()),
-                new GenericNumericItem("p_align", ph.alignment()));
+                new StructureFieldDto("p_type", ph.type()),
+                new StructureFieldDto("p_offset", ph.fileOffset()),
+                new StructureFieldDto("p_vaddr", ph.virtualAddress()),
+                new StructureFieldDto("p_paddr", ph.physicalAddress()),
+                new StructureFieldDto("p_filesz", ph.fileSize()),
+                new StructureFieldDto("p_memsz", ph.memorySize()),
+                new StructureFieldDto("p_flags", ph.flags().toString()),
+                new StructureFieldDto("p_align", ph.alignment()));
     }
 
     private void displayStringTable(Elf32SectionHeader sh) {
@@ -328,7 +340,7 @@ public class MainWindow implements Initializable {
         StringTable st = new StringTable(currentElfFile.storage, sh);
 
         for (StringTableEntry entry : st.getContents()) {
-            tableView.getItems().add(new GenericStringItem(
+            tableView.getItems().add(new StringTableEntryDto(
                     entry.index.toString(),
                     entry.value));
         }

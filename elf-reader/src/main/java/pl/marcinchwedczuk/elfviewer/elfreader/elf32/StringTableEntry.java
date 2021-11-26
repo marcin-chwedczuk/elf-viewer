@@ -8,4 +8,14 @@ public class StringTableEntry {
         this.index = index;
         this.value = value;
     }
+
+    public StringTableIndex getIndex() {
+        return index;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    // TODO: HashCode Equals etc.
 }

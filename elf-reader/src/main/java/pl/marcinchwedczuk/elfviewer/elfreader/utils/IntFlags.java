@@ -32,6 +32,8 @@ public abstract class IntFlags<T extends IntFlags<T>> {
     protected abstract T mkCopy(int newRaw);
     public abstract Collection<Flag<T>> flags();
 
+    public int intValue() { return raw; }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

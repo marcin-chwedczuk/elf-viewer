@@ -2,22 +2,28 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import java.util.Objects;
 
-public class GenericStringItem {
+public class StringTableEntryDto {
     private final String fieldName;
     private final String value;
-    private final String description;
 
-    public GenericStringItem(String fieldName, Object value) {
+    public StringTableEntryDto(String fieldName, String value) {
+        this.fieldName = fieldName;
+        this.value = value;
+    }
+
+    // TODO: Remove
+    public StringTableEntryDto(String fieldName, Object value) {
         this.fieldName = fieldName;
         this.value = Objects.toString(value);
-        this.description = "TODO";
     }
 
     public String getFieldName() {
         return fieldName;
     }
     public String getValue() { return value; }
-    public String getDescription() {
-        return description;
+
+    public int getValueLength() {
+        if (value == null) return 0;
+        return value.length();
     }
 }

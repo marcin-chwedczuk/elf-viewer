@@ -28,17 +28,24 @@ public abstract class BaseRenderer<R> implements Renderer {
         tableView.getColumns().clear();
     }
 
-    private static void configureColumn(TableColumn<?,?> column) {
+    private static void setColumnDefaults(TableColumn<?,?> column) {
         column.setSortable(false);
         column.setEditable(false);
         column.setResizable(true);
     }
 
-    protected TableColumn<R, String> mkColumn(String title, Function<R, Object> mapper) {
+    protected TableColumn<R, String> mkColumn(String title,
+                                              Function<R, Object> mapper,
+                                              ColumnAttributes... attributes) {
         TableColumn<R, String> column = new TableColumn<>(title);
         column.setCellValueFactory(new LambdaValueFactory<>(
                 rowData -> Objects.toString(mapper.apply(rowData))));
-        configureColumn(column);
+
+        setColumnDefaults(column);
+        for (ColumnAttributes attribute : attributes) {
+            attribute.apply(column);
+        }
+
         return column;
     }
 
@@ -56,5 +63,10 @@ public abstract class BaseRenderer<R> implements Renderer {
 
     protected static String dec(long value) {
         return String.format("%020d", value);
+    }
+
+    protected static String placeholder(String placeholder, String s) {
+        if (s == null || s.length() == 0) return placeholder;
+        return s;
     }
 }
