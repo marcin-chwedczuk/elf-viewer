@@ -209,6 +209,13 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
                         "Dynamic Tags", () -> renderer.renderDataOn(tableView)));
                 showSection.getChildren().add(showInterpreter);
+            } else if (section instanceof Elf32RelocationSection) {
+                Elf32RelocationSection relocationSection = (Elf32RelocationSection) section;
+
+                RelocationSectionRenderer renderer = new RelocationSectionRenderer(relocationSection);
+                TreeItem<DisplayAction> showRelocations = new TreeItem<>(new DisplayAction(
+                        "Relocations", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showRelocations);
             }
 
             if (section instanceof Elf32InvalidSection) {

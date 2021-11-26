@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Relocation;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 
@@ -42,6 +43,8 @@ public class Elf32SectionFactory {
                 return new Elf32SymbolTableSection(elfFile, sh);
             } else if (sh.type().is(DYNAMIC)) {
                 return new Elf32DynamicSection(elfFile, sh);
+            } else if (sh.type().is(REL)) {
+                return new Elf32RelocationSection(elfFile, sh);
             }
 
             return new Elf32Section(elfFile, sh);
