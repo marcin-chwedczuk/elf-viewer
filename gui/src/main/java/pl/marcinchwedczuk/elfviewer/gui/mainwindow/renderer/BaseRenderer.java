@@ -35,7 +35,7 @@ public abstract class BaseRenderer<R> implements Renderer {
     }
 
     protected TableColumn<R, String> mkColumn(String title,
-                                              Function<R, Object> mapper,
+                                              Function<? super R, Object> mapper,
                                               ColumnAttributes... attributes) {
         TableColumn<R, String> column = new TableColumn<>(title);
         column.setCellValueFactory(new LambdaValueFactory<>(

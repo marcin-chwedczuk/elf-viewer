@@ -30,7 +30,7 @@ public final class FileView implements AbstractFile {
     @Override
     public byte[] read(long offset, int size) {
         checkOffset(offset, size);
-        return file.read(offset, size);
+        return file.read(startOffset + offset, size);
     }
 
     private void checkOffset(long offset, int size) {

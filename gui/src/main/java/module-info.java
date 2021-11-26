@@ -5,6 +5,7 @@ module pl.marcinchwedczuk.elfviewer.gui {
     requires javafx.fxml;
 
     exports pl.marcinchwedczuk.elfviewer.gui;
+    exports pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
     exports pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
     // Allow @FXML injection to private fields.

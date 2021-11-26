@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.Renderer;
+
 public class DisplayAction {
     private final String displayName;
     private final Runnable action;
