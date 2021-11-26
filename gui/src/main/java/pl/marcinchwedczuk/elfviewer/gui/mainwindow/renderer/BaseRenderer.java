@@ -49,6 +49,10 @@ public abstract class BaseRenderer<R> implements Renderer {
         return column;
     }
 
+    protected static String hex(byte b) {
+        return hex((int)b & 0xff);
+    }
+
     protected static String hex(int value) {
         return String.format("0x%08x", value);
     }

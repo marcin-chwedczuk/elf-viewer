@@ -89,7 +89,18 @@ public class SymbolTable {
 
         for (int i = 0; i < size(); i++) {
             SymbolTableIndex index = new SymbolTableIndex(i);
-            result.add(new SymbolTableEntry(index, get(index)));
+            Elf32Symbol symbol = get(index);
+
+            // TODO: Handle special cases like ABSOLUTE
+            Elf32SectionHeader relatedSection =
+                    symbol.index().isSpecial()
+                            ? null
+                            : elfFile.sectionHeaders.get(symbol.index().intValue());
+
+            result.add(new SymbolTableEntry(
+                    index,
+                    get(index),
+                    relatedSection));
         }
 
         return result;

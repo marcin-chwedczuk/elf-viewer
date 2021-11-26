@@ -109,6 +109,15 @@ public class SectionHeaderIndex {
         return index;
     }
 
+    public boolean isSpecial() {
+        return index == UNDEFINED.index
+                || index == ABSOLUTE.index
+                || index == COMMON.index
+                || index == BEFORE.index
+                || index == AFTER.index
+                || index == XINDEX.index;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

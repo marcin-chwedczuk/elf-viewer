@@ -14,16 +14,10 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InterpreterSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InvalidSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.InterpreterSectionRenderer;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.InvalidSectionRenderer;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.SectionHeaderRenderer;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.StringTableRenderer;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +26,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.*;
+import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
 
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
@@ -194,6 +187,14 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showStringTable = new TreeItem<>(new DisplayAction(
                         "String Table", () -> renderer.renderDataOn(tableView)));
                 showSection.getChildren().add(showStringTable);
+            } else if (section instanceof Elf32SymbolTableSection) {
+                Elf32SymbolTableSection symbolTableSection = (Elf32SymbolTableSection) section;
+
+                // TODO: Move creating symbol table inside action - to handle errors
+                SymbolTableRenderer renderer = new SymbolTableRenderer(symbolTableSection);
+                TreeItem<DisplayAction> showSymbolTable = new TreeItem<>(new DisplayAction(
+                        "Symbol Table", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showSymbolTable);
             } else if (section instanceof Elf32InterpreterSection) {
                 Elf32InterpreterSection interpreterSection = (Elf32InterpreterSection) section;
 
@@ -204,7 +205,7 @@ public class MainWindow implements Initializable {
             }
 
             if (section instanceof Elf32InvalidSection) {
-                Elf32InvalidSection invalidSection = (Elf32InvalidSection)section;
+                Elf32InvalidSection invalidSection = (Elf32InvalidSection) section;
 
                 InvalidSectionRenderer renderer = new InvalidSectionRenderer(invalidSection);
                 TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
@@ -243,7 +244,7 @@ public class MainWindow implements Initializable {
         tableView.getColumns().clear();
     }
 
-    private void setupColumn(TableColumn<?,?> column) {
+    private void setupColumn(TableColumn<?, ?> column) {
         column.setSortable(false);
         column.setEditable(false);
         column.setResizable(true);
@@ -442,6 +443,7 @@ public class MainWindow implements Initializable {
                 symbolIndex,
                 nameIndex, name, value, info, binding, symbolType, other, visibility, section);
     }
+
     private void displaySymbols(Elf32SectionHeader symtab,
                                 Elf32SectionHeader strtab) {
 
@@ -474,6 +476,7 @@ public class MainWindow implements Initializable {
                 type, parsedType,
                 comment);
     }
+
     private void displayNotes(Elf32SectionHeader sh) {
         setupNotesTable();
 
@@ -492,6 +495,7 @@ public class MainWindow implements Initializable {
 
         tableView.getColumns().addAll(value);
     }
+
     private void displayStrings(Elf32SectionHeader sh) {
         setupsStringsTable();
 
@@ -506,6 +510,7 @@ public class MainWindow implements Initializable {
 
         tableView.getColumns().addAll(value);
     }
+
     private void displayInterpreter(Elf32SectionHeader sh) {
         setupsInterpreterTable();
 
