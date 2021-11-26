@@ -202,6 +202,13 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
                         "Interpreter", () -> renderer.renderDataOn(tableView)));
                 showSection.getChildren().add(showInterpreter);
+            } else if (section instanceof Elf32DynamicSection) {
+                Elf32DynamicSection dynamicSection = (Elf32DynamicSection) section;
+
+                DynamicSectionRenderer renderer = new DynamicSectionRenderer(dynamicSection);
+                TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
+                        "Dynamic Tags", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showInterpreter);
             }
 
             if (section instanceof Elf32InvalidSection) {

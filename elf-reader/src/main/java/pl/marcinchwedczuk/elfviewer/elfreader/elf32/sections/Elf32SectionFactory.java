@@ -40,6 +40,8 @@ public class Elf32SectionFactory {
                 return new Elf32StringTableSection(elfFile, sh);
             } else if (sh.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
                 return new Elf32SymbolTableSection(elfFile, sh);
+            } else if (sh.type().is(DYNAMIC)) {
+                return new Elf32DynamicSection(elfFile, sh);
             }
 
             return new Elf32Section(elfFile, sh);

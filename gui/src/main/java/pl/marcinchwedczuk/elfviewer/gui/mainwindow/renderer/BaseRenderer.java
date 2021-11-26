@@ -53,6 +53,11 @@ public abstract class BaseRenderer<R> implements Renderer {
         return hex((int)b & 0xff);
     }
 
+    protected static String hex(Integer value) {
+        if (value == null) return "";
+        return hex((int)value);
+    }
+
     protected static String hex(int value) {
         return String.format("0x%08x", value);
     }
