@@ -216,6 +216,13 @@ public class MainWindow implements Initializable {
                 TreeItem<DisplayAction> showRelocations = new TreeItem<>(new DisplayAction(
                         "Relocations", () -> renderer.renderDataOn(tableView)));
                 showSection.getChildren().add(showRelocations);
+            } else if (section instanceof Elf32NotesSection) {
+                Elf32NotesSection noteSection = (Elf32NotesSection) section;
+
+                NotesSectionRenderer renderer = new NotesSectionRenderer(noteSection);
+                TreeItem<DisplayAction> showNotes = new TreeItem<>(new DisplayAction(
+                        "Notes", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showNotes);
             }
 
             if (section instanceof Elf32InvalidSection) {
@@ -473,16 +480,16 @@ public class MainWindow implements Initializable {
     private void setupNotesTable() {
         clearTable();
 
-        TableColumn<Object, String> nameLength = mkColumn("Name Length", (GuiNote e) -> e.nameLength);
-        TableColumn<Object, String> name = mkColumn("Name", (GuiNote e) -> e.name);
-        TableColumn<Object, String> descriptorLength = mkColumn("Descriptor Length", (GuiNote e) -> e.descriptorLength);
-        TableColumn<Object, String> descriptor = mkColumn("Descriptor", (GuiNote e) ->
-                ByteArrays.toHexString(e.descriptor, ":"));
+        TableColumn<Object, String> nameLength = mkColumn("Name Length", (NoteDto e) -> e.nameLength);
+        TableColumn<Object, String> name = mkColumn("Name", (NoteDto e) -> e.name);
+        TableColumn<Object, String> descriptorLength = mkColumn("Descriptor Length", (NoteDto e) -> e.descriptorLength);
+        TableColumn<Object, String> descriptor = mkColumn("Descriptor", (NoteDto e) ->
+                e.descriptor);
         TableColumn<Object, String> type = mkColumn("Type",
-                (GuiNote e) -> String.format("0x%08x", e.type));
-        TableColumn<Object, String> parsedType = mkColumn("(Parsed Type)", (GuiNote e) -> e.nameLength);
+                (NoteDto e) -> String.format("0x%08x", e.type));
+        TableColumn<Object, String> parsedType = mkColumn("(Parsed Type)", (NoteDto e) -> e.nameLength);
 
-        TableColumn<Object, String> comment = mkColumn("(Comment)", (GuiNote e) -> e.comment);
+        TableColumn<Object, String> comment = mkColumn("(Comment)", (NoteDto e) -> e.comment);
 
         tableView.getColumns().addAll(
                 nameLength, name,
@@ -494,12 +501,7 @@ public class MainWindow implements Initializable {
     private void displayNotes(Elf32SectionHeader sh) {
         setupNotesTable();
 
-        // TODO: Pass sh instead of name
-        List<GuiNote> notes = ElfReader.readNotes(currentElfFile, sh.name()).stream()
-                .map(GuiNote::new)
-                .collect(toList());
-
-        tableView.getItems().addAll(notes);
+        throw new RuntimeException("deleted.");
     }
 
     private void setupsStringsTable() {

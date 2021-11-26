@@ -63,7 +63,7 @@ public abstract class BaseRenderer<R> implements Renderer {
     }
 
     protected static String dec(int value) {
-        return String.format("%010d", value);
+        return String.format("%d", value);
     }
 
     protected static String hex(long value) {
@@ -71,7 +71,7 @@ public abstract class BaseRenderer<R> implements Renderer {
     }
 
     protected static String dec(long value) {
-        return String.format("%020d", value);
+        return String.format("%d", value);
     }
 
     protected static String placeholder(String placeholder, String s) {

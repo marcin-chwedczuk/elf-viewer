@@ -21,6 +21,10 @@ public final class FileView implements AbstractFile {
         this.length = length;
     }
 
+    public long length() {
+        return length;
+    }
+
     @Override
     public byte read(long offset) {
         checkOffset(offset, 1);

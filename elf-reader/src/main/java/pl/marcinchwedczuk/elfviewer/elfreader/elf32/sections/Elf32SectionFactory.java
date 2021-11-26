@@ -45,6 +45,8 @@ public class Elf32SectionFactory {
                 return new Elf32DynamicSection(elfFile, sh);
             } else if (sh.type().is(REL)) {
                 return new Elf32RelocationSection(elfFile, sh);
+            } else if (sh.type().is(NOTE)) {
+                return new Elf32NotesSection(elfFile, sh);
             }
 
             return new Elf32Section(elfFile, sh);
