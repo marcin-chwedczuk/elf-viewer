@@ -15,11 +15,13 @@ import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InterpreterSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InvalidSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.InterpreterSectionRenderer;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.InvalidSectionRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.SectionHeaderRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.StringTableRenderer;
 
@@ -198,6 +200,15 @@ public class MainWindow implements Initializable {
                 InterpreterSectionRenderer renderer = new InterpreterSectionRenderer(interpreterSection);
                 TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
                         "Interpreter", () -> renderer.renderDataOn(tableView)));
+                showSection.getChildren().add(showInterpreter);
+            }
+
+            if (section instanceof Elf32InvalidSection) {
+                Elf32InvalidSection invalidSection = (Elf32InvalidSection)section;
+
+                InvalidSectionRenderer renderer = new InvalidSectionRenderer(invalidSection);
+                TreeItem<DisplayAction> showInterpreter = new TreeItem<>(new DisplayAction(
+                        "(Parsing Errors)", () -> renderer.renderDataOn(tableView)));
                 showSection.getChildren().add(showInterpreter);
             }
         }
