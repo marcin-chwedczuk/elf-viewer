@@ -8,13 +8,12 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Stack;
 
 public class TreeViewMenuBuilder {
@@ -90,32 +89,6 @@ public class TreeViewMenuBuilder {
 
         tableView.getColumns().addAll(
                 fieldNameColumn, hexValueColumn, intValueColumn, descriptionColumn
-        );
-    }
-
-    private void setupTableGenericStringItem() {
-        clearTable();
-
-        TableColumn<Object, String> fieldNameColumn = mkColumn("Field Name", "fieldName");
-        TableColumn<Object, String> valueColumn = mkColumn("Value", "value");
-        TableColumn<Object, String> descriptionColumn = mkColumn("Comment", "comment");
-
-        tableView.getColumns().addAll(
-                fieldNameColumn, valueColumn, descriptionColumn
-        );
-    }
-
-    private void displayInTable(ElfIdentification identification) {
-        setupTableGenericStringItem();
-
-        tableView.getItems().addAll(
-                new StringTableEntryDto("Magic String", identification.printableMagicString()),
-                new StringTableEntryDto("Class", identification.elfClass()),
-                new StringTableEntryDto("Data", identification.elfData()),
-                new StringTableEntryDto("Version", identification.elfVersion()),
-                new StringTableEntryDto("OS ABI", identification.osAbi()),
-                new StringTableEntryDto("OS ABI Version", identification.osAbiVersion()),
-                new StringTableEntryDto("Padding bytes", Arrays.toString(identification.paddingBytes()))
         );
     }
 
@@ -297,7 +270,8 @@ public class TreeViewMenuBuilder {
         }
 
         @Override
-        public void enter(Elf32ProgramHeader programHeader) {
+        public void enter(Elf32Segment segment) {
+            Elf32ProgramHeader programHeader = segment.programHeader();
             String segmentName = programHeader.type() + " (" +
                     programHeader.virtualAddress().toString() + " - " +
                     programHeader.endVirtualAddress() + ")";
@@ -305,16 +279,14 @@ public class TreeViewMenuBuilder {
             enterNode(new TreeItem<>(new DisplayAction(
                     segmentName, tv -> displayInTable(programHeader))));
 
-            for (Elf32Section section : elfFile.sections()) {
-                if (programHeader.containsSection(section.header())) {
-                    // Recreate section submenu
-                    section.accept(this);
-                }
+            for (Elf32Section section : segment.containedSections()) {
+                // Recreate section submenu
+                section.accept(this);
             }
         }
 
         @Override
-        public void exit(Elf32ProgramHeader programHeader) {
+        public void exit(Elf32Segment programHeader) {
             exitNode();
         }
 

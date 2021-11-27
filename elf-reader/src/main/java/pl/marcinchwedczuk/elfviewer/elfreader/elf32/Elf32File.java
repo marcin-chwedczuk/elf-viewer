@@ -2,6 +2,8 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -22,12 +24,14 @@ public class Elf32File extends Elf32Element {
     public final Memoized<List<Elf32Section>> sectionsMemoized = new Memoized<>(() ->
             new Elf32SectionFactory(this).createSections());
 
+    public final Memoized<List<Elf32Segment>> segmentsMemoized = new Memoized<>(() ->
+            new Elf32SegmentFactory(this).createSegments());
+
     /**
      * The section header for index 0 (SHN_UNDEF) _always_ exists,
      * even though the index marks undefined section references.
      */
     public final List<Elf32SectionHeader> sectionHeaders;
-
     public final List<Elf32ProgramHeader> programHeaders;
 
     public Elf32File(AbstractFile storage,
@@ -47,6 +51,10 @@ public class Elf32File extends Elf32Element {
 
     public List<Elf32Section> sections() {
         return sectionsMemoized.get();
+    }
+
+    public List<Elf32Segment> segments() {
+        return segmentsMemoized.get();
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {
@@ -90,8 +98,8 @@ public class Elf32File extends Elf32Element {
         visitor.exitSections();
 
         visitor.enterSegments();
-        for (Elf32ProgramHeader programHeader : programHeaders) {
-            programHeader.accept(visitor);
+        for (Elf32Segment segment : segments()) {
+            segment.accept(visitor);
         }
         visitor.exitSegments();
     }

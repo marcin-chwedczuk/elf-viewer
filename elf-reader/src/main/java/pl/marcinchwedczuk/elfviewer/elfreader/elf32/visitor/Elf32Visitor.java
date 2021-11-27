@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 
 public interface Elf32Visitor {
     void enter(ElfIdentification identification);
@@ -32,7 +33,7 @@ public interface Elf32Visitor {
     void exitSections();
 
     void enterSegments();
-    void enter(Elf32ProgramHeader programHeader);
-    void exit(Elf32ProgramHeader programHeader);
+    void enter(Elf32Segment programHeader);
+    void exit(Elf32Segment programHeader);
     void exitSegments();
 }
