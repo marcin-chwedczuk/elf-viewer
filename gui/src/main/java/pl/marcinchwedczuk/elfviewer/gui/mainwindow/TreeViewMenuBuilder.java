@@ -105,26 +105,6 @@ public class TreeViewMenuBuilder {
         );
     }
 
-    private void displayInTable(Elf32Header header) {
-        setupTableGenericNumericItem();
-
-        tableView.getItems().addAll(
-                new StructureFieldDto("e_type", header.type()),
-                new StructureFieldDto("e_machine", header.machine()),
-                new StructureFieldDto("e_version", header.version()),
-                new StructureFieldDto("e_entry", header.entry()),
-                new StructureFieldDto("e_phoff", header.programHeaderTableOffset()),
-                new StructureFieldDto("e_shoff", header.sectionHeaderTableOffset()),
-                new StructureFieldDto("e_flags", header.flags()),
-                new StructureFieldDto("e_ehsize", header.headerSize()),
-                new StructureFieldDto("e_phentsize", header.programHeaderSize()),
-                new StructureFieldDto("e_phnum", header.numberOfProgramHeaders()),
-                new StructureFieldDto("e_shentsize", header.sectionHeaderSize()),
-                new StructureFieldDto("e_shnum", header.numberOfSectionHeaders()),
-                new StructureFieldDto("e_shstrndx", header.sectionContainingSectionNames().intValue())
-        );
-    }
-
     private void displayInTable(ElfIdentification identification) {
         setupTableGenericStringItem();
 
@@ -137,23 +117,6 @@ public class TreeViewMenuBuilder {
                 new StringTableEntryDto("OS ABI Version", identification.osAbiVersion()),
                 new StringTableEntryDto("Padding bytes", Arrays.toString(identification.paddingBytes()))
         );
-    }
-
-    private void displayInTable(Elf32SectionHeader sh) {
-        setupTableGenericNumericItem();
-
-        tableView.getItems().addAll(
-                new StructureFieldDto("sh_name", sh.nameIndex().intValue()),
-                new StructureFieldDto("name", sh.name()),
-                new StructureFieldDto("sh_type", sh.type()),
-                new StructureFieldDto("sh_flags", sh.flags().toString()),
-                new StructureFieldDto("sh_addr", sh.inMemoryAddress()),
-                new StructureFieldDto("sh_offset", sh.offsetInFile()),
-                new StructureFieldDto("sh_size", sh.sectionSize()),
-                new StructureFieldDto("sh_link", sh.link()),
-                new StructureFieldDto("sh_info", sh.info()),
-                new StructureFieldDto("sh_addralign", sh.addressAlignment()),
-                new StructureFieldDto("sh_entsize", sh.containedEntrySize()));
     }
 
     private void displayInTable(Elf32ProgramHeader ph) {
@@ -173,10 +136,9 @@ public class TreeViewMenuBuilder {
     class BuildMenuVisitor implements Elf32Visitor {
         @Override
         public void enter(ElfIdentification identification) {
-            enterNode(new TreeItem<>(
-                    new DisplayAction("Identification Bytes", tv -> {
-                        displayInTable(identification);
-                    })));
+            enterNode(new TreeItem<>(new DisplayAction(
+                    "Identification Bytes",
+                    tv -> new ElfIdentificationRenderer(identification).renderDataOn(tv))));
         }
 
         @Override
@@ -186,10 +148,10 @@ public class TreeViewMenuBuilder {
 
         @Override
         public void enter(Elf32Header header) {
-            enterNode(new TreeItem<>(
-                    new DisplayAction("ELF Header", tv -> {
-                        displayInTable(header);
-                    })));
+            enterNode(new TreeItem<>(new DisplayAction(
+                    "ELF Header",
+                    tv -> new Elf32HeaderRenderer(header).renderDataOn(tv)
+            )));
         }
 
         @Override

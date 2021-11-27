@@ -35,7 +35,7 @@ public class SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
 
                 new StructureFieldDto("sh_type",
                         hex(header.type().value()),
-                        header.type().toString(), // TODO: Api name
+                        header.type().name(), // TODO: Api name
                         ""),
 
                 new StructureFieldDto("sh_flags",

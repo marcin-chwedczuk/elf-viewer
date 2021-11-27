@@ -64,8 +64,8 @@ public class ElfIdentification {
         return ElfOsAbi.fromValue(originalBytes[EI_OSABI]);
     }
 
-    public int osAbiVersion() {
-        return (int)originalBytes[EI_ABIVERSION];
+    public byte osAbiVersion() {
+        return originalBytes[EI_ABIVERSION];
     }
 
     public byte[] paddingBytes() {

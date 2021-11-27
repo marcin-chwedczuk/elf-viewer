@@ -60,7 +60,7 @@ class ElfReaderTest {
         assertThat(identification.osAbi())
                 .isEqualTo(ElfOsAbi.NONE);
 
-        assertThat(identification.osAbiVersion())
+        assertThat((int)identification.osAbiVersion())
                 .isEqualTo(0);
 
         // elf type
