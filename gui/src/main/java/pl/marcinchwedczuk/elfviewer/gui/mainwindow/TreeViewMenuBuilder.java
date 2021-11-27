@@ -66,46 +66,6 @@ public class TreeViewMenuBuilder {
         tableView.getColumns().clear();
     }
 
-    private void setupColumn(TableColumn<?, ?> column) {
-        column.setSortable(false);
-        column.setEditable(false);
-        column.setResizable(true);
-    }
-
-    private TableColumn<Object, String> mkColumn(String caption, String propertyName) {
-        TableColumn<Object, String> column = new TableColumn<>(caption);
-        column.setCellValueFactory(new PropertyValueFactory<>(propertyName));
-        setupColumn(column);
-        return column;
-    }
-
-    private void setupTableGenericNumericItem() {
-        clearTable();
-
-        TableColumn<Object, String> fieldNameColumn = mkColumn("Field Name", "fieldName");
-        TableColumn<Object, String> hexValueColumn = mkColumn("Value Hex\nEnum Value", "rawValue");
-        TableColumn<Object, String> intValueColumn = mkColumn("Value Int", "parsedValue");
-        TableColumn<Object, String> descriptionColumn = mkColumn("Comment", "comment");
-
-        tableView.getColumns().addAll(
-                fieldNameColumn, hexValueColumn, intValueColumn, descriptionColumn
-        );
-    }
-
-    private void displayInTable(Elf32ProgramHeader ph) {
-        setupTableGenericNumericItem();
-
-        tableView.getItems().addAll(
-                new StructureFieldDto("p_type", ph.type()),
-                new StructureFieldDto("p_offset", ph.fileOffset()),
-                new StructureFieldDto("p_vaddr", ph.virtualAddress()),
-                new StructureFieldDto("p_paddr", ph.physicalAddress()),
-                new StructureFieldDto("p_filesz", ph.fileSize()),
-                new StructureFieldDto("p_memsz", ph.memorySize()),
-                new StructureFieldDto("p_flags", ph.flags().toString()),
-                new StructureFieldDto("p_align", ph.alignment()));
-    }
-
     class BuildMenuVisitor implements Elf32Visitor {
         @Override
         public void enter(ElfIdentification identification) {
@@ -277,7 +237,8 @@ public class TreeViewMenuBuilder {
                     programHeader.endVirtualAddress() + ")";
 
             enterNode(new TreeItem<>(new DisplayAction(
-                    segmentName, tv -> displayInTable(programHeader))));
+                    segmentName,
+                    tv -> new Elf32SegmentRenderer(segment).renderDataOn(tv))));
 
             for (Elf32Section section : segment.containedSections()) {
                 // Recreate section submenu
