@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.LOAD;
 
-public class Elf32File {
+public class Elf32File extends Elf32Element {
     public final AbstractFile storage;
     public final Endianness endianness;
     public final Elf32Header header;
@@ -76,5 +77,22 @@ public class Elf32File {
             }
         }
         return Elf32Offset.ZERO;
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        header.accept(visitor);
+
+        visitor.enterSections();
+        for (Elf32Section section : sections()) {
+            section.accept(visitor);
+        }
+        visitor.exitSections();
+
+        visitor.enterSegments();
+        for (Elf32ProgramHeader programHeader : programHeaders) {
+            programHeader.accept(visitor);
+        }
+        visitor.exitSegments();
     }
 }

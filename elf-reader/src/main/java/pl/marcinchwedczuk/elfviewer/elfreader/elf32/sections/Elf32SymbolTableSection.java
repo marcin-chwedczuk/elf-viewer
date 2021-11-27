@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
@@ -23,5 +24,11 @@ public class Elf32SymbolTableSection extends Elf32Section {
                 elfFile(),
                 header(),
                 stringTableSection.stringTable());
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

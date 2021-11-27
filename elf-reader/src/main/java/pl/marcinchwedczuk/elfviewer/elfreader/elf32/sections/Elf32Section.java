@@ -1,8 +1,11 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.BaseElf32Visitor;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
@@ -14,7 +17,7 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
-public class Elf32Section {
+public class Elf32Section extends Elf32Element {
     private final Elf32File elfFile;
     private final Elf32SectionHeader header;
 
@@ -61,5 +64,11 @@ public class Elf32Section {
         }
 
         return result;
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

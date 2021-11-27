@@ -1,9 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
-public class Elf32Header {
+public class Elf32Header extends Elf32Element {
     @ElfApi("e_ident")
     private final ElfIdentification identification;
 
@@ -215,5 +216,14 @@ public class Elf32Header {
         return identification.elfClass() == ElfClass.ELF_CLASS_32
                 && identification.elfData() == ElfData.ELF_DATA_LSB
                 && machine == ElfMachine.INTEL_386;
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(identification);
+        visitor.exit(identification);
+
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

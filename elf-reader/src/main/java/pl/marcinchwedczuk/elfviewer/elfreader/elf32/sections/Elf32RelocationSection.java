@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Relocation;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.RelocationsTable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -26,5 +27,11 @@ public class Elf32RelocationSection extends Elf32Section {
                 new RelocationsTable(header(), elfFile());
 
         return new ArrayList<>(relocationsTable.relocations());
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

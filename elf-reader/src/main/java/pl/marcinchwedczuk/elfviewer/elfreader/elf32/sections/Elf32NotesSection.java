@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -60,5 +61,11 @@ public class Elf32NotesSection extends Elf32Section {
         }
 
         return notes;
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

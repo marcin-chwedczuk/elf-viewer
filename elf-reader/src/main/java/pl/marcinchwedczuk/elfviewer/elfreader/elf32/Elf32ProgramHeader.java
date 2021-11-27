@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 /**
@@ -10,7 +12,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
  * Program headers are meaningful only for executable and shared
  * object files.
  */
-public class Elf32ProgramHeader {
+public class Elf32ProgramHeader implements Elf32Visitable {
     @ElfApi("p_type")
     private final Elf32SegmentType type;
 
@@ -148,5 +150,11 @@ public class Elf32ProgramHeader {
         return this.fileOffset.isBeforeOrAt(section.offsetInFile())
                 && section.sectionEndOffsetInFile().isBeforeOrAt(this.endOffsetInFile());
 
+    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

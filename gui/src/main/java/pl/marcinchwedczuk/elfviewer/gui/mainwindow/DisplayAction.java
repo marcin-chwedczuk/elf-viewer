@@ -1,19 +1,22 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
+import javafx.scene.control.TableView;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.Renderer;
+
+import java.util.function.Consumer;
 
 public class DisplayAction {
     private final String displayName;
-    private final Runnable action;
+    private final Consumer<? super TableView<Object>> action;
 
     public DisplayAction(String displayName,
-                         Runnable action) {
+                         Consumer<? super TableView<Object>> action) {
         this.displayName = displayName;
         this.action = action;
     }
 
     public DisplayAction(String displayName) {
-        this(displayName, () -> { });
+        this(displayName, tv -> { });
     }
 
     @Override
@@ -21,7 +24,7 @@ public class DisplayAction {
         return displayName;
     }
 
-    public void runAction() {
-        action.run();
+    public void displayOn(TableView<Object> tableView) {
+        action.accept(tableView);
     }
 }

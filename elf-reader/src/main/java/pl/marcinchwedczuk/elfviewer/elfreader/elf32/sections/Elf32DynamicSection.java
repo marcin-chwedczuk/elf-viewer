@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTags;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -27,4 +28,10 @@ public class Elf32DynamicSection extends Elf32Section {
 
         return dynamicTags.getTags();
    }
+
+    @Override
+    public void accept(Elf32Visitor visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
+    }
 }
