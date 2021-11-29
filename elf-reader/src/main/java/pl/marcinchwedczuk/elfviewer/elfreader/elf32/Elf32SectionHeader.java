@@ -105,7 +105,7 @@ public class Elf32SectionHeader {
      * this member holds the address at which the section's first
      * byte should reside.  Otherwise, the member contains zero.
      */
-    public Elf32Address inMemoryAddress() {
+    public Elf32Address virtualAddress() {
         return inMemoryAddress;
     }
 
@@ -191,5 +191,10 @@ public class Elf32SectionHeader {
 
         if (name == null) return false;
         return name.startsWith(prefix);
+    }
+
+
+    public Elf32Address endVirtualAddress() {
+        return virtualAddress().plus(size());
     }
 }

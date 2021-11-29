@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
@@ -68,4 +69,5 @@ public class Elf32Section extends Elf32Element {
         visitor.enter(this);
         visitor.exit(this);
     }
+
 }

@@ -1,12 +1,15 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32DynamicSection;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
@@ -20,7 +23,8 @@ public class DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
     protected List<TableColumn<DynamicTagDto, String>> defineColumns() {
         return List.of(
                 mkColumn("d_tag", DynamicTagDto::getType),
-                mkColumn("d_val\nd_ptr", DynamicTagDto::getValue, ALIGN_RIGHT)
+                mkColumn("d_val\nd_ptr", DynamicTagDto::getValue, ALIGN_RIGHT),
+                mkColumn("(comment)", DynamicTagDto::getComment)
         );
     }
 
@@ -29,7 +33,18 @@ public class DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
         return dynamicSection.dynamicTags().stream()
                 .map(tag -> new DynamicTagDto(
                         tag.type().toString(),
-                        hex(tag.value())))
+                        hex(tag.value()),
+                        generateComment(tag)))
                 .collect(toList());
+    }
+
+    private String generateComment(Elf32DynamicTag tag) {
+        if (tag.type().is(NEEDED)) {
+            return dynamicSection.getDynamicLibraryName(tag)
+                .map(name -> String.format("requires library: %s", name))
+                .orElse("");
+        }
+
+        return "";
     }
 }

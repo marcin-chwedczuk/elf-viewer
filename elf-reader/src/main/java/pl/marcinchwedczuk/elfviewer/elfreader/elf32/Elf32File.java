@@ -9,12 +9,10 @@ import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.LOAD;
 
 public class Elf32File extends Elf32Element {
     public final AbstractFile storage;
@@ -73,18 +71,41 @@ public class Elf32File extends Elf32Element {
         return programHeaders;
     }
 
-    public Elf32Offset virtualAddressToFileOffset(Elf32Address addr) {
-        for (Elf32ProgramHeader header : programHeaders) {
-            if (header.type().isNot(LOAD)) continue;
+    public Optional<Elf32Section> sectionContainingAddress(Elf32Address inMemoryAddress) {
+        for (Elf32Section section: sections()) {
+            Elf32SectionHeader header = section.header();
 
-            if (addr.isAfterOrAt(header.virtualAddress()) &&
-                addr.isBefore(header.endVirtualAddressInFile())) {
-
-                long offset = addr.minus(header.virtualAddress());
-                return header.fileOffset().plus(offset);
+            if (inMemoryAddress.isAfterOrAt(header.virtualAddress()) &&
+                    inMemoryAddress.isBefore(header.endVirtualAddress())) {
+                return Optional.of(section);
             }
         }
-        return Elf32Offset.ZERO;
+
+        return Optional.empty();
+    }
+
+    public Optional<Elf32Segment> segmentContainingAddress(Elf32Address inMemoryAddress) {
+        for (Elf32Segment segment: segments()) {
+            Elf32ProgramHeader ph = segment.programHeader();
+
+            if (inMemoryAddress.isAfterOrAt(ph.virtualAddress()) &&
+                    inMemoryAddress.isBefore(ph.endVirtualAddressInFile())) {
+                return Optional.of(segment);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Elf32Offset> virtualAddressToFileOffset(Elf32Address addr) {
+        Optional<Elf32Segment> maybeSegment = segmentContainingAddress(addr);
+
+        return maybeSegment.map(segment -> {
+            long offset = addr.minus(segment.programHeader().virtualAddress());
+
+            return segment.programHeader().fileOffset()
+                    .plus(offset);
+        });
     }
 
     @Override

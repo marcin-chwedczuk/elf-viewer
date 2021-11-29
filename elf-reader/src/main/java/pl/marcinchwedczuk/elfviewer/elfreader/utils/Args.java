@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 
@@ -36,5 +38,11 @@ public class Args {
     public static void checkByteValue(int value) {
         if (value < 0 || value > 0xff)
             throw new IllegalArgumentException("Expected value between 0 and 0xFF but got: " + value + ".");
+    }
+
+    public static void checkDynamicTagType(Elf32DynamicTag tag, Elf32DynamicTagType type) {
+        if (tag.type().isNot(type))
+            throw new IllegalArgumentException(String.format(
+                    "Tag should have type %s but had type %s.", type, tag.type()));
     }
 }

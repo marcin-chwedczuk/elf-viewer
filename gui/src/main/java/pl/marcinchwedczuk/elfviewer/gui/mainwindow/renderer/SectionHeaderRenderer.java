@@ -43,7 +43,7 @@ public class SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
                         header.flags().toString(),
                         ""),
 
-                new StructureFieldDto("sh_addr", header.inMemoryAddress()),
+                new StructureFieldDto("sh_addr", header.virtualAddress()),
                 new StructureFieldDto("sh_offset", header.fileOffset()),
                 new StructureFieldDto("sh_size", header.size()),
                 new StructureFieldDto("sh_link", hex(header.link())),

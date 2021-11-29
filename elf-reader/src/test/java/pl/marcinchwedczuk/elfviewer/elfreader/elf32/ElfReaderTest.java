@@ -142,7 +142,7 @@ class ElfReaderTest {
         assertThat(textSection.link())
                 .isEqualTo(0);
 
-        assertThat(textSection.inMemoryAddress())
+        assertThat(textSection.virtualAddress())
                 .isEqualTo(new Elf32Address(0x08048310));
 
         assertThat(textSection.fileOffset())
@@ -312,7 +312,7 @@ class ElfReaderTest {
 
         // TODO: virtualAddressToLoadedSegment Segment(start, end)
         Elf32Offset strOffset =
-                helloWorldElf.virtualAddressToFileOffset(strTabPtr.address());
+                helloWorldElf.virtualAddressToFileOffset(strTabPtr.address()).get();
 
         // TODO: Get end address
         StringTable stringTable = new StringTable(helloWorld32,
