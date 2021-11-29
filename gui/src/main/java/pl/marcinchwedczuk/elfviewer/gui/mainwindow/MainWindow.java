@@ -12,16 +12,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
 
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
@@ -65,6 +61,10 @@ public class MainWindow implements Initializable {
     private File currentElfPath;
     private Elf32File currentElfFile;
 
+    @FXML
+    private Menu recentlyOpen;
+    private RecentlyOpenFiles recentlyOpenFiles;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         openFileChooser = newOpenFileChooser();
@@ -87,6 +87,9 @@ public class MainWindow implements Initializable {
                 });
 
         tableView.setPlaceholder(new Label("Select data to display"));
+
+        recentlyOpenFiles = new RecentlyOpenFiles(recentlyOpen, this::loadElfFile);
+        recentlyOpenFiles.initialize();
     }
 
     private void clearTable() {
@@ -99,6 +102,8 @@ public class MainWindow implements Initializable {
         currentElfPath = f;
 
         recreateTreeView();
+
+        recentlyOpenFiles.onFileOpen(f);
     }
 
     private void recreateTreeView() {

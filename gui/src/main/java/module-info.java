@@ -3,6 +3,7 @@ module pl.marcinchwedczuk.elfviewer.gui {
 
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.prefs;
 
     exports pl.marcinchwedczuk.elfviewer.gui;
     exports pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;

@@ -40,6 +40,7 @@
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
+                  <Menu fx:id="recentlyOpen" mnemonicParsing="false" text="Recently open" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem onAction="#guiExit" text="E_xit">
                   </MenuItem>
