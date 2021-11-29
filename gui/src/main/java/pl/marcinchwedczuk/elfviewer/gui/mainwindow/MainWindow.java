@@ -137,7 +137,7 @@ public class MainWindow implements Initializable {
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All Files", "*")
+                new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 
         return fileChooser;

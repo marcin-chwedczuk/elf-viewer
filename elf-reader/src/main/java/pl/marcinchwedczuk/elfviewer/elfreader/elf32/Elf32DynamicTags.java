@@ -5,7 +5,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NULL;
@@ -29,7 +28,7 @@ public class Elf32DynamicTags {
     }
 
     public List<Elf32DynamicTag> getTags() {
-        Elf32Offset startOffset = dynamicSection.offsetInFile();
+        Elf32Offset startOffset = dynamicSection.fileOffset();
         StructuredFile sf = new StructuredFile(elfFile, startOffset);
 
         List<Elf32DynamicTag> result = new ArrayList<>();

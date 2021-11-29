@@ -4,15 +4,12 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.BaseElf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
@@ -37,8 +34,8 @@ public class Elf32Section extends Elf32Element {
     public FileView contents() {
         return new FileView(
                 elfFile.storage,
-                header.offsetInFile(),
-                header.sectionSize());
+                header.fileOffset(),
+                header.size());
     }
 
     public boolean containsStrings() {
@@ -53,7 +50,7 @@ public class Elf32Section extends Elf32Element {
         // TODO: Move to using contents
         StructuredFile sf = new StructuredFile(
                 elfFile,
-                header.offsetInFile());
+                header.fileOffset());
 
         // TODO: Handle reading past section end - StructuredFile should support
         // start and end offsets

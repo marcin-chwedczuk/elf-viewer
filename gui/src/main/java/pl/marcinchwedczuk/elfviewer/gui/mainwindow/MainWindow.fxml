@@ -16,7 +16,7 @@
    <center>
       <SplitPane dividerPositions="0.35888738127544095" prefHeight="553.0" prefWidth="739.0">
          <items>
-            <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" />
+            <TreeView fx:id="treeView" SplitPane.resizableWithParent="false" />
             <VBox>
                <children>
                   <TableView fx:id="tableView" style="-fx-font-family: monospaced;" VBox.vgrow="ALWAYS">

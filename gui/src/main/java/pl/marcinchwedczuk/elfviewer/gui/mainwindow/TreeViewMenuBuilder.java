@@ -1,9 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.cell.PropertyValueFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
@@ -111,6 +109,12 @@ public class TreeViewMenuBuilder {
                 addChild(new TreeItem<>(new DisplayAction(
                         "(Null Terminated Strings)",
                         tv -> new StringContentsSectionRenderer(section).renderDataOn(tv))));
+            }
+
+            if (section.header().size() > 0) {
+                addChild(new TreeItem<>(new DisplayAction(
+                        "(Contents)",
+                        tv -> new FileViewRenderer(section.contents()).renderDataOn(tv))));
             }
         }
 
@@ -239,6 +243,12 @@ public class TreeViewMenuBuilder {
             enterNode(new TreeItem<>(new DisplayAction(
                     segmentName,
                     tv -> new Elf32SegmentRenderer(segment).renderDataOn(tv))));
+
+            if (segment.programHeader().fileSize() > 0) {
+                addChild(new TreeItem<>(new DisplayAction(
+                        "(Contents)",
+                        tv -> new FileViewRenderer(segment.contents()).renderDataOn(tv))));
+            }
 
             for (Elf32Section section : segment.containedSections()) {
                 // Recreate section submenu

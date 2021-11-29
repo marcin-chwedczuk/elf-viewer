@@ -28,7 +28,7 @@ public class Elf32InterpreterProgramHeader {
         }
 
         this.elfFile = elfFile;
-        this.startOffset = section.offsetInFile();
+        this.startOffset = section.fileOffset();
     }
 
     public String getInterpreterPath() {

@@ -33,7 +33,7 @@ public class StringTable {
         Args.checkSectionType(section, STRING_TABLE);
 
         this.file = file;
-        this.offsetInFile = section.offsetInFile();
+        this.offsetInFile = section.fileOffset();
         this.endOffsetInFile = section.sectionEndOffsetInFile();
     }
 

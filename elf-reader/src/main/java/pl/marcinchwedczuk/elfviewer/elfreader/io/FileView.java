@@ -21,6 +21,8 @@ public final class FileView implements AbstractFile {
         this.length = length;
     }
 
+    public long startOffset() { return startOffset; }
+
     public long length() {
         return length;
     }
@@ -41,7 +43,7 @@ public final class FileView implements AbstractFile {
         if (offset < 0 || offset+size > length)
             throw new IllegalArgumentException(String.format(
                     "Attempt to read data outside file view range, " +
-                            "File view range is [%d, %d), requested range is [%d, %d).",
-                    startOffset, startOffset + length, offset, offset + size));
+                            "File view length is %d, requested range is [%d, %d).",
+                    length, offset, offset + size));
     }
 }

@@ -202,8 +202,8 @@ public class ElfReader {
         if (noteSection.type().isNot(NOTE))
             throw new IllegalArgumentException("Invalid section type.");
 
-        Elf32Offset startOffset = noteSection.offsetInFile();
-        Elf32Offset endOffset = startOffset.plus(noteSection.sectionSize());
+        Elf32Offset startOffset = noteSection.fileOffset();
+        Elf32Offset endOffset = startOffset.plus(noteSection.size());
 
         List<Elf32Note> notes = new ArrayList<>();
         Elf32Offset curr = startOffset;
@@ -250,7 +250,7 @@ public class ElfReader {
         StructuredFile sf = new StructuredFile(
                 file.storage,
                 file.endianness,
-                gnuHashSection.offsetInFile());
+                gnuHashSection.fileOffset());
 
         int nbuckets = sf.readUnsignedInt();
         int symbolIndex = sf.readUnsignedInt();
@@ -294,7 +294,7 @@ public class ElfReader {
 
         StructuredFile sf = new StructuredFile(
                 file,
-                section.offsetInFile());
+                section.fileOffset());
 
         // TODO: Handle reading past section end - StructuredFile should support
         // start and end offsets

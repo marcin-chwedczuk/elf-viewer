@@ -145,10 +145,10 @@ class ElfReaderTest {
         assertThat(textSection.inMemoryAddress())
                 .isEqualTo(new Elf32Address(0x08048310));
 
-        assertThat(textSection.offsetInFile())
+        assertThat(textSection.fileOffset())
                 .isEqualTo(new Elf32Offset(0x00000310));
 
-        assertThat(textSection.sectionSize())
+        assertThat(textSection.size())
                 .isEqualTo(0x00000192);
     }
 

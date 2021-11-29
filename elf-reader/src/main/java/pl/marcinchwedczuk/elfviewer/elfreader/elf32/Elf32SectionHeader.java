@@ -24,7 +24,7 @@ public class Elf32SectionHeader {
     private final Elf32Address inMemoryAddress;
 
     @ElfApi("sh_offset")
-    private final Elf32Offset offsetInFile;
+    private final Elf32Offset fileOffset;
 
     @ElfApi("sh_size")
     private final int sectionSize;
@@ -46,7 +46,7 @@ public class Elf32SectionHeader {
                               ElfSectionType type,
                               SectionAttributes flags,
                               Elf32Address inMemoryAddress,
-                              Elf32Offset offsetInFile,
+                              Elf32Offset fileOffset,
                               int sectionSize,
                               int link,
                               int info,
@@ -58,7 +58,7 @@ public class Elf32SectionHeader {
         this.type = requireNonNull(type);
         this.flags = requireNonNull(flags);
         this.inMemoryAddress = requireNonNull(inMemoryAddress);
-        this.offsetInFile = requireNonNull(offsetInFile);
+        this.fileOffset = requireNonNull(fileOffset);
         this.sectionSize = sectionSize;
         this.link = link;
         this.info = info;
@@ -116,8 +116,8 @@ public class Elf32SectionHeader {
      * file, and its sh_offset member locates the conceptual
      * placement in the file.
      */
-    public Elf32Offset offsetInFile() {
-        return offsetInFile;
+    public Elf32Offset fileOffset() {
+        return fileOffset;
     }
 
     /**
@@ -126,7 +126,7 @@ public class Elf32SectionHeader {
      * bytes in the file.  A section of type SHT_NOBITS may have
      * a nonzero size, but it occupies no space in the file.
      */
-    public int sectionSize() {
+    public int size() {
         return sectionSize;
     }
 
@@ -175,14 +175,14 @@ public class Elf32SectionHeader {
      */
     public Elf32Offset sectionEndOffsetInFile() {
         // TODO: Consider alignment
-        return offsetInFile.plus(sectionSize);
+        return fileOffset.plus(sectionSize);
     }
 
     @Override
     public String toString() {
         return String.format(
                 "%4s | %20s | %24s | %40s | %s | %s | 0x%08x | 0x%08x | %2d | %2d",
-                nameIndex, name, type, flags, inMemoryAddress, offsetInFile,
+                nameIndex, name, type, flags, inMemoryAddress, fileOffset,
                 link, info, addressAlignment, containedEntrySize);
     }
 

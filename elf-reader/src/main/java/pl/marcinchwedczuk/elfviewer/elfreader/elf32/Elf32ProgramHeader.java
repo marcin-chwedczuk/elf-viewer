@@ -1,7 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 /**
@@ -147,7 +145,7 @@ public class Elf32ProgramHeader {
     }
 
     public boolean containsSection(Elf32SectionHeader section) {
-        return this.fileOffset.isBeforeOrAt(section.offsetInFile())
+        return this.fileOffset.isBeforeOrAt(section.fileOffset())
                 && section.sectionEndOffsetInFile().isBeforeOrAt(this.endOffsetInFile());
 
     }

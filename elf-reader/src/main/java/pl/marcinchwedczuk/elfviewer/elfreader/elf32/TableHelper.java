@@ -19,10 +19,10 @@ public class TableHelper {
 
     public static TableHelper forSectionEntries(Elf32SectionHeader sectionHeader) {
         return new TableHelper(
-                sectionHeader.offsetInFile(),
+                sectionHeader.fileOffset(),
                 sectionHeader.containedEntrySize(),
                 // TODO: Use actual section size
-                sectionHeader.sectionSize() / sectionHeader.containedEntrySize());
+                sectionHeader.size() / sectionHeader.containedEntrySize());
     }
 
     private final Elf32Offset startOffset;

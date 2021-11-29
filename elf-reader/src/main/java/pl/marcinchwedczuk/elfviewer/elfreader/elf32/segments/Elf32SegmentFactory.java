@@ -8,7 +8,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -28,7 +27,7 @@ public class Elf32SegmentFactory {
                             && programHeader.containsSection(s.header()))
                     .collect(toList());
 
-            segments.add(new Elf32Segment(programHeader, containedSections));
+            segments.add(new Elf32Segment(elfFile, programHeader, containedSections));
         }
 
         return segments;
