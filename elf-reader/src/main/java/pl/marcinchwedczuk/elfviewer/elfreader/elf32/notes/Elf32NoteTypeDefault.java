@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Applicable to notes without name.
@@ -37,5 +38,11 @@ public class Elf32NoteTypeDefault extends IntPartialEnum<Elf32NoteTypeDefault> {
 
     public static Collection<Elf32NoteTypeDefault> knownValues() {
         return IntPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

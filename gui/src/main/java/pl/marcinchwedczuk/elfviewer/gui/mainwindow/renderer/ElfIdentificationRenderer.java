@@ -37,24 +37,24 @@ public class ElfIdentificationRenderer extends BaseRenderer<StructureFieldDto> {
 
                 new StructureFieldDto("EI_CLASS",
                         hex(identification.elfClass().value()),
-                        identification.elfClass().name(),
+                        identification.elfClass().apiName(),
                         ""),
 
                 new StructureFieldDto("EI_DATA",
                         hex(identification.elfData().value()),
-                        identification.elfData().name(),
+                        identification.elfData().apiName(),
                         ""),
 
                 new StructureFieldDto("EI_VERSION",
                         // This field occur twice in ELF header.
                         // In identification bytes it is 1 byte long.
                         hex((byte)identification.elfVersion().value()),
-                        identification.elfVersion().name(),
+                        identification.elfVersion().apiName(),
                         ""),
 
                 new StructureFieldDto("EI_OSABI",
                         hex(identification.osAbi().value()),
-                        identification.osAbi().name(),
+                        identification.osAbi().apiName(),
                         ""),
 
                 new StructureFieldDto("EI_ABIVERSION",

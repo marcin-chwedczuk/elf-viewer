@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 // TODO: Add docs, see page 57 of pdf in ./docs directory
 public class Intel386RelocationType extends BytePartialEnum<Intel386RelocationType> {
@@ -198,5 +199,11 @@ public class Intel386RelocationType extends BytePartialEnum<Intel386RelocationTy
 
     public static Collection<Intel386RelocationType> knownValues() {
         return BytePartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

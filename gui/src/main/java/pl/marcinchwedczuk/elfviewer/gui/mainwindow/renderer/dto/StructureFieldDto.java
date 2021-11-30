@@ -2,9 +2,6 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.ShortPartialEnum;
 
 public class StructureFieldDto {
     private final String fieldName;
@@ -34,28 +31,6 @@ public class StructureFieldDto {
         this.rawValue = Integer.toUnsignedString(value);
         this.parsedValue = "";
         this.comment = "";
-    }
-
-    // For displaying enum values in the same table
-    public StructureFieldDto(String fieldName, IntPartialEnum<?> value) {
-        this.fieldName = fieldName;
-        this.parsedValue = String.format("0x%08x", value.value());
-        this.rawValue = value.name();
-        this.comment = "TODO";
-    }
-
-    public StructureFieldDto(String fieldName, ShortPartialEnum<?> value) {
-        this.fieldName = fieldName;
-        this.parsedValue = String.format("0x%04x", 0xffff & value.value());
-        this.rawValue = value.name();
-        this.comment = "TODO";
-    }
-
-    public StructureFieldDto(String fieldName, BytePartialEnum<?> value) {
-        this.fieldName = fieldName;
-        this.parsedValue = String.format("0x%02x", 0xff & value.value());
-        this.rawValue = value.name();
-        this.comment = "TODO";
     }
 
     // For address & offset

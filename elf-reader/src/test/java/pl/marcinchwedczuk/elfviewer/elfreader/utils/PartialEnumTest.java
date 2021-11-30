@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
@@ -163,6 +164,12 @@ public class PartialEnumTest {
         public static Collection<NumberEnum> knownValues() {
             return IntPartialEnum.knownValues(byValue);
         }
+
+        private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+        @Override
+        protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+            return name2apiNameMappingContainer;
+        }
     }
 
     public static class LetterEnum extends IntPartialEnum<LetterEnum> {
@@ -191,6 +198,12 @@ public class PartialEnumTest {
 
         public static Collection<LetterEnum> knownValues() {
             return IntPartialEnum.knownValues(byValue);
+        }
+
+        private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+        @Override
+        protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+            return name2apiNameMappingContainer;
         }
     }
 }

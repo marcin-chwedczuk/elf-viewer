@@ -30,17 +30,17 @@ public class Elf32HeaderRenderer extends BaseRenderer<StructureFieldDto> {
         return List.of(
                 new StructureFieldDto("e_type",
                         hex(header.type().value()),
-                        header.type().name(),
+                        header.type().apiName(),
                         ""),
 
                 new StructureFieldDto("e_machine",
                         hex(header.machine().value()),
-                        header.machine().name(),
+                        header.machine().apiName(),
                         ""),
 
                 new StructureFieldDto("e_version",
                         hex(header.version().value()),
-                        header.version().name(),
+                        header.version().apiName(),
                         ""),
 
                 new StructureFieldDto("e_entry", header.entry()),

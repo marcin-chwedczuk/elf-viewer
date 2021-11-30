@@ -3,8 +3,11 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ShortPartialEnum;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElfMachine extends ShortPartialEnum<ElfMachine> {
     private static final Map<Short, ElfMachine> byValue = mkByValueMap();
@@ -1114,5 +1117,49 @@ public class ElfMachine extends ShortPartialEnum<ElfMachine> {
 
     public static Collection<ElfMachine> knownValues() {
         return ShortPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiName = new AtomicReference<>(null);
+
+    public String apiName() {
+        if (name2apiName.get() == null) {
+            HashMap<String, String> name2apiName = new HashMap<>();
+            Class<?> thisClass = this.getClass();
+
+            for (Field field : getClass().getFields()) {
+                // Static fields only
+                if (!java.lang.reflect.Modifier.isStatic(field.getModifiers())) continue;
+
+                // Field must be of enum type
+                if (!thisClass.isAssignableFrom(field.getType())) continue;
+
+                // Field must be @ElfApi annotation
+                ElfApi elfApi = field.getAnnotation(ElfApi.class);
+                if (elfApi == null) continue;
+
+                try {
+                    ShortPartialEnum<?> value = (ShortPartialEnum<?>)field.get(null);
+                    // Add mapping
+                    name2apiName.put(value.name(), elfApi.value());
+                } catch(IllegalAccessException e) {
+                    // Log but otherwise ignore
+                    e.printStackTrace();
+                }
+            }
+
+            ElfMachine.name2apiName.set(name2apiName);
+        }
+
+        if (name2apiName.get().containsKey(name())) {
+            return name2apiName.get().get(name());
+        } else {
+            return String.format("0x%02x", value());
+        }
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

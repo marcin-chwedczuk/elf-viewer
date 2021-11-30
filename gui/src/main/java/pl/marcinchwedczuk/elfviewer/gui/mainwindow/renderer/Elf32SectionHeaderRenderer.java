@@ -35,7 +35,7 @@ public class Elf32SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> 
 
                 new StructureFieldDto("sh_type",
                         hex(header.type().value()),
-                        header.type().name(), // TODO: Api name
+                        header.type().apiName(),
                         ""),
 
                 new StructureFieldDto("sh_flags",

@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElfClass extends BytePartialEnum<ElfClass> {
     private static final Map<Byte, ElfClass> byValue = mkByValueMap();
@@ -48,5 +49,12 @@ public class ElfClass extends BytePartialEnum<ElfClass> {
 
     public static Collection<ElfClass> knownValues() {
         return BytePartialEnum.knownValues(byValue);
+    }
+
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

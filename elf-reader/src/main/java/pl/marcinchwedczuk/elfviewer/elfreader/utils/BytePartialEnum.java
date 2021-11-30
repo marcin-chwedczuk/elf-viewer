@@ -5,14 +5,13 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class BytePartialEnum<T extends BytePartialEnum<T>> {
+public abstract class BytePartialEnum<T extends BytePartialEnum<T>> extends BasePartialEnum {
     private final byte value;
-    private final String name;
 
     protected BytePartialEnum(byte value) {
         // For unnamed constants
+        super();
         this.value = value;
-        this.name = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -20,8 +19,8 @@ public abstract class BytePartialEnum<T extends BytePartialEnum<T>> {
                               String name,
                               Map<Byte, T> byValueMap,
                               Map<String, T> byNameMap) {
+        super(name);
         this.value = value;
-        this.name = requireNonNull(name);
 
         if (byValueMap.containsKey(value))
             throw new IllegalArgumentException(
@@ -36,13 +35,10 @@ public abstract class BytePartialEnum<T extends BytePartialEnum<T>> {
     }
 
     public final byte value() { return value; }
-    public final String name() { return name; }
 
-    public final boolean isKnownValue() {
-        return (this.name != null);
-    }
-    public final boolean isUnknownValue() {
-        return !isKnownValue();
+    @Override
+    public final String hexString() {
+        return String.format("0x%02x", value & 0xff);
     }
 
     public final boolean is(T value) {
@@ -61,20 +57,20 @@ public abstract class BytePartialEnum<T extends BytePartialEnum<T>> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BytePartialEnum<?> that = (BytePartialEnum<?>) o;
-        return value == that.value && Objects.equals(name, that.name);
+        return value == that.value && Objects.equals(name(), that.name());
     }
 
     @Override
     public final int hashCode() {
-        return Objects.hash(value, name);
+        return Objects.hash(value, name());
     }
 
     @Override
     public final String toString() {
         if (isKnownValue()) {
-            return name;
+            return name();
         } else {
-            return String.format("0x%02x", value);
+            return hexString();
         }
     }
 

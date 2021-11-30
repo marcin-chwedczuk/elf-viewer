@@ -49,7 +49,7 @@ public class Elf32NotesSectionRenderer extends BaseRenderer<NoteDto> {
                 ByteArrays.toHexString(note.descriptor(), ":"),
                 hex(note.type()),
                 (note instanceof Elf32NoteGnu)
-                    ? ((Elf32NoteGnu)note).gnuType().toString()
+                    ? ((Elf32NoteGnu)note).gnuType().apiName()
                     : "",
                 comment(note)
         );

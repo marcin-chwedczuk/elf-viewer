@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.ShortPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElfType extends ShortPartialEnum<ElfType> {
     private static final Map<Short, ElfType> byValue = mkByValueMap();
@@ -54,5 +55,11 @@ public class ElfType extends ShortPartialEnum<ElfType> {
 
     public static Collection<ElfType> knownValues() {
         return ShortPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

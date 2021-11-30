@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElfSectionType extends IntPartialEnum<ElfSectionType> {
     private static final Map<Integer, ElfSectionType> byValue = mkByValueMap();
@@ -243,5 +244,11 @@ public class ElfSectionType extends IntPartialEnum<ElfSectionType> {
 
     public static Collection<ElfSectionType> knownValues() {
         return IntPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

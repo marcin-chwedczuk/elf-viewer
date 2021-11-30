@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Elf32DynamicTagType extends IntPartialEnum<Elf32DynamicTagType> {
     private static final Map<Integer, Elf32DynamicTagType> byValue = mkByValueMap();
@@ -464,6 +465,12 @@ public class Elf32DynamicTagType extends IntPartialEnum<Elf32DynamicTagType> {
 
     public static Collection<Elf32DynamicTagType> knownValues() {
         return IntPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }
 

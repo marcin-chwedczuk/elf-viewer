@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * The value 1 signifies the original file format;
@@ -47,5 +48,11 @@ public class ElfVersion extends IntPartialEnum<ElfVersion> {
 
     public static Collection<ElfVersion> knownValues() {
         return IntPartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }

@@ -31,7 +31,7 @@ public class Elf32DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
     protected List<? extends DynamicTagDto> defineRows() {
         return dynamicSection.dynamicTags().stream()
                 .map(tag -> new DynamicTagDto(
-                        tag.type().toString(),
+                        tag.type().apiName(),
                         hex(tag.value()),
                         generateComment(tag)))
                 .collect(toList());

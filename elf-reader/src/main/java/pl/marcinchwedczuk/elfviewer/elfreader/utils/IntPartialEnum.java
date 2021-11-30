@@ -5,14 +5,13 @@ import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
+public abstract class IntPartialEnum<T extends IntPartialEnum<T>> extends BasePartialEnum {
     private final int value;
-    private final String name;
 
     protected IntPartialEnum(int value) {
         // For unnamed constants
+        super();
         this.value = value;
-        this.name = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -20,8 +19,8 @@ public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
                              String name,
                              Map<Integer, T> byValueMap,
                              Map<String, T> byNameMap) {
+        super(name);
         this.value = value;
-        this.name = requireNonNull(name);
 
         if (byValueMap.containsKey(value))
             throw new IllegalArgumentException(
@@ -37,13 +36,10 @@ public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
     }
 
     public final int value() { return value; }
-    public final String name() { return name; }
 
-    public final boolean isKnownValue() {
-        return (this.name != null);
-    }
-    public final boolean isUnknownValue() {
-        return !isKnownValue();
+    @Override
+    public final String hexString() {
+        return String.format("0x%08x", value);
     }
 
     public final boolean is(T value) {
@@ -65,20 +61,20 @@ public abstract class IntPartialEnum<T extends IntPartialEnum<T>> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IntPartialEnum<?> that = (IntPartialEnum<?>) o;
-        return value == that.value && Objects.equals(name, that.name);
+        return value == that.value && Objects.equals(name(), that.name());
     }
 
     @Override
     public final int hashCode() {
-        return Objects.hash(value, name);
+        return Objects.hash(value, name());
     }
 
     @Override
     public final String toString() {
         if (isKnownValue()) {
-            return name;
+            return name();
         } else {
-            return String.format("0x%08x", value);
+            return hexString();
         }
     }
 

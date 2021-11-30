@@ -47,10 +47,10 @@ public class Elf32SymbolTableSectionRenderer extends BaseRenderer<SymbolTableEnt
                         entry.symbol.value().toString(),
                         dec(entry.symbol.size()),
                         hex(entry.symbol.info()),
-                        entry.symbol.binding().toString(), // TODO: Api names
-                        entry.symbol.symbolType().toString(),
+                        entry.symbol.binding().apiName(),
+                        entry.symbol.symbolType().apiName(),
                         hex(entry.symbol.other()),
-                        entry.symbol.visibility().toString(),
+                        entry.symbol.visibility().apiName(),
                         hex(entry.symbol.index().intValue()),
                         entry.relatedSection != null
                                 ? entry.relatedSection.name()

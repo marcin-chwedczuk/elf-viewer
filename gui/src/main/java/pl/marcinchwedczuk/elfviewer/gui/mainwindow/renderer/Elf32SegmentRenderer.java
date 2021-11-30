@@ -33,7 +33,7 @@ public class Elf32SegmentRenderer extends BaseRenderer<StructureFieldDto> {
         return List.of(
                 new StructureFieldDto("p_type",
                         hex(ph.type().value()),
-                        ph.type().name(),
+                        ph.type().apiName(),
                         ""),
 
                 new StructureFieldDto("p_offset", ph.fileOffset()),

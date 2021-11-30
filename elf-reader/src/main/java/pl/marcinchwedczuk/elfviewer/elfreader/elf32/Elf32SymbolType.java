@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.BytePartialEnum;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Elf32SymbolType extends BytePartialEnum<Elf32SymbolType> {
     private static final Map<Byte, Elf32SymbolType> byValue = mkByValueMap();
@@ -112,5 +113,11 @@ public class Elf32SymbolType extends BytePartialEnum<Elf32SymbolType> {
 
     public static Collection<Elf32SymbolType> knownValues() {
         return BytePartialEnum.knownValues(byValue);
+    }
+
+    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
+    @Override
+    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+        return name2apiNameMappingContainer;
     }
 }
