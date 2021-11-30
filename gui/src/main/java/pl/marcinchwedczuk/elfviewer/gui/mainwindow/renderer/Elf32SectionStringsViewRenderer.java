@@ -10,10 +10,10 @@ import java.util.List;
 import static java.util.function.Function.identity;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
-public class StringContentsSectionRenderer extends BaseRenderer<String> {
+public class Elf32SectionStringsViewRenderer extends BaseRenderer<String> {
     private final Elf32Section section;
 
-    public StringContentsSectionRenderer(Elf32Section section) {
+    public Elf32SectionStringsViewRenderer(Elf32Section section) {
         if (!section.header().flags().hasFlag(STRINGS))
             throw new IllegalArgumentException("Section contents does not consist from strings.");
 

@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.AsciiStrings;

@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 public class DynamicTagDto {
     private final String type;

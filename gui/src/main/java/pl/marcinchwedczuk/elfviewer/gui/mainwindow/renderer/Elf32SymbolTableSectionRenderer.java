@@ -1,19 +1,19 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.SymbolTableEntryDto;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class SymbolTableRenderer extends BaseRenderer<SymbolTableEntryDto> {
+public class Elf32SymbolTableSectionRenderer extends BaseRenderer<SymbolTableEntryDto> {
     private final Elf32SymbolTableSection symbolTableSection;
 
-    public SymbolTableRenderer(Elf32SymbolTableSection symbolTableSection) {
+    public Elf32SymbolTableSectionRenderer(Elf32SymbolTableSection symbolTableSection) {
         this.symbolTableSection = symbolTableSection;
     }
 

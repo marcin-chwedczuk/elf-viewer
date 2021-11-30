@@ -7,10 +7,10 @@ import java.util.List;
 
 import static java.util.function.Function.identity;
 
-public class InterpreterSectionRenderer extends BaseRenderer<String> {
+public class Elf32InterpreterSectionRenderer extends BaseRenderer<String> {
     private final Elf32InterpreterSection interpreterSection;
 
-    public InterpreterSectionRenderer(Elf32InterpreterSection interpreterSection) {
+    public Elf32InterpreterSectionRenderer(Elf32InterpreterSection interpreterSection) {
         this.interpreterSection = interpreterSection;
     }
 

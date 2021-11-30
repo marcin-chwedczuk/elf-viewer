@@ -3,7 +3,7 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StructureFieldDto;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
 import java.util.List;
 

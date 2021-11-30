@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;

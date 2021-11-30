@@ -102,13 +102,13 @@ public class TreeViewMenuBuilder {
 
             enterNode(new TreeItem<>(new DisplayAction(
                     displayName,
-                    tv -> new SectionHeaderRenderer(section.header()).renderDataOn(tv))));
+                    tv -> new Elf32SectionHeaderRenderer(section.header()).renderDataOn(tv))));
 
             /* Various heuristics */
             if (section.containsStrings()) {
                 addChild(new TreeItem<>(new DisplayAction(
                         "(Null Terminated Strings)",
-                        tv -> new StringContentsSectionRenderer(section).renderDataOn(tv))));
+                        tv -> new Elf32SectionStringsViewRenderer(section).renderDataOn(tv))));
             }
 
             if (section.header().size() > 0) {
@@ -137,7 +137,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Dynamic Tags",
-                    tv -> new DynamicSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32DynamicSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override
@@ -150,7 +150,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Interpreter",
-                    tv -> new InterpreterSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32InterpreterSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override
@@ -163,7 +163,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Notes",
-                    tv -> new NotesSectionRenderer(section).renderDataOn(tableView))));
+                    tv -> new Elf32NotesSectionRenderer(section).renderDataOn(tableView))));
         }
 
         @Override
@@ -176,7 +176,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Relocations",
-                    tv -> new RelocationSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32RelocationSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override
@@ -189,7 +189,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "String Table",
-                    tv -> new StringTableRenderer(section.stringTable()).renderDataOn(tv))));
+                    tv -> new Elf32StringTableSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override
@@ -202,7 +202,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Symbol Table",
-                    tv -> new SymbolTableRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32SymbolTableSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override
@@ -215,7 +215,7 @@ public class TreeViewMenuBuilder {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "(Parsing Errors)",
-                    tv -> new InvalidSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32InvalidSectionRenderer(section).renderDataOn(tv))));
         }
 
         @Override

@@ -2,17 +2,17 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.RelocationDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class RelocationSectionRenderer extends BaseRenderer<RelocationDto> {
+public class Elf32RelocationSectionRenderer extends BaseRenderer<RelocationDto> {
     private final Elf32RelocationSection relocationSection;
 
-    public RelocationSectionRenderer(Elf32RelocationSection relocationSection) {
+    public Elf32RelocationSectionRenderer(Elf32RelocationSection relocationSection) {
         this.relocationSection = relocationSection;
     }
 

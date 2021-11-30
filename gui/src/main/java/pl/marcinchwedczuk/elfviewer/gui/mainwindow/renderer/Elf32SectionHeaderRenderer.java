@@ -2,16 +2,16 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StructureFieldDto;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
 import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
+public class Elf32SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
     private final Elf32SectionHeader header;
 
-    public SectionHeaderRenderer(Elf32SectionHeader header) {
+    public Elf32SectionHeaderRenderer(Elf32SectionHeader header) {
         this.header = header;
     }
 

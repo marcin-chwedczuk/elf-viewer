@@ -2,17 +2,16 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InvalidSection;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StructureFieldDto;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.util.List;
 
-public class InvalidSectionRenderer extends BaseRenderer<StructureFieldDto> {
+public class Elf32InvalidSectionRenderer extends BaseRenderer<StructureFieldDto> {
     private final Elf32InvalidSection invalidSection;
 
-    public InvalidSectionRenderer(Elf32InvalidSection invalidSection) {
+    public Elf32InvalidSectionRenderer(Elf32InvalidSection invalidSection) {
         this.invalidSection = invalidSection;
     }
 

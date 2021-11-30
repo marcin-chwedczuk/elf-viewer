@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
+package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 import java.util.Objects;
 

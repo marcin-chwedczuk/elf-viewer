@@ -3,10 +3,8 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StringTableEntryDto;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StructureFieldDto;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;

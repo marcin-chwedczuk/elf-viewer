@@ -7,17 +7,17 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.NoteDto;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class NotesSectionRenderer extends BaseRenderer<NoteDto> {
+public class Elf32NotesSectionRenderer extends BaseRenderer<NoteDto> {
     private final Elf32NotesSection notesSection;
 
-    public NotesSectionRenderer(Elf32NotesSection notesSection) {
+    public Elf32NotesSectionRenderer(Elf32NotesSection notesSection) {
         this.notesSection = notesSection;
     }
 

@@ -2,20 +2,19 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32DynamicSection;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.DynamicTagDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
+public class Elf32DynamicSectionRenderer extends BaseRenderer<DynamicTagDto> {
     private final Elf32DynamicSection dynamicSection;
 
-    public DynamicSectionRenderer(Elf32DynamicSection dynamicSection) {
+    public Elf32DynamicSectionRenderer(Elf32DynamicSection dynamicSection) {
         this.dynamicSection = dynamicSection;
     }
 

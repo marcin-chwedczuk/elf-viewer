@@ -2,19 +2,19 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTable;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.StringTableEntryDto;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StringTableEntryDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class StringTableRenderer extends BaseRenderer<StringTableEntryDto> {
-    private final StringTable stringTable;
+public class Elf32StringTableSectionRenderer extends BaseRenderer<StringTableEntryDto> {
+    private final Elf32StringTableSection section;
 
-    public StringTableRenderer(StringTable stringTable) {
-        this.stringTable = stringTable;
+    public Elf32StringTableSectionRenderer(Elf32StringTableSection section) {
+        this.section = section;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class StringTableRenderer extends BaseRenderer<StringTableEntryDto> {
 
     @Override
     protected List<? extends StringTableEntryDto> defineRows() {
-        return stringTable.getContents().stream()
+        return section.stringTable().getContents().stream()
                 .map(entry -> new StringTableEntryDto(
                         hex(entry.getIndex().intValue()),
                         entry.getValue()))

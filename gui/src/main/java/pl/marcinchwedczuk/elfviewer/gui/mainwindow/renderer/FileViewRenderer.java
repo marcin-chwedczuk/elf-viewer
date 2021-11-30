@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.HexRowDto;
 
 import java.util.ArrayList;
 import java.util.List;
