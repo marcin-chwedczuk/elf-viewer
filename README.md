@@ -5,9 +5,9 @@
 !!! PROJECT UNDER CONSTRUCTION !!!
 
 Current status:
-* Partial parsing of 32-bit ELF - DONE
-* Parsing of 64-bit ELF - WAITING
-* GUI in JavaFX - WAITING
+* Supporting Intel 32-bit ELFs
+* TODO: 64-bit ELFs
+* TODO: Intel 64, ARM & ARM64
 
 Right now I am playing with the API and I try to figure out the most
 intuitive and Javaish API for dealing with ELFs.
