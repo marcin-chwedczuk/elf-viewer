@@ -44,52 +44,56 @@ public class Elf32GnuHashSectionRenderer extends BaseRenderer<GnuHashTableEntryD
                 dec(hashTable.shift2())));
         result.add(new GnuHashTableEntryDto("---", "---", "---", "---"));
 
-        int index = 0;
+        int bloomIndex = 0, bucketIndex = 0, hashIndex = 0;
         boolean nextBucket = true;
-        int bucketIndex = 0;
         while (true) {
             boolean added = false;
-            String bloomCol = "", bucketCol = "", hashCol = "";
+            boolean emptyBucket = false;
 
-            if (index < hashTable.bloomFilter().length) {
+            String bloomCol = "", bucketCol = "", hashCol = "", symbolCol = "";
+
+            if (bloomIndex < hashTable.bloomFilter().length) {
                 added = true;
-                bloomCol = hex(hashTable.bloomFilter()[index]);
+                bloomCol = hex(hashTable.bloomFilter()[bloomIndex++]);
             }
 
             if (nextBucket && (bucketIndex < hashTable.buckets().length)) {
                 added = true;
                 // New hash chain started with this bucket
-                nextBucket = false;
-                bucketCol = hex(hashTable.buckets()[bucketIndex]);
-                bucketIndex += 1;
+                int bucketValue = hashTable.buckets()[bucketIndex++];
+                bucketCol = hex(bucketValue);
+                hashIndex = bucketValue;
+                nextBucket = (bucketValue == 0);
             }
 
-            if (index < hashTable.hashValues().length) {
+            if (hashIndex > 0) { // 0 index means undefined symbol
                 added = true;
-                int hash = hashTable.hashValues()[index];
+                int hash = hashTable.hashValues()[hashIndex - hashTable.startSymbolIndex()];
                 hashCol = hex(hash);
+
+                // Fill symbol data
+                Elf32Symbol symbol = hashTable.symbolTable().get(
+                        new SymbolTableIndex(hashIndex));
+
+                int gnuHash = Elf32GnuHashTable.gnuHash(symbol.name());
+                symbolCol = String.format("%s (hash: 0x%08x, bucket: %d)",
+                        symbol.name(),
+                        gnuHash,
+                        Integer.toUnsignedLong(gnuHash) % hashTable.nBuckets());
+
+                hashIndex++;
 
                 if (Elf32GnuHashTable.isHashChainEnd(hash)) {
                     // Chain ended let's move to the next bucket
                     nextBucket = true;
+                    hashIndex = 0;
                 }
             }
 
             if (!added) break;
 
-            // Symbol table indexes are in sync with hash indexes
-            Elf32Symbol symbol = hashTable.symbolTable().get(
-                        new SymbolTableIndex(index + hashTable.startSymbolIndex()));
-
-            int gnuHash = Elf32GnuHashTable.gnuHash(symbol.name());
-            result.add(new GnuHashTableEntryDto(
-                    bloomCol, bucketCol, hashCol,
-                    String.format("%s (hash: 0x%08x, bucket: %d)",
-                            symbol.name(),
-                            gnuHash,
-                            Integer.toUnsignedLong(gnuHash) % hashTable.nBuckets())));
-
-            index++;
+            result.add(new GnuHashTableEntryDto(bloomCol, bucketCol, hashCol, symbolCol));
+            bloomIndex++;
         }
 
         return result;
