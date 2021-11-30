@@ -5,7 +5,7 @@
 !!! PROJECT UNDER CONSTRUCTION !!!
 
 Current status:
-* Supporting Intel 32-bit ELFs
+* Supporting Intel 32-bit ELFs - DONE
 * TODO: 64-bit ELFs
 * TODO: Intel 64, ARM & ARM64
 
