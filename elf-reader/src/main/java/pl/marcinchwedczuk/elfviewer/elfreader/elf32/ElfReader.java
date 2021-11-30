@@ -242,9 +242,9 @@ public class ElfReader {
                 .map(sh -> new Elf32DynamicTags(elfFile, sh));
     }
 
-    public static Elf32GnuHash readGnuHashSection(Elf32File file,
-                                                  Elf32SectionHeader gnuHashSection,
-                                                  SymbolTable dynsym) {
+    public static Elf32GnuHashTable readGnuHashSection(Elf32File file,
+                                                       Elf32SectionHeader gnuHashSection,
+                                                       SymbolTable dynsym) {
         // TODO: Check section types
 
         StructuredFile sf = new StructuredFile(
@@ -266,7 +266,7 @@ public class ElfReader {
                 .isAfter(gnuHashSection.sectionEndOffsetInFile()))
             throw new IllegalStateException("Read past section end.");
 
-        return new Elf32GnuHash(
+        return new Elf32GnuHashTable(
                 dynsym,
                 nbuckets,
                 symbolIndex,

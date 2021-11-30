@@ -124,4 +124,10 @@ public class Elf32File extends Elf32Element {
         }
         visitor.exitSegments();
     }
+
+    public Optional<Elf32Section> findSection(ElfSectionType type) {
+        return sections().stream()
+                .filter(s -> s.header().type().is(type))
+                .findFirst();
+    }
 }

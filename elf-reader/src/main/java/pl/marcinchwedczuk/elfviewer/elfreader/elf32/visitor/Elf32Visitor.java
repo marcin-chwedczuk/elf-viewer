@@ -28,6 +28,8 @@ public interface Elf32Visitor {
     void exit(Elf32StringTableSection section);
     void enter(Elf32SymbolTableSection section);
     void exit(Elf32SymbolTableSection section);
+    void enter(Elf32GnuHashSection section);
+    void exit(Elf32GnuHashSection section);
     void enter(Elf32InvalidSection section);
     void exit(Elf32InvalidSection section);
     void exitSections();

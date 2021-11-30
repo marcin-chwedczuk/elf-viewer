@@ -2,3 +2,5 @@
 https://refspecs.linuxfoundation.org/elf/gabi4+/ch4.sheader.html
 
 https://docs.oracle.com/cd/E53394_01/html/E54813/chapter6-18048.html#OSLLGchapter6-fig-36
+
+https://blogs.oracle.com/solaris/post/gnu-hash-elf-sections

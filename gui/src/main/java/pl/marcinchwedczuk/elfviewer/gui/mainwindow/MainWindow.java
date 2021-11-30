@@ -107,7 +107,7 @@ public class MainWindow implements Initializable {
     }
 
     private void recreateTreeView() {
-        rootItem = new TreeViewMenuBuilder(
+        rootItem = new ElfExplorerTreeViewBuilder(
                     currentElfPath,
                     currentElfFile,
                     tableView)
@@ -115,7 +115,6 @@ public class MainWindow implements Initializable {
         treeView.setRoot(rootItem);
         rootItem.setExpanded(true);
     }
-
 
     @FXML
     private void guiOpen() {

@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 
 // See: https://www.gabriel.urdhr.fr/2015/09/28/elf-file-format/
 // See: https://blogs.oracle.com/solaris/post/gnu-hash-elf-sections
-public class Elf32GnuHash {
+public class Elf32GnuHashTable {
     private final SymbolTable dynsym;
 
     private final int nbuckets;
@@ -38,14 +38,14 @@ public class Elf32GnuHash {
     // Has size dynsym.size() - symbolIndex
     private final int[] hashValues;
 
-    public Elf32GnuHash(SymbolTable dynsym,
-                        int nbuckets,
-                        int startSymbolIndex,
-                        int maskWords,
-                        int shift2,
-                        int[] bloomFilter,
-                        int[] buckets,
-                        int[] hashValues) {
+    public Elf32GnuHashTable(SymbolTable dynsym,
+                             int nbuckets,
+                             int startSymbolIndex,
+                             int maskWords,
+                             int shift2,
+                             int[] bloomFilter,
+                             int[] buckets,
+                             int[] hashValues) {
         this.dynsym = requireNonNull(dynsym);
         this.nbuckets = nbuckets;
         this.startSymbolIndex = startSymbolIndex;
@@ -57,7 +57,7 @@ public class Elf32GnuHash {
     }
 
     @ElfApi("dl_new_hash")
-    private static int gnuHash(String s)
+    public static int gnuHash(String s)
     {
         int h = 5381;
 
@@ -67,6 +67,11 @@ public class Elf32GnuHash {
         }
 
         return h;
+    }
+
+    public static boolean isHashChainEnd(int hash) {
+        // Last bit of hash is used as marker
+        return (hash & 1) != 0;
     }
 
     public Optional<Elf32Symbol> findSymbol(String symbolName) {
@@ -131,5 +136,37 @@ public class Elf32GnuHash {
     public String toString() {
         return String.format("nbuckets=%d index=%d maskWords=%d shift2=%d",
                 nbuckets, startSymbolIndex, maskWords, shift2);
+    }
+
+    public SymbolTable symbolTable() {
+        return dynsym;
+    }
+
+    public int nBuckets() {
+        return nbuckets;
+    }
+
+    public int startSymbolIndex() {
+        return startSymbolIndex;
+    }
+
+    public int maskWords() {
+        return maskWords;
+    }
+
+    public int shift2() {
+        return shift2;
+    }
+
+    public int[] bloomFilter() {
+        return bloomFilter;
+    }
+
+    public int[] buckets() {
+        return buckets;
+    }
+
+    public int[] hashValues() {
+        return hashValues;
     }
 }

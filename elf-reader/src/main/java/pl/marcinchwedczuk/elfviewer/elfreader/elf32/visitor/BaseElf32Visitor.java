@@ -56,6 +56,12 @@ public abstract class BaseElf32Visitor implements Elf32Visitor {
     public void exit(Elf32SymbolTableSection section) { }
 
     @Override
+    public void enter(Elf32GnuHashSection section) { }
+    @Override
+    public void exit(Elf32GnuHashSection section) { }
+
+
+    @Override
     public void enter(Elf32InvalidSection section) { }
     @Override
     public void exit(Elf32InvalidSection section) { }

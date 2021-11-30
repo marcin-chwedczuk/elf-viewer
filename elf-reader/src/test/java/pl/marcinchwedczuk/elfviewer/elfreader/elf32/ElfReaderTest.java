@@ -352,7 +352,7 @@ class ElfReaderTest {
                 .getSectionHeader(ElfSectionNames.GNU_HASH)
                 .get();
 
-        Elf32GnuHash gnuHash = ElfReader.readGnuHashSection(
+        Elf32GnuHashTable gnuHash = ElfReader.readGnuHashSection(
                 elfFile,
                 gnuHashSection,
                 dymsym);

@@ -14,16 +14,16 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 import java.io.File;
 import java.util.Stack;
 
-public class TreeViewMenuBuilder {
+public class ElfExplorerTreeViewBuilder {
     private final File elfPath;
     private final Elf32File elfFile;
     private final TableView<Object> tableView;
 
     private final Stack<TreeItem<DisplayAction>> parents = new Stack<>();
 
-    public TreeViewMenuBuilder(File elfPath,
-                               Elf32File elfFile,
-                               TableView<Object> tableView) {
+    public ElfExplorerTreeViewBuilder(File elfPath,
+                                      Elf32File elfFile,
+                                      TableView<Object> tableView) {
         this.elfPath = elfPath;
         this.elfFile = elfFile;
         this.tableView = tableView;
@@ -204,9 +204,21 @@ public class TreeViewMenuBuilder {
                     "Symbol Table",
                     tv -> new Elf32SymbolTableSectionRenderer(section).renderDataOn(tv))));
         }
-
         @Override
         public void exit(Elf32SymbolTableSection section) {
+            genericSectionExit();
+        }
+
+        @Override
+        public void enter(Elf32GnuHashSection section) {
+            genericSectionEnter(section);
+            addChild(new TreeItem<>(new DisplayAction(
+                    "Gnu Hash Table",
+                    tv -> new Elf32GnuHashSectionRenderer(section).renderDataOn(tv))));
+        }
+
+        @Override
+        public void exit(Elf32GnuHashSection section) {
             genericSectionExit();
         }
 
