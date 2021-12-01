@@ -190,6 +190,10 @@ public class ElfSectionNames {
      */
     public static final String REL_PREFIX = ".rel";
 
+    public static String REL(String forSection) {
+        return REL_PREFIX + forSection;
+    }
+
     /**
      * This section holds relocation information as described
      * below.  If the file has a loadable segment that includes

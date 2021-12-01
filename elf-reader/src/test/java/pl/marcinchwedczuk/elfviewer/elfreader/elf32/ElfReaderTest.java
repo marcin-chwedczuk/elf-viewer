@@ -5,8 +5,11 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -207,13 +210,18 @@ class ElfReaderTest {
     void elf32_relocation_table() {
         Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        Optional<Elf32SectionHeader> maybeRelocationsSection = elfFile.getSectionHeader(".rel.dyn");
-        assertThat(maybeRelocationsSection)
-                .isPresent();
+        Optional<Elf32Section> maybeRelSection =
+                elfFile.sectionWithName(ElfSectionNames.REL(".dyn"));
 
-        RelocationsTable relocations = new RelocationsTable(
-                maybeRelocationsSection.get(),
-                elfFile);
+        assertThat(maybeRelSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf32RelocationSection.class);
+                });
+
+        Elf32RelocationSection relSection = ((Elf32RelocationSection)maybeRelSection.get());
+        List<Elf32Relocation> relocations = relSection.relocations();
 
         assertThat(relocations.size())
                 .isEqualTo(1);
@@ -221,20 +229,21 @@ class ElfReaderTest {
         Elf32Relocation relocation = relocations.get(0);
         assertThat(relocation.offset())
                 .isEqualTo(new Elf32Address(0x08049ffc));
+
         assertThat(relocation.info())
                 .isEqualTo(0x00000206);
     }
 
     @Test
-    void elf32_segments() {
-        List<Elf32ProgramHeader> segments = ElfReader
+    void elf32_segment_header() {
+        List<Elf32Segment> segments = ElfReader
                 .readElf(helloWorld32)
-                .programHeaders;
+                .segments();
 
         assertThat(segments.size())
                 .isEqualTo(9);
 
-        Elf32ProgramHeader textSegment = segments.get(2);
+        Elf32ProgramHeader textSegment = segments.get(2).programHeader();
 
         assertThat(textSegment.type())
                 .isEqualTo(Elf32SegmentType.LOAD);
@@ -257,18 +266,39 @@ class ElfReaderTest {
     }
 
     @Test
-    void elf32_notes() {
-        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
+    void elf32_notes_abi_tag() {
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        // Test ABI-Tag
-        List<Elf32Note> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
-        Elf32NoteGnuABITag gnuAbi = (Elf32NoteGnuABITag) notes.get(0);
+        Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
+        assertThat(maybeNotesSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf32NotesSection.class);
+                });
+
+        Elf32NotesSection notesSection = (Elf32NotesSection) maybeNotesSection.get();
+
+        Elf32NoteGnuABITag gnuAbi = (Elf32NoteGnuABITag) notesSection.notes().get(0);
         assertThat(gnuAbi.minSupportedKernelVersion())
                 .isEqualTo("2.6.32");
+    }
 
-        // Test build-id
-        notes = ElfReader.readNotes(helloWorldElf, ".note.gnu.build-id");
-        Elf32NoteGnuBuildId buildId = (Elf32NoteGnuBuildId) notes.get(0);
+    @Test
+    void elf32_notes_build_id() {
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+
+        Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
+        assertThat(maybeNotesSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf32NotesSection.class);
+                });
+
+        Elf32NotesSection notesSection = (Elf32NotesSection) maybeNotesSection.get();
+
+        Elf32NoteGnuBuildId buildId = (Elf32NoteGnuBuildId) notesSection.notes().get(0);
         assertThat(buildId.buildId())
                 .isEqualTo("70faabdeb335c923041b807b56a05bc131883779");
     }
