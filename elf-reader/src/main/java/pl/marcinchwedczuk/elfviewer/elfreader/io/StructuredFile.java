@@ -29,7 +29,7 @@ public class StructuredFile {
     }
 
     public StructuredFile(Elf32File file, Elf32Offset offset) {
-        this(file.storage, file.endianness, offset);
+        this(file.storage(), file.endianness(), offset);
     }
 
     public Elf32Offset currentPositionInFile() { return new Elf32Offset(offset); }

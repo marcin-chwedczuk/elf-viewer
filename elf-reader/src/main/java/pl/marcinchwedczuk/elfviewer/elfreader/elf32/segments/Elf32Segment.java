@@ -36,7 +36,7 @@ public class Elf32Segment extends Elf32Element {
 
     public FileView contents() {
         return new FileView(
-                elfFile.storage,
+                elfFile.storage(),
                 programHeader.fileOffset(),
                 programHeader.fileSize());
     }

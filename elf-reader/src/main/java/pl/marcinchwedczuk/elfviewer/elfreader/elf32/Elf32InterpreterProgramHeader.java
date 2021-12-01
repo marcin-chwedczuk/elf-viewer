@@ -33,8 +33,8 @@ public class Elf32InterpreterProgramHeader {
 
     public String getInterpreterPath() {
         StructuredFile sf = new StructuredFile(
-                elfFile.storage,
-                elfFile.endianness,
+                elfFile.storage(),
+                elfFile.endianness(),
                 startOffset);
 
         // TODO: Add max string length

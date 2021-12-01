@@ -34,7 +34,7 @@ public class Elf32NotesSection extends Elf32Section {
         while (curr < contents.length()) {
             StructuredFile sf = new StructuredFile(
                     contents,
-                    elfFile().endianness,
+                    elfFile().endianness(),
                     curr);
 
             int nameLen = sf.readUnsignedInt();

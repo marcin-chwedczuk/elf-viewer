@@ -98,7 +98,7 @@ public class MainWindow implements Initializable {
     }
 
     private void loadElfFile(File f) {
-        currentElfFile = ElfReader.readElf32(new FileSystemFile(f));
+        currentElfFile = ElfReader.readElf(new FileSystemFile(f));
         currentElfPath = f;
 
         recreateTreeView();

@@ -35,7 +35,7 @@ class ElfReaderTest {
 
     @Test
     public void elf32_header() {
-        Elf32Header header = ElfReader.readElf32(helloWorld32).header;
+        Elf32Header header = ElfReader.readElf(helloWorld32).header();
         ElfIdentification identification = header.identification();
 
         assertThat(identification.magicString())
@@ -113,7 +113,7 @@ class ElfReaderTest {
 
     @Test
     public void elf32_sections() {
-        List<Elf32SectionHeader> sections = ElfReader.readElf32(helloWorld32).sectionHeaders;
+        List<Elf32SectionHeader> sections = ElfReader.readElf(helloWorld32).sectionHeaders;
         Optional<Elf32SectionHeader> maybeTextSection = sections.stream()
                 .filter(s -> s.name().equals(".text"))
                 .findFirst();
@@ -154,7 +154,7 @@ class ElfReaderTest {
 
     @Test
     void elf32_symbol_table() {
-        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
         Optional<Elf32SectionHeader> maybeSymbolTableSection = elfFile.getSectionHeader(".symtab");
         assertThat(maybeSymbolTableSection)
@@ -207,7 +207,7 @@ class ElfReaderTest {
 
     @Test
     void elf32_relocation_table() {
-        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
         Optional<Elf32SectionHeader> maybeRelocationsSection = elfFile.getSectionHeader(".rel.dyn");
         assertThat(maybeRelocationsSection)
@@ -230,7 +230,7 @@ class ElfReaderTest {
     @Test
     void elf32_segments() {
         List<Elf32ProgramHeader> segments = ElfReader
-                .readElf32(helloWorld32)
+                .readElf(helloWorld32)
                 .programHeaders;
 
         assertThat(segments.size())
@@ -260,7 +260,7 @@ class ElfReaderTest {
 
     @Test
     void elf32_notes() {
-        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
 
         // Test ABI-Tag
         List<Elf32Note> notes = ElfReader.readNotes(helloWorldElf, ".note.ABI-tag");
@@ -277,7 +277,7 @@ class ElfReaderTest {
 
     @Test
     void elf32_interpreter() {
-        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
         Elf32ProgramHeader interpreterSegment = helloWorldElf.programHeaders.stream()
                 .filter(ph -> ph.type().equals(Elf32SegmentType.INTERPRETER))
                 .findFirst()
@@ -293,7 +293,7 @@ class ElfReaderTest {
 
     @Test
     void dynamic_section() {
-        Elf32File helloWorldElf = ElfReader.readElf32(helloWorld32);
+        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
         List<Elf32DynamicTag> results = ElfReader.readDynamicSection2(helloWorldElf)
                 .get()
                 .getTags();
@@ -330,7 +330,7 @@ class ElfReaderTest {
 
     @Test
     void gnu_hash_section() {
-        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
         Elf32SectionHeader dynsymSection = elfFile
                 .getSectionHeader(ElfSectionNames.DYNSYM)
@@ -341,7 +341,7 @@ class ElfReaderTest {
                 .get();
 
         StringTable symbolNames =
-                new StringTable(elfFile.storage, dymstrSection);
+                new StringTable(elfFile.storage(), dymstrSection);
 
         SymbolTable dymsym = new SymbolTable(
                 elfFile, dynsymSection,
@@ -368,7 +368,7 @@ class ElfReaderTest {
 
     @Test
     void read_comment_section_contents() {
-        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
         Elf32SectionHeader commentSection = elfFile
                 .getSectionHeader(ElfSectionNames.COMMENT)

@@ -15,9 +15,9 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 public class Elf32File extends Elf32Element {
-    public final AbstractFile storage;
-    public final Endianness endianness;
-    public final Elf32Header header;
+    private final AbstractFile storage;
+    private final Endianness endianness;
+    private final Elf32Header header;
 
     public final Memoized<List<Elf32Section>> sectionsMemoized = new Memoized<>(() ->
             new Elf32SectionFactory(this).createSections());
@@ -45,6 +45,18 @@ public class Elf32File extends Elf32Element {
 
         // Fix circular references
         this.sectionHeaders.forEach(sh -> sh.setElfFile(this));
+    }
+
+    public Elf32Header header() {
+        return header;
+    }
+
+    public AbstractFile storage() {
+        return storage;
+    }
+
+    public Endianness endianness() {
+        return endianness;
     }
 
     public List<Elf32Section> sections() {

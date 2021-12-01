@@ -25,7 +25,7 @@ public class Elf32InterpreterSection extends Elf32Section {
     public String interpreterPath() {
         StructuredFile sf = new StructuredFile(
                 contents(),
-                elfFile().endianness);
+                elfFile().endianness());
 
         return sf.readStringNullTerminated();
     }

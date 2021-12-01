@@ -21,7 +21,7 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STR
 public class ElfReader {
     private ElfReader() { }
 
-    public static Elf32File readElf32(AbstractFile file) {
+    public static Elf32File readElf(AbstractFile file) {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);
         ElfIdentification identification = ElfIdentification.parseBytes(identificationBytes);
 
@@ -31,6 +31,7 @@ public class ElfReader {
                 throwElfReaderException("Unrecognised data encoding: %s.", identification.elfData());
 
         final int startOffset = ElfIdentificationIndexes.EI_NIDENT;
+        // TODO: Add path for 64-bits
         Elf32Header header = readElf32Header(identification, new StructuredFile(file, endianness, startOffset));
 
         List<Elf32SectionHeader> sectionHeaders = readElf32SectionHeaders(
@@ -208,15 +209,14 @@ public class ElfReader {
         List<Elf32Note> notes = new ArrayList<>();
         Elf32Offset curr = startOffset;
         while (curr.isBefore(endOffset)) {
-            StructuredFile noteFile = new StructuredFile(elfFile.storage, elfFile.endianness,
-                    curr);
+            StructuredFile sf = new StructuredFile(elfFile, curr);
 
-            int nameLen = noteFile.readUnsignedInt();
-            int descLen = noteFile.readUnsignedInt();
-            int type = noteFile.readUnsignedInt();
+            int nameLen = sf.readUnsignedInt();
+            int descLen = sf.readUnsignedInt();
+            int type = sf.readUnsignedInt();
 
-            String name = noteFile.readFixedSizeStringWithAlignment(nameLen, 4);
-            byte[] descriptor = noteFile.readFixedSizeByteArrayWithAlignment(descLen, 4);
+            String name = sf.readFixedSizeStringWithAlignment(nameLen, 4);
+            byte[] descriptor = sf.readFixedSizeByteArrayWithAlignment(descLen, 4);
 
             if ("GNU".equals(name)) {
                 notes.add(Elf32NoteGnu.createGnuNote(
@@ -230,7 +230,7 @@ public class ElfReader {
                         type));
             }
 
-            curr = noteFile.currentPositionInFile();
+            curr = sf.currentPositionInFile();
         }
 
         return notes;
@@ -247,10 +247,7 @@ public class ElfReader {
                                                        SymbolTable dynsym) {
         // TODO: Check section types
 
-        StructuredFile sf = new StructuredFile(
-                file.storage,
-                file.endianness,
-                gnuHashSection.fileOffset());
+        StructuredFile sf = new StructuredFile(file, gnuHashSection.fileOffset());
 
         int nbuckets = sf.readUnsignedInt();
         int symbolIndex = sf.readUnsignedInt();
