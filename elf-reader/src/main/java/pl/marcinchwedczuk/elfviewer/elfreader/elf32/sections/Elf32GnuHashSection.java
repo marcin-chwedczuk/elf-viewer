@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
@@ -19,11 +20,11 @@ public class Elf32GnuHashSection extends Elf32Section {
 
     public Elf32GnuHashTable gnuHashTable() {
         // TODO: ElfEither<L,R> for error handling
-        Optional<Elf32Section> dynsym = elfFile().findSection(DYNAMIC_SYMBOLS);
-        if (dynsym.isEmpty())
-            return null; // TODO: Meaningful error
+        List<Elf32Section> dynsym = elfFile().sectionsOfType(DYNAMIC_SYMBOLS);
+        if (dynsym.size() != 1)
+            return null; // TODO: Meaningful error, case None and case More than one
 
-        SymbolTable symbolTable = ((Elf32SymbolTableSection)dynsym.get()).symbolTable();
+        SymbolTable symbolTable = ((Elf32SymbolTableSection)dynsym.get(0)).symbolTable();
 
         StructuredFile sf = new StructuredFile(
                 elfFile(),

@@ -10,6 +10,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
@@ -137,9 +138,15 @@ public class Elf32File extends Elf32Element {
         visitor.exitSegments();
     }
 
-    public Optional<Elf32Section> findSection(ElfSectionType type) {
+    public List<Elf32Section> sectionsOfType(ElfSectionType type) {
         return sections().stream()
                 .filter(s -> s.header().type().is(type))
+                .collect(toList());
+    }
+
+    public Optional<Elf32Section> sectionWithName(String name) {
+        return sections().stream()
+                .filter(s -> Objects.equals(name, s.header().name()))
                 .findFirst();
     }
 }

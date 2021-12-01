@@ -5,6 +5,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -112,16 +114,15 @@ class ElfReaderTest {
     }
 
     @Test
-    public void elf32_sections() {
-        List<Elf32SectionHeader> sections = ElfReader.readElf(helloWorld32).sectionHeaders;
-        Optional<Elf32SectionHeader> maybeTextSection = sections.stream()
-                .filter(s -> s.name().equals(".text"))
-                .findFirst();
+    public void elf32_section_header() {
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Optional<Elf32Section> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
 
         assertThat(maybeTextSection)
                 .isPresent();
-
-        Elf32SectionHeader textSection = maybeTextSection.get();
+        Elf32SectionHeader textSection = maybeTextSection
+                .map(Elf32Section::header)
+                .get();
 
         assertThat(textSection.addressAlignment())
                 .isEqualTo(16);
@@ -129,6 +130,7 @@ class ElfReaderTest {
         assertThat(textSection.type())
                 .isEqualTo(PROGBITS);
 
+        // TODO: Test this field using other section
         // Not applicable to this section
         assertThat(textSection.containedEntrySize())
                 .isEqualTo(0);
@@ -156,20 +158,17 @@ class ElfReaderTest {
     void elf32_symbol_table() {
         Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        Optional<Elf32SectionHeader> maybeSymbolTableSection = elfFile.getSectionHeader(".symtab");
-        assertThat(maybeSymbolTableSection)
-                .isPresent();
+        Optional<Elf32Section> maybeSymtabSection =
+                elfFile.sectionWithName(ElfSectionNames.SYMTAB);
 
-        // Symbol Table link member contains index of section containing String Table
-        Elf32SectionHeader strTabSection =
-                elfFile.sectionHeaders.get(maybeSymbolTableSection.get().link());
-        StringTable symbolNames = new StringTable(helloWorld32, strTabSection);
+        assertThat(maybeSymtabSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf32SymbolTableSection.class);
+                });
 
-        Elf32SectionHeader symbolTableSection = maybeSymbolTableSection.get();
-        SymbolTable symbols = new SymbolTable(
-                elfFile, symbolTableSection,
-                symbolNames
-        );
+        SymbolTable symbols = ((Elf32SymbolTableSection)maybeSymtabSection.get()).symbolTable();
 
         // 1. Check Section symbols have their names resolved
         Optional<Elf32Symbol> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
@@ -179,30 +178,29 @@ class ElfReaderTest {
         // 2. Check symbol for 'main' is defined and all values are set
         Optional<Elf32Symbol> maybeMain = symbols.slowlyFindSymbolByName("main");
         assertThat(maybeMain)
-                .isPresent();
+                .isPresent()
+                .hasValueSatisfying(main -> {
+                    assertThat(main.binding())
+                            .isEqualTo(GLOBAL);
+                    assertThat(main.symbolType())
+                            .isEqualTo(FUNCTION);
 
-        Elf32Symbol main = maybeMain.get();
-        assertThat(main.binding())
-                .isEqualTo(GLOBAL);
-        assertThat(main.symbolType())
-                .isEqualTo(FUNCTION);
-        assertThat(main.visibility())
-                .isEqualTo(DEFAULT);
+                    assertThat(main.other())
+                            .isEqualTo((byte)0);
+                    assertThat(main.visibility())
+                            .isEqualTo(DEFAULT);
 
-        // TODO: Parse visibility
-        assertThat(main.other())
-                .isEqualTo((byte)0);
+                    assertThat(main.size())
+                            .isEqualTo(46);
+                    assertThat(main.value())
+                            .isEqualTo(new Elf32Address(0x0804840b));
 
-        assertThat(main.size())
-                .isEqualTo(46);
-        assertThat(main.value())
-                .isEqualTo(new Elf32Address(0x0804840b));
-
-        // Check section header index, it should point to .text section
-        assertThat(main.index())
-                .isEqualTo(new SectionHeaderIndex(14));
-        assertThat(elfFile.sectionHeaders.get(14).name())
-                .isEqualTo(".text");
+                    // Check section header index, it should point to .text section
+                    assertThat(main.index())
+                            .isEqualTo(new SectionHeaderIndex(14));
+                    assertThat(elfFile.sectionHeaders.get(14).name())
+                            .isEqualTo(".text");
+                });
     }
 
     @Test
