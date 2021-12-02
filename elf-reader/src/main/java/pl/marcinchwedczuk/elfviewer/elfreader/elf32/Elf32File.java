@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
@@ -144,9 +145,26 @@ public class Elf32File extends Elf32Element {
                 .collect(toList());
     }
 
+    public Optional<Elf32Section> sectionOfType(ElfSectionType type) {
+        List<Elf32Section> sections = sectionsOfType(type);
+
+        if (sections.size() > 1)
+            throw new ElfReaderException("More than one section has type " + type + ".");
+
+        return sections.size() == 1
+                ? Optional.of(sections.get(0))
+                : Optional.empty();
+    }
+
     public Optional<Elf32Section> sectionWithName(String name) {
         return sections().stream()
                 .filter(s -> Objects.equals(name, s.header().name()))
                 .findFirst();
+    }
+
+    public List<Elf32Segment> segmentsOfType(Elf32SegmentType type) {
+        return segments().stream()
+                .filter(s -> s.programHeader().type().is(type))
+                .collect(toList());
     }
 }

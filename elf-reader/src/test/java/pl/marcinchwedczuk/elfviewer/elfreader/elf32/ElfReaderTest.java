@@ -5,10 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
@@ -305,26 +302,38 @@ class ElfReaderTest {
 
     @Test
     void elf32_interpreter() {
-        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
-        Elf32ProgramHeader interpreterSegment = helloWorldElf.programHeaders.stream()
-                .filter(ph -> ph.type().equals(Elf32SegmentType.INTERPRETER))
-                .findFirst()
-                .get();
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        Elf32InterpreterProgramHeader iph = new Elf32InterpreterProgramHeader(
-                helloWorldElf,
-                interpreterSegment);
+        Optional<Elf32Section> maybeInterp = elfFile.sectionWithName(ElfSectionNames.INTERP);
+        assertThat(maybeInterp)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                   assertThat(value)
+                           .isInstanceOf(Elf32InterpreterSection.class);
+                });
 
-        assertThat(iph.getInterpreterPath())
+        Elf32InterpreterSection interp = ((Elf32InterpreterSection) maybeInterp.get());
+
+        assertThat(interp.interpreterPath())
                 .isEqualTo("/lib/ld-linux.so.2");
     }
 
     @Test
-    void dynamic_section() {
-        Elf32File helloWorldElf = ElfReader.readElf(helloWorld32);
-        List<Elf32DynamicTag> results = ElfReader.readDynamicSection2(helloWorldElf)
-                .get()
-                .getTags();
+    void elf32_dynamic_section() {
+        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+
+        Optional<Elf32Section> maybeDynamic =
+                elfFile.sectionOfType(ElfSectionType.DYNAMIC);
+
+        assertThat(maybeDynamic)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                   assertThat(value)
+                        .isInstanceOf(Elf32DynamicSection.class);
+                });
+
+        Elf32DynamicSection dynamic = (Elf32DynamicSection)maybeDynamic.get();
+        List<Elf32DynamicTag> results = dynamic.dynamicTags();
 
         assertThat(results.get(0))
                 .isEqualTo(new Elf32DynamicTag(NEEDED, 1));
@@ -333,62 +342,34 @@ class ElfReaderTest {
                 .isEqualTo(new Elf32DynamicTag(INIT, 0x80482a8));
 
         // Read library name
-        Elf32DynamicTag strTabPtr = results.stream()
-                .filter(x -> x.type().is(STRTAB))
-                .findFirst()
-                .get();
+        Optional<String> libName = dynamic.getDynamicLibraryName(results.get(0));
 
-        // TODO: virtualAddressToLoadedSegment Segment(start, end)
-        Elf32Offset strOffset =
-                helloWorldElf.virtualAddressToFileOffset(strTabPtr.address()).get();
-
-        // TODO: Get end address
-        StringTable stringTable = new StringTable(helloWorld32,
-                strOffset, new Elf32Offset(Integer.MAX_VALUE));
-
-        // from NEEDED (library) section, offset into in-memory string table
-        int libNameIndex = results.get(0).value();
-        String libName = stringTable.getStringAtIndex(
-                new StringTableIndex(libNameIndex));
-
-        assertThat(libName).isEqualTo("libc.so.6");
-
-        // See: https://stackoverflow.com/a/22613627/1779504
+        assertThat(libName)
+                .isPresent()
+                .hasValue("libc.so.6");
     }
 
     @Test
-    void gnu_hash_section() {
+    void elf32_gnu_hash_section() {
         Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        Elf32SectionHeader dynsymSection = elfFile
-                .getSectionHeader(ElfSectionNames.DYNSYM)
-                .get();
+        Optional<Elf32Section> maybeGnuHash =
+                elfFile.sectionOfType(ElfSectionType.GNU_HASH);
 
-        Elf32SectionHeader dymstrSection = elfFile
-                .getSectionHeader(ElfSectionNames.DYNSTR)
-                .get();
+        assertThat(maybeGnuHash)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf32GnuHashSection.class);
+                });
 
-        StringTable symbolNames =
-                new StringTable(elfFile.storage(), dymstrSection);
+        Elf32GnuHashSection gnuHash = (Elf32GnuHashSection)maybeGnuHash.get();
+        Elf32GnuHashTable hashTable = gnuHash.gnuHashTable();
 
-        SymbolTable dymsym = new SymbolTable(
-                elfFile, dynsymSection,
-                symbolNames
-        );
-
-        Elf32SectionHeader gnuHashSection = elfFile
-                .getSectionHeader(ElfSectionNames.GNU_HASH)
-                .get();
-
-        Elf32GnuHashTable gnuHash = ElfReader.readGnuHashSection(
-                elfFile,
-                gnuHashSection,
-                dymsym);
-
-        assertThat(gnuHash.findSymbol("blah"))
+        assertThat(hashTable.findSymbol("blah"))
                 .isEmpty();
 
-        assertThat(gnuHash.findSymbol("_IO_stdin_used").get().name())
+        assertThat(hashTable.findSymbol("_IO_stdin_used").get().name())
                 .isEqualTo("_IO_stdin_used");
 
         // TODO: Test with library exporting more than 1 symbol
