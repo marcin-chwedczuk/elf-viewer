@@ -1,10 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -16,7 +18,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
-public class Elf32File extends Elf32Element {
+public class Elf32File extends ElfFile implements Elf32Visitable {
     private final AbstractFile storage;
     private final Endianness endianness;
     private final Elf32Header header;

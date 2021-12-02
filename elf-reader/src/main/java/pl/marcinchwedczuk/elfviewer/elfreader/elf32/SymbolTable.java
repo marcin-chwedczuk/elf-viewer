@@ -48,7 +48,7 @@ public class SymbolTable {
         StructuredFile sf = new StructuredFile(elfFile, startOffset);
 
         StringTableIndex nameIndex = new StringTableIndex(sf.readUnsignedInt());
-        Elf32Address value = sf.readAddress();
+        Elf32Address value = sf.readAddress32();
         int size = sf.readUnsignedInt();
         byte info = sf.readByte();
         byte other = sf.readByte();

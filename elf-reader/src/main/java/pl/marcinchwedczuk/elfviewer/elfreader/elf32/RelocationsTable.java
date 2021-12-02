@@ -6,7 +6,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
@@ -39,7 +38,7 @@ public class RelocationsTable {
         Elf32Offset startOffset = tableHelper.offsetForEntry(index);
         StructuredFile sf = new StructuredFile(elfFile, startOffset);
 
-        Elf32Address offset = sf.readAddress();
+        Elf32Address offset = sf.readAddress32();
         int info = sf.readUnsignedInt();
 
         return new Elf32Relocation(

@@ -16,4 +16,16 @@ public class BigEndian implements Endianness {
                 | (0xff & bytes[2]) << 8
                 | (0xff & bytes[3]);
     }
+
+    @Override
+    public long toUnsignedLong(byte[] bytes) {
+        return ((0xffL & bytes[0]) << 56)
+                | ((0xffL & bytes[1]) << 48)
+                | ((0xffL & bytes[2]) << 40)
+                | ((0xffL & bytes[3]) << 32)
+                | ((0xffL & bytes[4]) << 24)
+                | ((0xffL & bytes[5]) << 16)
+                | ((0xffL & bytes[6]) << 8)
+                | ((0xffL & bytes[7]) << 0);
+    }
 }

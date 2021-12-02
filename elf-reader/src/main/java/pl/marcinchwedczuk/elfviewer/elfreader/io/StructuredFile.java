@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Address;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
@@ -40,11 +42,16 @@ public class StructuredFile {
         return bytes;
     }
 
-
-    public Elf32Address readAddress() {
+    public Elf32Address readAddress32() {
         byte[] addressBytes = readNext(4);
         int address = endianness.toUnsignedInt(addressBytes);
         return new Elf32Address(address);
+    }
+
+    public Elf64Address readAddress64() {
+        byte[] addressBytes = readNext(8);
+        long address = endianness.toUnsignedLong(addressBytes);
+        return new Elf64Address(address);
     }
 
     public short readUnsignedShort() {
@@ -53,10 +60,16 @@ public class StructuredFile {
         return half;
     }
 
-    public Elf32Offset readOffset() {
+    public Elf32Offset readOffset32() {
         byte[] addressBytes = readNext(4);
         int address = endianness.toUnsignedInt(addressBytes);
         return new Elf32Offset(address);
+    }
+
+    public Elf64Offset readOffset64() {
+        byte[] addressBytes = readNext(8);
+        long address = endianness.toUnsignedLong(addressBytes);
+        return new Elf64Offset(address);
     }
 
     public int readUnsignedInt() {

@@ -37,7 +37,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     public void elf32_header() {
-        Elf32Header header = ElfReader.readElf(helloWorld32).header();
+        Elf32Header header = ElfReader.readElf32(helloWorld32).header();
         ElfIdentification identification = header.identification();
 
         assertThat(identification.magicString())
@@ -115,7 +115,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     public void elf32_section_header() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
         Optional<Elf32Section> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
 
         assertThat(maybeTextSection)
@@ -156,7 +156,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_symbol_table() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeSymtabSection =
                 elfFile.sectionWithName(ElfSectionNames.SYMTAB);
@@ -205,7 +205,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_relocation_table() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeRelSection =
                 elfFile.sectionWithName(ElfSectionNames.REL(".dyn"));
@@ -234,7 +234,7 @@ class ElfReader_32Bits_Test {
     @Test
     void elf32_segment_header() {
         List<Elf32Segment> segments = ElfReader
-                .readElf(helloWorld32)
+                .readElf32(helloWorld32)
                 .segments();
 
         assertThat(segments.size())
@@ -264,7 +264,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_notes_abi_tag() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
         assertThat(maybeNotesSection)
@@ -283,7 +283,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_notes_build_id() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
         assertThat(maybeNotesSection)
@@ -302,7 +302,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_interpreter() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeInterp = elfFile.sectionWithName(ElfSectionNames.INTERP);
         assertThat(maybeInterp)
@@ -320,7 +320,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_dynamic_section() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeDynamic =
                 elfFile.sectionOfType(ElfSectionType.DYNAMIC);
@@ -351,7 +351,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void elf32_gnu_hash_section() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeGnuHash =
                 elfFile.sectionOfType(ElfSectionType.GNU_HASH);
@@ -377,7 +377,7 @@ class ElfReader_32Bits_Test {
 
     @Test
     void read_comment_section_contents() {
-        Elf32File elfFile = ElfReader.readElf(helloWorld32);
+        Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
         Optional<Elf32Section> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
 
