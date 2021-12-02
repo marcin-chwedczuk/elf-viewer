@@ -379,12 +379,13 @@ class ElfReaderTest {
     void read_comment_section_contents() {
         Elf32File elfFile = ElfReader.readElf(helloWorld32);
 
-        Elf32SectionHeader commentSection = elfFile
-                .getSectionHeader(ElfSectionNames.COMMENT)
-                .get();
+        Optional<Elf32Section> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
 
-        Collection<String> comments =
-                ElfReader.readStringsSection(elfFile, commentSection);
+        assertThat(maybeComment)
+                .isPresent();
+
+        Elf32Section comment = maybeComment.get();
+        List<String> comments = comment.readContentsAsStrings();
 
         assertThat(comments)
                 .hasSize(1)
