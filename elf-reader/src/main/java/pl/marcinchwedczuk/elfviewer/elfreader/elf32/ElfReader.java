@@ -1,9 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
@@ -11,12 +8,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.NOTE;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
 public class ElfReader {
     private ElfReader() { }
@@ -195,85 +188,6 @@ public class ElfReader {
     }
 
 
-    public static List<Elf32Note> readNotes(Elf32File elfFile, String sectionName) {
-        Elf32SectionHeader noteSection = elfFile.getSectionHeader(sectionName)
-                .orElseThrow(() ->
-                    new IllegalArgumentException("Section with name " + sectionName + " not found."));
-
-        if (noteSection.type().isNot(NOTE))
-            throw new IllegalArgumentException("Invalid section type.");
-
-        Elf32Offset startOffset = noteSection.fileOffset();
-        Elf32Offset endOffset = startOffset.plus(noteSection.size());
-
-        List<Elf32Note> notes = new ArrayList<>();
-        Elf32Offset curr = startOffset;
-        while (curr.isBefore(endOffset)) {
-            StructuredFile sf = new StructuredFile(elfFile, curr);
-
-            int nameLen = sf.readUnsignedInt();
-            int descLen = sf.readUnsignedInt();
-            int type = sf.readUnsignedInt();
-
-            String name = sf.readFixedSizeStringWithAlignment(nameLen, 4);
-            byte[] descriptor = sf.readFixedSizeByteArrayWithAlignment(descLen, 4);
-
-            if ("GNU".equals(name)) {
-                notes.add(Elf32NoteGnu.createGnuNote(
-                        nameLen, name,
-                        descLen, descriptor,
-                        type));
-            } else {
-                notes.add(new Elf32Note(
-                        nameLen, name,
-                        descLen, descriptor,
-                        type));
-            }
-
-            curr = sf.currentPositionInFile();
-        }
-
-        return notes;
-    }
-
-    public static Optional<Elf32DynamicTags> readDynamicSection2(Elf32File elfFile) {
-        return elfFile
-                .getSectionHeader(ElfSectionNames.DYNAMIC)
-                .map(sh -> new Elf32DynamicTags(elfFile, sh));
-    }
-
-    public static Elf32GnuHashTable readGnuHashSection(Elf32File file,
-                                                       Elf32SectionHeader gnuHashSection,
-                                                       SymbolTable dynsym) {
-        // TODO: Check section types
-
-        StructuredFile sf = new StructuredFile(file, gnuHashSection.fileOffset());
-
-        int nbuckets = sf.readUnsignedInt();
-        int symbolIndex = sf.readUnsignedInt();
-        int maskWords = sf.readUnsignedInt();
-        int shift2 = sf.readUnsignedInt();
-
-        // TODO: Check boundary of section
-        int[] bloomFilter = sf.readIntArray(maskWords);
-        int[] buckets = sf.readIntArray(nbuckets);
-        int[] hashValues = sf.readIntArray(dynsym.size() - symbolIndex);
-
-        if (sf.currentPositionInFile()
-                .isAfter(gnuHashSection.sectionEndOffsetInFile()))
-            throw new IllegalStateException("Read past section end.");
-
-        return new Elf32GnuHashTable(
-                dynsym,
-                nbuckets,
-                symbolIndex,
-                maskWords,
-                shift2,
-                bloomFilter,
-                buckets,
-                hashValues);
-    }
-
     private static <T> T throwElfReaderException(String message) {
         throw new RuntimeException(String.format("%s", message));
     }
@@ -281,25 +195,4 @@ public class ElfReader {
         throw new RuntimeException(String.format(format, args));
     }
 
-    public static Collection<String> readStringsSection(
-            Elf32File file,
-            Elf32SectionHeader section) {
-        // TODO: Add asserts
-
-        if (!section.flags().hasFlag(STRINGS))
-            throw new ElfReaderException("Section " + section.name() + " does not contain strings.");
-
-        StructuredFile sf = new StructuredFile(
-                file,
-                section.fileOffset());
-
-        // TODO: Handle reading past section end - StructuredFile should support
-        // start and end offsets
-        List<String> result = new ArrayList<>();
-        while (sf.currentPositionInFile().isBefore(section.sectionEndOffsetInFile())) {
-            String s = sf.readStringNullTerminated();
-            result.add(s);
-        }
-        return result;
-    }
 }
