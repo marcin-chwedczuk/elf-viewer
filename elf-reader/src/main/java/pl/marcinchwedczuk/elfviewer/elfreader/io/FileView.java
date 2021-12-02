@@ -17,7 +17,7 @@ public final class FileView implements AbstractFile {
             throw new IllegalArgumentException("Length cannot be negative.");
 
         this.file = requireNonNull(file);
-        this.startOffset = start.longValue();
+        this.startOffset = start.intValue();
         this.length = length;
     }
 

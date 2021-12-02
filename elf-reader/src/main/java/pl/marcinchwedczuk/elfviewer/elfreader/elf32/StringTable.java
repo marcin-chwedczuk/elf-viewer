@@ -47,15 +47,15 @@ public class StringTable {
     }
 
     public boolean isValidIndex(StringTableIndex index) {
-        long startOffset = offsetInFile.longValue();
-        long sectionEndOffset = endOffsetInFile.longValue();
+        long startOffset = offsetInFile.intValue();
+        long sectionEndOffset = endOffsetInFile.intValue();
 
         return (index.intValue() < (sectionEndOffset - startOffset));
     }
 
     public Collection<StringTableEntry> getContents() {
-        long sectionStartOffset = offsetInFile.longValue();
-        long sectionEndOffset = endOffsetInFile.longValue();
+        long sectionStartOffset = offsetInFile.intValue();
+        long sectionEndOffset = endOffsetInFile.intValue();
         long curr = 0;
 
         List<StringTableEntry> result = new ArrayList<>();
@@ -73,8 +73,8 @@ public class StringTable {
     }
 
     public String getStringAtIndex(StringTableIndex index) {
-        long startOffset = offsetInFile.longValue() + index.intValue();
-        long sectionEndOffset = endOffsetInFile.longValue();
+        long startOffset = offsetInFile.intValue() + index.intValue();
+        long sectionEndOffset = endOffsetInFile.intValue();
 
         ByteList buffer = new ByteList();
 

@@ -57,7 +57,7 @@ public class Elf32NotesSection extends Elf32Section {
                         type));
             }
 
-            curr = sf.currentPositionInFile().longValue();
+            curr = sf.currentPositionInFile().intValue();
         }
 
         return notes;

@@ -126,10 +126,7 @@ public class Elf32GnuHashTable {
      * This mod function treads arguments as unsigned.
      */
     private static int umod(int a, int b) {
-        // TODO: Optimize
-        long ua = Integer.toUnsignedLong(a);
-        long ub = Integer.toUnsignedLong(b);
-        return (int)(ua % ub);
+        return Integer.remainderUnsigned(a, b);
     }
 
     @Override

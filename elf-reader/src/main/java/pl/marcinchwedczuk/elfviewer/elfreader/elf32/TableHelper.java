@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+
 import static java.util.Objects.requireNonNull;
 
 public class TableHelper {
@@ -50,7 +52,7 @@ public class TableHelper {
             throw new IndexOutOfBoundsException("Index is out of bounds: " + index);
         }
 
-        long entryOffset = startOffset.longValue() + (long)index * entrySize;
+        int entryOffset = startOffset.intValue() + index * entrySize;
         return new Elf32Offset(entryOffset);
     }
 

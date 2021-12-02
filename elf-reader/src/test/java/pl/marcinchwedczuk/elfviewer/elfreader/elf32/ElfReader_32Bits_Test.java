@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
@@ -11,7 +12,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +24,10 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBI
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
 
-class ElfReaderTest {
+class ElfReader_32Bits_Test {
     private final AbstractFile helloWorld32;
 
-    public ElfReaderTest() throws IOException {
+    public ElfReader_32Bits_Test() throws IOException {
         byte[] binaryBytes = this.getClass()
                 .getResourceAsStream("hello-world-32")
                 .readAllBytes();

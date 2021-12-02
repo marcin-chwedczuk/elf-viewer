@@ -1,25 +1,42 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Objects;
 
 @ElfApi("Elf32_Off")
-public class Elf32Offset {
+public class Elf32Offset extends ElfOffset<Elf32Offset> {
     public static final Elf32Offset ZERO = new Elf32Offset(0);
 
-    private final long offset;
+    private final int offset;
 
-    public Elf32Offset(long offset) {
+    public Elf32Offset(int offset) {
         this.offset = offset;
     }
 
-    public long longValue() {
+    public int intValue() {
         return offset;
     }
 
+    @Override
+    public boolean isAfter(Elf32Offset other) {
+        return Integer.compareUnsigned(this.offset, other.offset) > 0;
+    }
+
+    @Override
+    public boolean isBefore(Elf32Offset other) {
+        return Integer.compareUnsigned(this.offset, other.offset) < 0;
+    }
+
     public Elf32Offset plus(long nbytes) {
-        return new Elf32Offset(offset + nbytes);
+        // TODO: Overflow
+        return new Elf32Offset(offset + Math.toIntExact(nbytes));
+    }
+
+    public long minus(Elf32Offset fileOffset) {
+        // Normal subtraction works for unsigned int's
+        return this.offset - fileOffset.offset;
     }
 
     @Override
@@ -38,21 +55,5 @@ public class Elf32Offset {
     @Override
     public String toString() {
         return String.format("0x%08x", offset);
-    }
-
-    public boolean isBefore(Elf32Offset other) {
-        return this.offset < other.offset;
-    }
-
-    public boolean isBeforeOrAt(Elf32Offset other) {
-        return this.offset <= other.offset;
-    }
-
-    public boolean isAfterOrAt(Elf32Offset other) {
-        return this.offset >= other.offset;
-    }
-
-    public boolean isAfter(Elf32Offset other) {
-        return this.offset > other.offset;
     }
 }

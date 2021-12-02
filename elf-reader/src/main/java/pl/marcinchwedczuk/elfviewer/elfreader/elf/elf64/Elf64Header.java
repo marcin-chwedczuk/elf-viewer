@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfMachine;
@@ -6,20 +6,15 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 
-public class Elf32Header
-        extends ElfHeader<Elf32Address, Elf32Offset>
-        implements Elf32Visitable {
-
-    public Elf32Header(ElfIdentification identification,
+public class Elf64Header extends ElfHeader<Elf64Address, Elf64Offset> {
+    public Elf64Header(ElfIdentification identification,
                        ElfType type,
                        ElfMachine machine,
                        ElfVersion version,
-                       Elf32Address entry,
-                       Elf32Offset programHeaderTableOffset,
-                       Elf32Offset sectionHeaderTableOffset,
+                       Elf64Address entry,
+                       Elf64Offset programHeaderTableOffset,
+                       Elf64Offset sectionHeaderTableOffset,
                        int flags,
                        short elfHeaderSize,
                        short programHeaderSize,
@@ -41,14 +36,5 @@ public class Elf32Header
                 sectionHeaderSize,
                 sectionHeaderCount,
                 sectionNamesStringTableIndex);
-    }
-
-    @Override
-    public void accept(Elf32Visitor visitor) {
-        visitor.enter(identification());
-        visitor.exit(identification());
-
-        visitor.enter(this);
-        visitor.exit(this);
     }
 }

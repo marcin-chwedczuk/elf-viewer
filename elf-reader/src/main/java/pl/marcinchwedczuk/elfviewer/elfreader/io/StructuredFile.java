@@ -25,14 +25,14 @@ public class StructuredFile {
     }
 
     public StructuredFile(AbstractFile file, Endianness endianness, Elf32Offset offset) {
-        this(file, endianness, offset.longValue());
+        this(file, endianness, offset.intValue());
     }
 
     public StructuredFile(Elf32File file, Elf32Offset offset) {
         this(file.storage(), file.endianness(), offset);
     }
 
-    public Elf32Offset currentPositionInFile() { return new Elf32Offset(offset); }
+    public Elf32Offset currentPositionInFile() { return new Elf32Offset(Math.toIntExact(offset)); }
 
     private byte[] readNext(int nbytes) {
         byte[] bytes = file.read(offset, nbytes);

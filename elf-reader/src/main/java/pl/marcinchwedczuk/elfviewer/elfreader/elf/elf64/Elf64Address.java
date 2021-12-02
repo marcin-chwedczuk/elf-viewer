@@ -1,19 +1,20 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Objects;
 
-@ElfApi("Elf32_Addr")
-public class Elf32Address extends ElfAddress<Elf32Address> {
-    private final int address;
+@ElfApi("Elf64_Addr")
+public class Elf64Address extends ElfAddress<Elf64Address> {
+    private final long address;
 
-    public Elf32Address(int address) {
+    public Elf64Address(long address) {
         this.address = address;
     }
 
-    public int intValue() { return address; }
+    public long longValue() { return address; }
 
     @Override
     public boolean isNull() {
@@ -21,22 +22,22 @@ public class Elf32Address extends ElfAddress<Elf32Address> {
     }
 
     @Override
-    public boolean isAfter(Elf32Address address) {
-        return Integer.compareUnsigned(this.address, address.address) > 0;
+    public boolean isAfter(Elf64Address address) {
+        return Long.compareUnsigned(this.address, address.address) > 0;
     }
     @Override
-    public boolean isBefore(Elf32Address address) {
-        return Integer.compareUnsigned(this.address, address.address) < 0;
+    public boolean isBefore(Elf64Address address) {
+        return Long.compareUnsigned(this.address, address.address) < 0;
     }
 
     @Override
-    public Elf32Address plus(long bytesCount) {
+    public Elf64Address plus(long bytesCount) {
         // TODO: Check overflow
-        return new Elf32Address(this.address + Math.toIntExact(bytesCount));
+        return new Elf64Address(this.address + Math.toIntExact(bytesCount));
     }
 
     @Override
-    public long minus(Elf32Address addr) {
+    public long minus(Elf64Address addr) {
         // Normal subtract works for unsigned int as well
         return this.address - addr.address;
     }
@@ -45,7 +46,7 @@ public class Elf32Address extends ElfAddress<Elf32Address> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Elf32Address that = (Elf32Address) o;
+        Elf64Address that = (Elf64Address) o;
         return address == that.address;
     }
 
@@ -56,7 +57,7 @@ public class Elf32Address extends ElfAddress<Elf32Address> {
 
     @Override
     public String toString() {
-        return String.format("0x%08x", address);
+        return String.format("0x%016x", address);
     }
 
 }

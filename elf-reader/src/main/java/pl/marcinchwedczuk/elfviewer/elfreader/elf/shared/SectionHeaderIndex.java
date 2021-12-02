@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
@@ -96,6 +96,8 @@ public class SectionHeaderIndex {
     private final int index;
 
     public SectionHeaderIndex(int index) {
+        // TODO: index is a short acutally
+        // TODO: Change name to SectionIndex
         if (index < 0)
             throw new IllegalArgumentException();
         this.index = index;
