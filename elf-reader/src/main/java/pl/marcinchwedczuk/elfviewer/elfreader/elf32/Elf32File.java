@@ -18,10 +18,15 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
-public class Elf32File extends ElfFile implements Elf32Visitable {
+public class Elf32File
+        extends ElfFile<
+            Elf32Address,
+            Elf32Offset,
+            Elf32Header>
+        implements Elf32Visitable
+{
     private final AbstractFile storage;
     private final Endianness endianness;
-    private final Elf32Header header;
 
     public final Memoized<List<Elf32Section>> sectionsMemoized = new Memoized<>(() ->
             new Elf32SectionFactory(this).createSections());
@@ -41,18 +46,14 @@ public class Elf32File extends ElfFile implements Elf32Visitable {
                      Elf32Header header,
                      List<Elf32SectionHeader> sectionHeaders,
                      List<Elf32ProgramHeader> programHeaders) {
+        super(header);
         this.storage = storage;
         this.endianness = endianness;
-        this.header = header;
         this.sectionHeaders = sectionHeaders;
         this.programHeaders = programHeaders;
 
         // Fix circular references
         this.sectionHeaders.forEach(sh -> sh.setElfFile(this));
-    }
-
-    public Elf32Header header() {
-        return header;
     }
 
     public AbstractFile storage() {
@@ -126,7 +127,7 @@ public class Elf32File extends ElfFile implements Elf32Visitable {
 
     @Override
     public void accept(Elf32Visitor visitor) {
-        header.accept(visitor);
+        header().accept(visitor);
 
         visitor.enterSections();
         for (Elf32Section section : sections()) {
