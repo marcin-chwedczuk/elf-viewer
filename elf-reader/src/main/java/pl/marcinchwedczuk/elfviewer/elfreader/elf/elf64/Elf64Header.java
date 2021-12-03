@@ -7,7 +7,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 
-public class Elf64Header extends ElfHeader<Elf64Address, Elf64Offset> {
+public class Elf64Header extends ElfHeader<Long> {
     public Elf64Header(ElfIdentification identification,
                        ElfType type,
                        ElfMachine machine,

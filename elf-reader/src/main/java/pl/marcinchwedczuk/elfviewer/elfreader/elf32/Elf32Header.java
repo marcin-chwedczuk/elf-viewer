@@ -4,13 +4,16 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfMachine;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfVersion;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 
 public class Elf32Header
-        extends ElfHeader<Elf32Address, Elf32Offset>
+        extends ElfHeader<Integer>
         implements Elf32Visitable {
 
     public Elf32Header(ElfIdentification identification,
@@ -50,5 +53,20 @@ public class Elf32Header
 
         visitor.enter(this);
         visitor.exit(this);
+    }
+
+    @Override
+    public Elf32Address entry() {
+        return (Elf32Address) super.entry();
+    }
+
+    @Override
+    public Elf32Offset programHeaderTableOffset() {
+        return (Elf32Offset) super.programHeaderTableOffset();
+    }
+
+    @Override
+    public Elf32Offset sectionHeaderTableOffset() {
+        return (Elf32Offset) super.sectionHeaderTableOffset();
     }
 }

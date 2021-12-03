@@ -1,12 +1,16 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class Elf32SectionHeader {
+public abstract class ElfSectionHeader<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        >
+{
     @ElfApi("sh_name")
     private final StringTableIndex nameIndex;
 
@@ -16,16 +20,17 @@ public class Elf32SectionHeader {
     private final ElfSectionType type;
 
     @ElfApi("sh_flags")
+    // TODO: Move constants to interface, split into INtFlags and LongFlags
     private final SectionAttributes flags;
 
     @ElfApi("sh_addr")
-    private final Elf32Address inMemoryAddress;
+    private final ElfAddress<NATIVE_WORD> inMemoryAddress;
 
     @ElfApi("sh_offset")
-    private final Elf32Offset fileOffset;
+    private final ElfOffset<NATIVE_WORD> fileOffset;
 
     @ElfApi("sh_size")
-    private final int sectionSize;
+    private final NATIVE_WORD sectionSize;
 
     @ElfApi("sh_link")
     private final int link;
@@ -34,22 +39,22 @@ public class Elf32SectionHeader {
     private final int info;
 
     @ElfApi("sh_addralign")
-    private final int addressAlignment;
+    private final NATIVE_WORD addressAlignment;
 
     @ElfApi("sh_entsize")
-    private final int containedEntrySize;
+    private final NATIVE_WORD containedEntrySize;
 
-    public Elf32SectionHeader(StringTableIndex nameIndex,
+    public ElfSectionHeader(StringTableIndex nameIndex,
                               String name,
                               ElfSectionType type,
                               SectionAttributes flags,
-                              Elf32Address inMemoryAddress,
-                              Elf32Offset fileOffset,
-                              int sectionSize,
+                            ElfAddress<NATIVE_WORD> inMemoryAddress,
+                            ElfOffset<NATIVE_WORD> fileOffset,
+                            NATIVE_WORD sectionSize,
                               int link,
                               int info,
-                              int addressAlignment,
-                              int containedEntrySize) {
+                            NATIVE_WORD addressAlignment,
+                            NATIVE_WORD containedEntrySize) {
         this.nameIndex = nameIndex;
         this.name = requireNonNull(name);
         this.type = requireNonNull(type);
@@ -93,7 +98,7 @@ public class Elf32SectionHeader {
      * this member holds the address at which the section's first
      * byte should reside.  Otherwise, the member contains zero.
      */
-    public Elf32Address virtualAddress() {
+    public ElfAddress<NATIVE_WORD> virtualAddress() {
         return inMemoryAddress;
     }
 
@@ -104,7 +109,7 @@ public class Elf32SectionHeader {
      * file, and its sh_offset member locates the conceptual
      * placement in the file.
      */
-    public Elf32Offset fileOffset() {
+    public ElfOffset<NATIVE_WORD> fileOffset() {
         return fileOffset;
     }
 
@@ -114,7 +119,7 @@ public class Elf32SectionHeader {
      * bytes in the file.  A section of type SHT_NOBITS may have
      * a nonzero size, but it occupies no space in the file.
      */
-    public int size() {
+    public NATIVE_WORD size() {
         return sectionSize;
     }
 
@@ -143,7 +148,7 @@ public class Elf32SectionHeader {
      * powers of two are allowed.  The value 0 or 1 means that
      * the section has no alignment constraints.
      */
-    public int addressAlignment() {
+    public NATIVE_WORD addressAlignment() {
         return addressAlignment;
     }
 
@@ -154,16 +159,16 @@ public class Elf32SectionHeader {
      * if the section does not hold a table of fixed-size
      * entries.
      */
-    public int containedEntrySize() {
+    public NATIVE_WORD containedEntrySize() {
         return containedEntrySize;
     }
 
     /**
      * @return Offset of the first byte in ELF file located after this section end.
      */
-    public Elf32Offset sectionEndOffsetInFile() {
+    public ElfOffset<NATIVE_WORD> sectionEndOffsetInFile() {
         // TODO: Consider alignment
-        return fileOffset.plus(sectionSize);
+        return fileOffset.plus(sectionSize.longValue());
     }
 
     @Override
@@ -181,8 +186,7 @@ public class Elf32SectionHeader {
         return name.startsWith(prefix);
     }
 
-
-    public Elf32Address endVirtualAddress() {
-        return virtualAddress().plus(size());
+    public ElfAddress<NATIVE_WORD> endVirtualAddress() {
+        return virtualAddress().plus(size().longValue());
     }
 }

@@ -4,8 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 public class ElfHeader<
-        ADDRESS extends ElfAddress<ADDRESS>,
-        OFFSET extends ElfOffset<OFFSET>
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
 
     @ElfApi("e_ident")
@@ -21,13 +20,13 @@ public class ElfHeader<
     private final ElfVersion version;
 
     @ElfApi("e_entry")
-    private final ADDRESS entry;
+    private final ElfAddress<NATIVE_WORD> entry;
 
     @ElfApi("e_phoff")
-    private final OFFSET programHeaderTableOffset;
+    private final ElfOffset<NATIVE_WORD> programHeaderTableOffset;
 
     @ElfApi("e_shoff")
-    private final OFFSET sectionHeaderTableOffset;
+    private final ElfOffset<NATIVE_WORD> sectionHeaderTableOffset;
 
     @ElfApi("e_flags")
     private int flags;
@@ -54,9 +53,9 @@ public class ElfHeader<
                        ElfType type,
                        ElfMachine machine,
                        ElfVersion version,
-                       ADDRESS entry,
-                       OFFSET programHeaderTableOffset,
-                       OFFSET sectionHeaderTableOffset,
+                       ElfAddress<NATIVE_WORD> entry,
+                       ElfOffset<NATIVE_WORD> programHeaderTableOffset,
+                       ElfOffset<NATIVE_WORD> sectionHeaderTableOffset,
                        int flags,
                        short elfHeaderSize,
                        short programHeaderSize,
@@ -102,7 +101,7 @@ public class ElfHeader<
      * the file has no associated entry point, this member holds
      * zero.
      */
-    public ADDRESS entry() {
+    public ElfAddress<NATIVE_WORD> entry() {
         return entry;
     }
 
@@ -111,7 +110,7 @@ public class ElfHeader<
      * in bytes.  If the file has no program header table, this
      * member holds zero.
      */
-    public OFFSET programHeaderTableOffset() {
+    public ElfOffset<NATIVE_WORD> programHeaderTableOffset() {
         return programHeaderTableOffset;
     }
 
@@ -120,7 +119,7 @@ public class ElfHeader<
      * in bytes.  If the file has no section header table, this
      * member holds zero.
      */
-    public OFFSET sectionHeaderTableOffset() {
+    public ElfOffset<NATIVE_WORD> sectionHeaderTableOffset() {
         return sectionHeaderTableOffset;
     }
 

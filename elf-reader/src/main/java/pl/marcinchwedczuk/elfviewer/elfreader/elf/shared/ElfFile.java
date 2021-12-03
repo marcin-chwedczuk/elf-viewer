@@ -3,17 +3,16 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
 
 public abstract class ElfFile<
-        ADDRESS extends ElfAddress<ADDRESS>,
-        OFFSET extends ElfOffset<OFFSET>,
-        HEADER extends ElfHeader<ADDRESS, OFFSET>>
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        >
 {
-    private final HEADER header;
+    private final ElfHeader<NATIVE_WORD> header;
 
-    protected ElfFile(HEADER header) {
+    protected ElfFile(ElfHeader<NATIVE_WORD> header) {
         this.header = header;
     }
 
-    public final HEADER header() {
+    public ElfHeader<NATIVE_WORD> header() {
         return header;
     }
 }
