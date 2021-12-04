@@ -2,13 +2,13 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Flag;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntFlags;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.BitFlags;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Mask;
 
 import java.util.Collection;
 import java.util.List;
 
-public class Elf32SegmentFlags extends IntFlags<Elf32SegmentFlags> {
+public class Elf32SegmentFlags extends BitFlags<Elf32SegmentFlags> {
     @ElfApi("PF_X")
     public static final Flag<Elf32SegmentFlags> Executable = flag("X", 1 << 0);
 
@@ -34,8 +34,8 @@ public class Elf32SegmentFlags extends IntFlags<Elf32SegmentFlags> {
     }
 
     @Override
-    protected Elf32SegmentFlags mkCopy(int newRaw) {
-        return new Elf32SegmentFlags(newRaw);
+    protected Elf32SegmentFlags mkCopy(long newRaw) {
+        return new Elf32SegmentFlags(Math.toIntExact(newRaw));
     }
 
     @Override

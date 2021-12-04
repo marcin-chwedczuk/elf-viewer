@@ -1,7 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.ArrayList;
@@ -17,13 +17,13 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.SYMBOL
 public class SymbolTable {
     private final Elf32File elfFile;
     private final Elf32SectionHeader section;
-    private final StringTable symbolNames;
+    private final StringTable32 symbolNames;
 
     private final TableHelper tableHelper;
 
     public SymbolTable(Elf32File elfFile,
                        Elf32SectionHeader section,
-                       StringTable symbolNames)
+                       StringTable32 symbolNames)
     {
         requireNonNull(elfFile);
         requireNonNull(section);
@@ -45,10 +45,10 @@ public class SymbolTable {
 
     public Elf32Symbol get(SymbolTableIndex index) {
         Elf32Offset startOffset = tableHelper.offsetForEntry(index);
-        StructuredFile sf = new StructuredFile(elfFile, startOffset);
+        StructuredFile32 sf = new StructuredFile32(elfFile, startOffset);
 
         StringTableIndex nameIndex = new StringTableIndex(sf.readUnsignedInt());
-        Elf32Address value = sf.readAddress32();
+        Elf32Address value = sf.readAddress();
         int size = sf.readUnsignedInt();
         byte info = sf.readByte();
         byte other = sf.readByte();

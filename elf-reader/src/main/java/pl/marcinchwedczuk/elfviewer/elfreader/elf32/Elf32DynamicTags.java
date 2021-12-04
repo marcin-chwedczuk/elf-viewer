@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class Elf32DynamicTags {
 
     public List<Elf32DynamicTag> getTags() {
         Elf32Offset startOffset = dynamicSection.fileOffset();
-        StructuredFile sf = new StructuredFile(elfFile, startOffset);
+        StructuredFile32 sf = new StructuredFile32(elfFile, startOffset);
 
         List<Elf32DynamicTag> result = new ArrayList<>();
 

@@ -1,15 +1,15 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
-public final class Mask<Owner extends IntFlags<Owner>> {
-    private final int value;
+public final class Mask<Owner extends BitFlags<Owner>> {
+    private final long value;
 
-    public Mask(int value) {
+    public Mask(long value) {
         if (value == 0)
             throw new IllegalArgumentException("Mask has no bits set.");
         this.value = value;
     }
 
-    public int value() {
+    public long value() {
         return value;
     }
 

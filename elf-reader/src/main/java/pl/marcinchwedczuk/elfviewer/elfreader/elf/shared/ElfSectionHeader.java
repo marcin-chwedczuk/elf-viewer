@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Objects;
@@ -9,8 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 public abstract class ElfSectionHeader<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
-        >
-{
+        > {
     @ElfApi("sh_name")
     private final StringTableIndex nameIndex;
 
@@ -45,14 +46,14 @@ public abstract class ElfSectionHeader<
     private final NATIVE_WORD containedEntrySize;
 
     public ElfSectionHeader(StringTableIndex nameIndex,
-                              String name,
-                              ElfSectionType type,
-                              SectionAttributes flags,
+                            String name,
+                            ElfSectionType type,
+                            SectionAttributes flags,
                             ElfAddress<NATIVE_WORD> inMemoryAddress,
                             ElfOffset<NATIVE_WORD> fileOffset,
                             NATIVE_WORD sectionSize,
-                              int link,
-                              int info,
+                            int link,
+                            int info,
                             NATIVE_WORD addressAlignment,
                             NATIVE_WORD containedEntrySize) {
         this.nameIndex = nameIndex;

@@ -1,5 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Header;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 
 import static java.util.Objects.requireNonNull;
@@ -25,6 +28,24 @@ public class TableHelper {
                 sectionHeader.containedEntrySize(),
                 // TODO: Use actual section size
                 sectionHeader.size() / sectionHeader.containedEntrySize());
+    }
+
+    public static TableHelper forSectionHeaders(Elf64Header header) {
+        // TODO: This is just a stub, This class NEEDS BADLY refactoring
+        return new TableHelper(
+                new Elf32Offset(
+                        Math.toIntExact(header.sectionHeaderTableOffset().value())),
+                header.sectionHeaderSize(),
+                header.numberOfSectionHeaders());
+    }
+
+    public static TableHelper forSectionEntries(Elf64SectionHeader sectionHeader) {
+        // TODO: This is just a stub, This class NEEDS BADLY refactoring
+        return new TableHelper(
+                new Elf32Offset(Math.toIntExact(sectionHeader.fileOffset().value())),
+                Math.toIntExact(sectionHeader.containedEntrySize()),
+                // TODO: Use actual section size
+                Math.toIntExact(sectionHeader.size()) / Math.toIntExact(sectionHeader.containedEntrySize()));
     }
 
     private final Elf32Offset startOffset;
@@ -62,5 +83,23 @@ public class TableHelper {
 
     public Elf32Offset offsetForEntry(SymbolTableIndex index) {
         return offsetForEntry(index.intValue());
+    }
+
+    // TODO: Base class + 32 & 64 variants
+    public Elf64Offset offsetForEntry64(long index) {
+        if (index >= tableSize()) {
+            throw new IndexOutOfBoundsException("Index is out of bounds: " + index);
+        }
+
+        long entryOffset = startOffset.intValue() + index * entrySize;
+        return new Elf64Offset(entryOffset);
+    }
+
+    public Elf64Offset offsetForEntry64(SectionHeaderIndex index) {
+        return offsetForEntry64(index.intValue());
+    }
+
+    public Elf64Offset offsetForEntry64(SymbolTableIndex index) {
+        return offsetForEntry64(index.intValue());
     }
 }

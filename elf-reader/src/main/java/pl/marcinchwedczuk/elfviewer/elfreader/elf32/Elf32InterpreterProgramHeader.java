@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SegmentType.INTERPRETER;
 
@@ -32,7 +33,7 @@ public class Elf32InterpreterProgramHeader {
     }
 
     public String getInterpreterPath() {
-        StructuredFile sf = new StructuredFile(
+        StructuredFile32 sf = new StructuredFile32(
                 elfFile.storage(),
                 elfFile.endianness(),
                 startOffset);

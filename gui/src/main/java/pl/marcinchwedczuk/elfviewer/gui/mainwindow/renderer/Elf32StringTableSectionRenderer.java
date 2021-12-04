@@ -1,7 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StringTableEntryDto;
 

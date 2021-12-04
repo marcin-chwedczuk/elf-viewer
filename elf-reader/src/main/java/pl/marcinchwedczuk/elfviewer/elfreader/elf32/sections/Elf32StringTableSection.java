@@ -15,9 +15,9 @@ public class Elf32StringTableSection extends Elf32Section {
         Args.checkSectionType(header, STRING_TABLE);
     }
 
-    public StringTable stringTable() {
+    public StringTable32 stringTable() {
         // TODO: Add ctor contents + size
-        return new StringTable(
+        return new StringTable32(
                 contents(),
                 Elf32Offset.ZERO,
                 Elf32Offset.ZERO.plus(header().size()));

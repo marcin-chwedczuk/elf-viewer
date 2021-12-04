@@ -2,6 +2,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
@@ -10,11 +13,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
 
 import java.nio.charset.StandardCharsets;
 
-public class StructuredFile {
-    private final AbstractFile file;
-    private final Endianness endianness;
+public abstract class StructuredFile<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        >
+{
+    protected final AbstractFile file;
+    protected final Endianness endianness;
 
-    private long offset;
+    protected long offset;
 
     public StructuredFile(AbstractFile file, Endianness endianness) {
         this(file, endianness, 0L);
@@ -26,26 +32,25 @@ public class StructuredFile {
         this.offset = initialOffset;
     }
 
-    public StructuredFile(AbstractFile file, Endianness endianness, Elf32Offset offset) {
-        this(file, endianness, offset.intValue());
+    public StructuredFile(AbstractFile file, Endianness endianness, ElfOffset<NATIVE_WORD> offset) {
+        this(file, endianness, offset.value().longValue());
     }
 
-    public StructuredFile(Elf32File file, Elf32Offset offset) {
+    public StructuredFile(ElfFile<NATIVE_WORD> file, ElfOffset<NATIVE_WORD> offset) {
         this(file.storage(), file.endianness(), offset);
     }
 
-    public Elf32Offset currentPositionInFile() { return new Elf32Offset(Math.toIntExact(offset)); }
+    protected abstract ElfOffset<NATIVE_WORD> mkOffset(long offset);
 
-    private byte[] readNext(int nbytes) {
+    public abstract ElfOffset<NATIVE_WORD> readOffset();
+    public abstract ElfAddress<NATIVE_WORD> readAddress();
+
+    public ElfOffset<NATIVE_WORD> currentPositionInFile() { return mkOffset(offset); }
+
+    protected byte[] readNext(int nbytes) {
         byte[] bytes = file.read(offset, nbytes);
         offset += bytes.length;
         return bytes;
-    }
-
-    public Elf32Address readAddress32() {
-        byte[] addressBytes = readNext(4);
-        int address = endianness.toUnsignedInt(addressBytes);
-        return new Elf32Address(address);
     }
 
     public Elf64Address readAddress64() {
@@ -58,12 +63,6 @@ public class StructuredFile {
         short half = file.readUnsignedShort(endianness, offset);
         offset += 2;
         return half;
-    }
-
-    public Elf32Offset readOffset32() {
-        byte[] addressBytes = readNext(4);
-        int address = endianness.toUnsignedInt(addressBytes);
-        return new Elf32Offset(address);
     }
 
     public Elf64Offset readOffset64() {
@@ -81,6 +80,12 @@ public class StructuredFile {
     public int readSignedInt() {
         // In Java we only have signed types...
         return readUnsignedInt();
+    }
+
+    public long readUnsignedLong() {
+        long xword = file.readUnsignedLong(endianness, offset);
+        offset += 8;
+        return xword;
     }
 
     public byte readByte() {

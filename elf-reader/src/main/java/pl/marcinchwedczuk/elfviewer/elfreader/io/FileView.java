@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 
 import static java.util.Objects.requireNonNull;
@@ -11,13 +12,13 @@ public final class FileView implements AbstractFile {
     private final long length;
 
     public FileView(AbstractFile file,
-                    Elf32Offset start,
+                    ElfOffset<?> start,
                     long length) {
         if (length < 0)
             throw new IllegalArgumentException("Length cannot be negative.");
 
         this.file = requireNonNull(file);
-        this.startOffset = start.intValue();
+        this.startOffset = start.value().longValue();
         this.length = length;
     }
 

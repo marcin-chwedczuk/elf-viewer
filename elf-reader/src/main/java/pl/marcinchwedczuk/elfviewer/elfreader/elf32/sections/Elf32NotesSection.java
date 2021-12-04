@@ -8,6 +8,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Elf32NotesSection extends Elf32Section {
         FileView contents = contents();
 
         while (curr < contents.length()) {
-            StructuredFile sf = new StructuredFile(
+            StructuredFile32 sf = new StructuredFile32(
                     contents,
                     elfFile().endianness(),
                     curr);
@@ -57,7 +58,7 @@ public class Elf32NotesSection extends Elf32Section {
                         type));
             }
 
-            curr = sf.currentPositionInFile().intValue();
+            curr = sf.currentPositionInFile().value().longValue();
         }
 
         return notes;

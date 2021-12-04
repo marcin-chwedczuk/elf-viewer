@@ -15,4 +15,9 @@ public interface AbstractFile {
         byte[] bytes = read(offset, 4);
         return endianness.toUnsignedInt(bytes);
     }
+
+    default long readUnsignedLong(Endianness endianness, long offset) {
+        byte[] bytes = read(offset, 8);
+        return endianness.toUnsignedLong(bytes);
+    }
 }

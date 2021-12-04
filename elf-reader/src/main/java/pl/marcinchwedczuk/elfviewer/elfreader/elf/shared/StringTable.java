@@ -1,5 +1,9 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableEntry;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
@@ -20,13 +24,16 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING
  * string table's last byte is defined to hold a null byte, ensuring
  * null termination for all strings.
  */
-public class StringTable {
+public class StringTable<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        >
+{
     private final AbstractFile file;
-    private final Elf32Offset offsetInFile;
-    private final Elf32Offset endOffsetInFile;
+    private final ElfOffset<NATIVE_WORD> offsetInFile;
+    private final ElfOffset<NATIVE_WORD> endOffsetInFile;
 
     public StringTable(AbstractFile file,
-                       Elf32SectionHeader section) {
+                       ElfSectionHeader<NATIVE_WORD> section) {
         requireNonNull(file);
         requireNonNull(section);
 
@@ -38,8 +45,8 @@ public class StringTable {
     }
 
     public StringTable(AbstractFile file,
-                       Elf32Offset offsetInFile,
-                       Elf32Offset endOffsetInFile) {
+                       ElfOffset<NATIVE_WORD> offsetInFile,
+                       ElfOffset<NATIVE_WORD> endOffsetInFile) {
         // TODO: Improve
         this.file = file;
         this.offsetInFile = offsetInFile;
@@ -47,22 +54,22 @@ public class StringTable {
     }
 
     public boolean isValidIndex(StringTableIndex index) {
-        long startOffset = offsetInFile.intValue();
-        long sectionEndOffset = endOffsetInFile.intValue();
+        long startOffset = offsetInFile.value().longValue();
+        long sectionEndOffset = endOffsetInFile.value().longValue();
 
         return (index.intValue() < (sectionEndOffset - startOffset));
     }
 
     public Collection<StringTableEntry> getContents() {
-        long sectionStartOffset = offsetInFile.intValue();
-        long sectionEndOffset = endOffsetInFile.intValue();
+        long sectionStartOffset = offsetInFile.value().longValue();
+        long sectionEndOffset = endOffsetInFile.value().longValue();
         long curr = 0;
 
         List<StringTableEntry> result = new ArrayList<>();
 
         while ((sectionStartOffset + curr) < sectionEndOffset) {
             // TODO: int or long?
-            StringTableIndex index = new StringTableIndex((int)curr);
+            StringTableIndex index = new StringTableIndex(Math.toIntExact(curr));
             String s = getStringAtIndex(index);
             result.add(new StringTableEntry(index, s));
 
@@ -73,8 +80,8 @@ public class StringTable {
     }
 
     public String getStringAtIndex(StringTableIndex index) {
-        long startOffset = offsetInFile.intValue() + index.intValue();
-        long sectionEndOffset = endOffsetInFile.intValue();
+        long startOffset = offsetInFile.value().longValue() + index.intValue();
+        long sectionEndOffset = endOffsetInFile.value().longValue();
 
         ByteList buffer = new ByteList();
 

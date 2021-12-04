@@ -2,11 +2,11 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
 import static java.util.Objects.requireNonNull;
 
-public final class Flag<Owner extends IntFlags<Owner>> {
+public final class Flag<Owner extends BitFlags<Owner>> {
     private final String name;
-    private final int value;
+    private final long value;
 
-    public Flag(String name, int value) {
+    public Flag(String name, long value) {
         checkSingleBitSet(value);
 
         this.name = requireNonNull(name);
@@ -17,8 +17,12 @@ public final class Flag<Owner extends IntFlags<Owner>> {
         return name;
     }
 
-    public int value() {
+    public long longValue() {
         return value;
+    }
+
+    public int intValue() {
+        return Math.toIntExact(value);
     }
 
     @Override
@@ -26,7 +30,7 @@ public final class Flag<Owner extends IntFlags<Owner>> {
         return name;
     }
 
-    private static void checkSingleBitSet(int v) {
+    private static void checkSingleBitSet(long v) {
         if (v != 0 && (v & (v - 1)) == 0) {
             return;
         }

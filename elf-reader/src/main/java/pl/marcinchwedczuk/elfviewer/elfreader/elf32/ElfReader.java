@@ -2,17 +2,15 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile64;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +28,7 @@ public class ElfReader {
         return (Elf64File) readElf(file);
     }
 
-    public static ElfFile readElf(AbstractFile file) {
+    public static ElfFile<?> readElf(AbstractFile file) {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);
         ElfIdentification identification = ElfIdentification.parseBytes(identificationBytes);
 
@@ -60,14 +58,20 @@ public class ElfReader {
         Endianness endianness = elfEndianness(identification);
 
         Elf64Header header = readElf64Header(identification,
-                new StructuredFile(file, endianness, startOffset));
+                new StructuredFile64(file, endianness, startOffset));
 
-        return new Elf64File(header);
+        List<Elf64SectionHeader> sectionHeaders = readElf64SectionHeaders(
+                file,
+                endianness,
+                header.sectionContainingSectionNames(),
+                TableHelper.forSectionHeaders(header));
+
+        return new Elf64File(file, endianness, header, sectionHeaders);
     }
 
     public static Elf64Header readElf64Header(
             ElfIdentification identification,
-            StructuredFile elfHeaderFile) {
+            StructuredFile64 elfHeaderFile) {
         ElfType type = ElfType.fromValue(elfHeaderFile.readUnsignedShort());
         ElfMachine machine = ElfMachine.fromValue(elfHeaderFile.readUnsignedShort());
 
@@ -105,12 +109,77 @@ public class ElfReader {
                 sectionNamesStringTableIndex);
     }
 
+
+    private static List<Elf64SectionHeader> readElf64SectionHeaders(AbstractFile file,
+                                                                    Endianness endianness,
+                                                                    SectionHeaderIndex sectionHeaderTable,
+                                                                    TableHelper sectionHeaders) {
+        StringTable64 sectionNames = loadSectionsNameStringTable64(
+                file, endianness, sectionHeaderTable, sectionHeaders);
+
+        List<Elf64SectionHeader> headers = new ArrayList<>(sectionHeaders.tableSize());
+
+        for (int i = 0; i < sectionHeaders.tableSize(); i++) {
+            Elf64Offset offset = sectionHeaders.offsetForEntry64(new SectionHeaderIndex(i));
+            StructuredFile64 headerFile = new StructuredFile64(file, endianness, offset);
+
+            Elf64SectionHeader sectionHeader = readElf64SectionHeader(headerFile, Optional.of(sectionNames));
+            headers.add(sectionHeader);
+        }
+
+        return headers;
+    }
+
+    private static StringTable64 loadSectionsNameStringTable64(AbstractFile file,
+                                                               Endianness endianness,
+                                                               SectionHeaderIndex sectionNamesSection,
+                                                               TableHelper sectionHeaderTable) {
+        Elf64Offset offset = sectionHeaderTable.offsetForEntry64(sectionNamesSection);
+        StructuredFile64 headerFile = new StructuredFile64(file, endianness, offset);
+        Elf64SectionHeader sectionNamesStringTableSection = readElf64SectionHeader(
+                headerFile, Optional.empty());
+        return new StringTable64(file, sectionNamesStringTableSection);
+    }
+
+    private static Elf64SectionHeader readElf64SectionHeader(
+            StructuredFile64 headerFile,
+            Optional<StringTable64> maybeSectionNames)
+    {
+        StringTableIndex sectionNameIndex = new StringTableIndex(headerFile.readUnsignedInt());
+        ElfSectionType type = ElfSectionType.fromValue(headerFile.readUnsignedInt());
+        SectionAttributes flags = new SectionAttributes(headerFile.readUnsignedLong());
+        Elf64Address inMemoryAddress = headerFile.readAddress();
+        Elf64Offset offsetInFile = headerFile.readOffset();
+        long sectionSize = headerFile.readUnsignedLong();
+        int link = headerFile.readUnsignedInt();
+        int info = headerFile.readUnsignedInt();
+        long addressAlignment = headerFile.readUnsignedLong();
+        long containedEntrySize = headerFile.readUnsignedLong();
+
+        String sectionName = maybeSectionNames
+                .map(st -> st.getStringAtIndex(sectionNameIndex))
+                .orElse("(not-resolved)");
+
+        return new Elf64SectionHeader(
+                sectionNameIndex,
+                sectionName,
+                type,
+                flags,
+                inMemoryAddress,
+                offsetInFile,
+                sectionSize,
+                link,
+                info,
+                addressAlignment,
+                containedEntrySize);
+    }
+
     private static Elf32File readElf32(AbstractFile file,
                                        ElfIdentification identification,
                                        int startOffset) {
         Endianness endianness = elfEndianness(identification);
         Elf32Header header = readElf32Header(identification,
-                new StructuredFile(file, endianness, startOffset));
+                new StructuredFile32(file, endianness, startOffset));
 
         List<Elf32SectionHeader> sectionHeaders = readElf32SectionHeaders(
                 file,
@@ -140,7 +209,7 @@ public class ElfReader {
 
         for (int i = 0; i < programHeadersTable.tableSize(); i++) {
             Elf32Offset offset = programHeadersTable.offsetForEntry(i);
-            StructuredFile headerFile = new StructuredFile(file, endianness, offset);
+            StructuredFile32 headerFile = new StructuredFile32(file, endianness, offset);
 
             Elf32ProgramHeader sectionHeader = readElf32ProgramHeader(headerFile);
             headers.add(sectionHeader);
@@ -149,11 +218,11 @@ public class ElfReader {
         return headers;
     }
 
-    private static Elf32ProgramHeader readElf32ProgramHeader(StructuredFile headerFile) {
+    private static Elf32ProgramHeader readElf32ProgramHeader(StructuredFile32 headerFile) {
         Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
-        Elf32Offset fileOffset = headerFile.readOffset32();
-        Elf32Address virtualAddress = headerFile.readAddress32();
-        Elf32Address physicalAddress = headerFile.readAddress32();
+        Elf32Offset fileOffset = headerFile.readOffset();
+        Elf32Address virtualAddress = headerFile.readAddress();
+        Elf32Address physicalAddress = headerFile.readAddress();
         int fileSize = headerFile.readUnsignedInt();
         int memorySize = headerFile.readUnsignedInt();
         Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
@@ -170,16 +239,16 @@ public class ElfReader {
                 alignment);
     }
 
-    public static Elf32Header readElf32Header(ElfIdentification identification, StructuredFile elfHeaderFile) {
+    public static Elf32Header readElf32Header(ElfIdentification identification, StructuredFile32 elfHeaderFile) {
         ElfType type = ElfType.fromValue(elfHeaderFile.readUnsignedShort());
         ElfMachine machine = ElfMachine.fromValue(elfHeaderFile.readUnsignedShort());
 
         // TODO: Overflow check
         ElfVersion version = ElfVersion.fromValue((byte)elfHeaderFile.readUnsignedInt());
 
-        Elf32Address entry = elfHeaderFile.readAddress32();
-        Elf32Offset programHeaderTableOffset = elfHeaderFile.readOffset32();
-        Elf32Offset sectionHeaderTableOffset = elfHeaderFile.readOffset32();
+        Elf32Address entry = elfHeaderFile.readAddress();
+        Elf32Offset programHeaderTableOffset = elfHeaderFile.readOffset();
+        Elf32Offset sectionHeaderTableOffset = elfHeaderFile.readOffset();
 
         int flags = elfHeaderFile.readUnsignedInt();
         short elfHeaderSize = elfHeaderFile.readUnsignedShort();
@@ -212,14 +281,14 @@ public class ElfReader {
                                                                     Endianness endianness,
                                                                     SectionHeaderIndex sectionHeaderTable,
                                                                     TableHelper sectionHeaders) {
-        StringTable sectionNames = loadSectionsNameStringTable(
+        StringTable32 sectionNames = loadSectionsNameStringTable(
                 file, endianness, sectionHeaderTable, sectionHeaders);
 
         List<Elf32SectionHeader> headers = new ArrayList<>(sectionHeaders.tableSize());
 
         for (int i = 0; i < sectionHeaders.tableSize(); i++) {
             Elf32Offset offset = sectionHeaders.offsetForEntry(new SectionHeaderIndex(i));
-            StructuredFile headerFile = new StructuredFile(file, endianness, offset);
+            StructuredFile32 headerFile = new StructuredFile32(file, endianness, offset);
 
             Elf32SectionHeader sectionHeader = readElf32SectionHeader(headerFile, Optional.of(sectionNames));
             headers.add(sectionHeader);
@@ -228,26 +297,26 @@ public class ElfReader {
         return headers;
     }
 
-    private static StringTable loadSectionsNameStringTable(AbstractFile file,
-                                                           Endianness endianness,
-                                                           SectionHeaderIndex sectionNamesSection,
-                                                           TableHelper sectionHeaderTable) {
+    private static StringTable32 loadSectionsNameStringTable(AbstractFile file,
+                                                             Endianness endianness,
+                                                             SectionHeaderIndex sectionNamesSection,
+                                                             TableHelper sectionHeaderTable) {
         Elf32Offset offset = sectionHeaderTable.offsetForEntry(sectionNamesSection);
-        StructuredFile headerFile = new StructuredFile(file, endianness, offset);
+        StructuredFile32 headerFile = new StructuredFile32(file, endianness, offset);
         Elf32SectionHeader sectionNamesStringTableSection = readElf32SectionHeader(
                 headerFile, Optional.empty());
-        return new StringTable(file, sectionNamesStringTableSection);
+        return new StringTable32(file, sectionNamesStringTableSection);
     }
 
     private static Elf32SectionHeader readElf32SectionHeader(
-            StructuredFile headerFile,
-            Optional<StringTable> maybeSectionNames)
+            StructuredFile32 headerFile,
+            Optional<StringTable32> maybeSectionNames)
     {
         StringTableIndex sectionNameIndex = new StringTableIndex(headerFile.readUnsignedInt());
         ElfSectionType type = ElfSectionType.fromValue(headerFile.readUnsignedInt());
         SectionAttributes flags = new SectionAttributes(headerFile.readUnsignedInt());
-        Elf32Address inMemoryAddress = headerFile.readAddress32();
-        Elf32Offset offsetInFile = headerFile.readOffset32();
+        Elf32Address inMemoryAddress = headerFile.readAddress();
+        Elf32Offset offsetInFile = headerFile.readOffset();
         int sectionSize = headerFile.readUnsignedInt();
         int link = headerFile.readUnsignedInt();
         int info = headerFile.readUnsignedInt();

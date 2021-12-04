@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class Elf32GnuHashSection extends Elf32Section {
 
         SymbolTable symbolTable = ((Elf32SymbolTableSection)dynsym.get(0)).symbolTable();
 
-        StructuredFile sf = new StructuredFile(
+        StructuredFile32 sf = new StructuredFile32(
                 elfFile(),
                 header().fileOffset());
 

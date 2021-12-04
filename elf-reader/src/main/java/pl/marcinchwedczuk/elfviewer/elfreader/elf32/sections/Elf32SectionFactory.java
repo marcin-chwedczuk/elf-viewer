@@ -1,61 +1,63 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Relocation;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
-import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
-
-public class Elf32SectionFactory {
-    private final Elf32File elfFile;
-
-    public Elf32SectionFactory(Elf32File elfFile) {
-        this.elfFile = requireNonNull(elfFile);
+public class Elf32SectionFactory extends ElfSectionFactory<Integer> {
+    // Shadow base class method
+    @SuppressWarnings("unchecked")
+    public List<Elf32Section> createSections(Elf32File elfFile) {
+        return (List<Elf32Section>) super.createSections(elfFile);
     }
 
-    public List<Elf32Section> createSections() {
-        List<Elf32Section> sections = new ArrayList<>();
-
-        for (Elf32SectionHeader sh : elfFile.sectionHeaders) {
-            Elf32Section section = createSection(sh);
-            sections.add(section);
-        }
-
-        return sections;
+    @Override
+    protected ElfSection<Integer> mkInterpreterSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32InterpreterSection((Elf32File) file, (Elf32SectionHeader) header);
     }
 
-    private Elf32Section createSection(Elf32SectionHeader sh) {
-        try {
-            if (sh.type().is(PROGBITS)
-                    && sh.hasName(ElfSectionNames.INTERP)) {
-                return new Elf32InterpreterSection(elfFile, sh);
-            } else if (sh.type().is(STRING_TABLE)) {
-                return new Elf32StringTableSection(elfFile, sh);
-            } else if (sh.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
-                return new Elf32SymbolTableSection(elfFile, sh);
-            } else if (sh.type().is(DYNAMIC)) {
-                return new Elf32DynamicSection(elfFile, sh);
-            } else if (sh.type().is(REL)) {
-                return new Elf32RelocationSection(elfFile, sh);
-            } else if (sh.type().is(NOTE)) {
-                return new Elf32NotesSection(elfFile, sh);
-            } else if (sh.type().is(GNU_HASH)) {
-                return new Elf32GnuHashSection(elfFile, sh);
-            }
+    @Override
+    protected ElfSection<Integer> mkStringTableSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32StringTableSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
 
-            return new Elf32Section(elfFile, sh);
-        } catch (Exception error) {
-            // TODO: This exception type is too broad...
-            // We should catch RuntimeExceptions + IO exceptions maybe?
-            return new Elf32InvalidSection(elfFile, sh, error);
-        }
+    @Override
+    protected ElfSection<Integer> mkSymbolTableSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32SymbolTableSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkDynamicSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32DynamicSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkRelocationsSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32RelocationSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkNotesSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32NotesSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkGnuHashSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32GnuHashSection((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header) {
+        return new Elf32Section((Elf32File) file, (Elf32SectionHeader) header);
+    }
+
+    @Override
+    protected ElfSection<Integer> mkInvalidSection(ElfFile<Integer> file, ElfSectionHeader<Integer> header, Exception error) {
+        return new Elf32InvalidSection((Elf32File) file, (Elf32SectionHeader) header, error);
     }
 }

@@ -1,67 +1,36 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
-
-public class Elf32Section extends Elf32Element {
-    private final Elf32File elfFile;
-    private final Elf32SectionHeader header;
-
+public class Elf32Section extends ElfSection<Integer> implements Elf32Visitable {
     public Elf32Section(Elf32File elfFile,
                         Elf32SectionHeader header) {
-        this.elfFile = requireNonNull(elfFile);
-        this.header = requireNonNull(header);
+        super(elfFile, header);
     }
 
-    // TODO: FileView sectionContents()
-
-    public Elf32File elfFile() { return elfFile; }
-    public Elf32SectionHeader header() { return header; }
-
-    public String name() { return header.name(); }
-
-    public FileView contents() {
-        return new FileView(
-                elfFile.storage(),
-                header.fileOffset(),
-                header.size());
+    @Override
+    protected StructuredFile<Integer> mkStructuredFile(ElfFile<Integer> file, ElfOffset<Integer> offset) {
+        return new StructuredFile32((Elf32File) file, (Elf32Offset) offset);
     }
 
-    public boolean containsStrings() {
-        return header.flags().hasFlag(STRINGS);
+    @Override
+    public Elf32File elfFile() {
+        return (Elf32File) super.elfFile();
     }
 
-    public List<String> readContentsAsStrings() {
-        // TODO: Add asserts
-        if (!header.flags().hasFlag(STRINGS))
-            throw new ElfReaderException("Section " + name() + " does not contain strings.");
-
-        // TODO: Move to using contents
-        StructuredFile sf = new StructuredFile(
-                elfFile,
-                header.fileOffset());
-
-        // TODO: Handle reading past section end - StructuredFile should support
-        // start and end offsets
-        List<String> result = new ArrayList<>();
-        while (sf.currentPositionInFile().isBefore(header.sectionEndOffsetInFile())) {
-            String s = sf.readStringNullTerminated();
-            result.add(s);
-        }
-
-        return result;
+    @Override
+    public Elf32SectionHeader header() {
+        return (Elf32SectionHeader) super.header();
     }
 
     @Override
@@ -69,5 +38,4 @@ public class Elf32Section extends Elf32Element {
         visitor.enter(this);
         visitor.exit(this);
     }
-
 }

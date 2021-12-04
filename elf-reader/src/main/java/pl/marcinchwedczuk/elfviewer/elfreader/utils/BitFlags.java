@@ -3,43 +3,50 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 import java.util.Collection;
 import java.util.Objects;
 
-public abstract class IntFlags<T extends IntFlags<T>> {
-    private final int raw;
+public abstract class BitFlags<T extends BitFlags<T>> {
+    private final long raw;
 
-    protected IntFlags(int init) {
+    protected BitFlags(long init) {
         this.raw = init;
     }
 
     @SafeVarargs
-    protected IntFlags(Flag<T>... flags) {
+    protected BitFlags(Flag<T>... flags) {
         this(combine(flags));
     }
 
     public final boolean hasFlag(Flag<T> flag) {
-        return (raw & flag.value()) == flag.value();
+        return (raw & flag.longValue()) == flag.longValue();
     }
 
     public final T setFlag(Flag<T> flag) {
-        int newRaw = raw | flag.value();
+        long newRaw = raw | flag.longValue();
         return mkCopy(newRaw);
     }
 
     public final T clearFlag(Flag<T> flag) {
-        int newRaw = raw & ~flag.value();
+        long newRaw = raw & ~flag.longValue();
         return mkCopy(newRaw);
     }
 
-    protected abstract T mkCopy(int newRaw);
+    protected abstract T mkCopy(long newRaw);
     public abstract Collection<Flag<T>> flags();
 
-    public int intValue() { return raw; }
+    public int intValue() {
+        // TODO: Overflow
+        return (int)raw;
+    }
+
+    public long longValue() {
+        return raw;
+    }
 
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IntFlags<?> intFlags = (IntFlags<?>) o;
-        return raw == intFlags.raw;
+        BitFlags<?> bitFlags = (BitFlags<?>) o;
+        return raw == bitFlags.raw;
     }
 
     @Override
@@ -51,10 +58,10 @@ public abstract class IntFlags<T extends IntFlags<T>> {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        int curr = raw;
+        long curr = raw;
         for (Flag<T> flag : flags()) {
-            if ((curr & flag.value()) == flag.value()) {
-                curr &= ~flag.value();
+            if ((curr & flag.longValue()) == flag.longValue()) {
+                curr &= ~flag.longValue();
                 sb.append(flag.name()).append("|");
             }
         }
@@ -75,18 +82,18 @@ public abstract class IntFlags<T extends IntFlags<T>> {
     private static int combine(Flag<?>[] flags) {
         int v = 0;
         for (Flag<?> f : flags) {
-            v |= f.value();
+            v |= f.longValue();
         }
         return v;
     }
 
-    public static <T extends IntFlags<T>>
-    Flag<T> flag(String name, int value) {
+    public static <T extends BitFlags<T>>
+    Flag<T> flag(String name, long value) {
         return new Flag<>(name, value);
     }
 
-    public static <T extends IntFlags<T>>
-    Mask<T> mask(int value) {
+    public static <T extends BitFlags<T>>
+    Mask<T> mask(long value) {
         return new Mask<>(value);
     }
 }

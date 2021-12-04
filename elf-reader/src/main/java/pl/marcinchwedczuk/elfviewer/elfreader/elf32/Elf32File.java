@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
@@ -23,11 +24,6 @@ public class Elf32File
         extends ElfFile<Integer>
         implements Elf32Visitable
 {
-    private final AbstractFile storage;
-    private final Endianness endianness;
-
-    public final Memoized<List<Elf32Section>> sectionsMemoized = new Memoized<>(() ->
-            new Elf32SectionFactory(this).createSections());
 
     public final Memoized<List<Elf32Segment>> segmentsMemoized = new Memoized<>(() ->
             new Elf32SegmentFactory(this).createSegments());
@@ -43,10 +39,10 @@ public class Elf32File
                      Endianness endianness,
                      Elf32Header header,
                      List<Elf32SectionHeader> sectionHeaders,
-                     List<Elf32ProgramHeader> programHeaders) {
-        super(header);
-        this.storage = storage;
-        this.endianness = endianness;
+                     List<Elf32ProgramHeader> programHeaders
+                     ) {
+        super(storage, endianness, header, sectionHeaders,
+                new Elf32SectionFactory());
         this.sectionHeaders = sectionHeaders;
         this.programHeaders = programHeaders;
     }
@@ -56,16 +52,8 @@ public class Elf32File
         return (Elf32Header) super.header();
     }
 
-    public AbstractFile storage() {
-        return storage;
-    }
-
-    public Endianness endianness() {
-        return endianness;
-    }
-
     public List<Elf32Section> sections() {
-        return sectionsMemoized.get();
+        return (List<Elf32Section>) super.sections();
     }
 
     public List<Elf32Segment> segments() {
@@ -159,15 +147,15 @@ public class Elf32File
                 : Optional.empty();
     }
 
-    public Optional<Elf32Section> sectionWithName(String name) {
-        return sections().stream()
-                .filter(s -> Objects.equals(name, s.header().name()))
-                .findFirst();
-    }
-
     public List<Elf32Segment> segmentsOfType(Elf32SegmentType type) {
         return segments().stream()
                 .filter(s -> s.programHeader().type().is(type))
                 .collect(toList());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<Elf32Section> sectionWithName(String name) {
+        return (Optional<Elf32Section>) super.sectionWithName(name);
     }
 }

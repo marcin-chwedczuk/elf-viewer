@@ -1,17 +1,21 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
 
 public class ElfReader_64Bits_Test {
     private final AbstractFile helloWorld64;
@@ -100,5 +104,46 @@ public class ElfReader_64Bits_Test {
         // Strings section
         assertThat(header.sectionContainingSectionNames())
                 .isEqualTo(new SectionHeaderIndex(29));
+    }
+
+    @Test
+    public void elf32_section_header() {
+        Elf64File elfFile = ElfReader.readElf64(helloWorld64);
+        Optional<Elf64Section> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
+
+        assertThat(maybeTextSection)
+                .isPresent();
+        Elf64SectionHeader textSection = maybeTextSection
+                .map(Elf64Section::header)
+                .get();
+
+        assertThat(textSection.addressAlignment())
+                .isEqualTo(16);
+
+        assertThat(textSection.type())
+                .isEqualTo(PROGBITS);
+
+        // TODO: Test this field using other section
+        // Not applicable to this section
+        assertThat(textSection.containedEntrySize())
+                .isEqualTo(0);
+
+        assertThat(textSection.flags())
+                .isEqualTo(new SectionAttributes(ALLOCATE, EXECUTABLE));
+
+        assertThat(textSection.info())
+                .isEqualTo(0);
+
+        assertThat(textSection.link())
+                .isEqualTo(0);
+
+        assertThat(textSection.virtualAddress())
+                .isEqualTo(new Elf64Address(0x1050L));
+
+        assertThat(textSection.fileOffset())
+                .isEqualTo(new Elf64Offset(0x1050L));
+
+        assertThat(textSection.size())
+                .isEqualTo(0x181);
     }
 }

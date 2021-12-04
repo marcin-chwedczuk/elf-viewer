@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.nio.ByteBuffer;
@@ -34,7 +35,7 @@ public class Elf32NoteGnuABITag extends Elf32NoteGnu {
      */
     public String minSupportedKernelVersion() {
         // TODO: Take Endianness from ELF
-        StructuredFile sf = new StructuredFile(
+        StructuredFile32 sf = new StructuredFile32(
                 new InMemoryFile(descriptor()),
                 new LittleEndian(),
                 Elf32Offset.ZERO);

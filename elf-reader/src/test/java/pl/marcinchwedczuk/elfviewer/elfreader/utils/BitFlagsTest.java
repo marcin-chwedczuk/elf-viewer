@@ -8,7 +8,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IntFlagsTest {
+public class BitFlagsTest {
     @Test
     public void creating_from_value_works() {
         // r w x
@@ -70,7 +70,7 @@ public class IntFlagsTest {
 
     // TODO: Add tests for other use cases
 
-    public static class UnixPermissions extends IntFlags<UnixPermissions> {
+    public static class UnixPermissions extends BitFlags<UnixPermissions> {
         public static final Flag<UnixPermissions> R = flag("R", 1 << 2);
         public static final Flag<UnixPermissions> W = flag("W", 1 << 1);
         public static final Flag<UnixPermissions> X = flag("X", 1 << 0);
@@ -84,8 +84,8 @@ public class IntFlagsTest {
         }
 
         @Override
-        protected UnixPermissions mkCopy(int newRaw) {
-            return new UnixPermissions(newRaw);
+        protected UnixPermissions mkCopy(long newRaw) {
+            return new UnixPermissions(Math.toIntExact(newRaw));
         }
 
         @Override

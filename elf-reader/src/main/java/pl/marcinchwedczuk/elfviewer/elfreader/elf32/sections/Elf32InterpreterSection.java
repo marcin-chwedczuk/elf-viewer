@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
@@ -23,7 +24,7 @@ public class Elf32InterpreterSection extends Elf32Section {
     }
 
     public String interpreterPath() {
-        StructuredFile sf = new StructuredFile(
+        StructuredFile32 sf = new StructuredFile32(
                 contents(),
                 elfFile().endianness());
 

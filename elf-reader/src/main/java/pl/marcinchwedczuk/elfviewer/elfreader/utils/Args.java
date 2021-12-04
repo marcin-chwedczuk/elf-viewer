@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
@@ -14,7 +15,7 @@ import static java.util.stream.Collectors.joining;
 public class Args {
     private Args() { }
 
-    public static void checkSectionType(Elf32SectionHeader section, ElfSectionType... allowedTypes) {
+    public static void checkSectionType(ElfSectionHeader<?> section, ElfSectionType... allowedTypes) {
         if (section.type().isOneOf(allowedTypes)) {
             return;
         }
