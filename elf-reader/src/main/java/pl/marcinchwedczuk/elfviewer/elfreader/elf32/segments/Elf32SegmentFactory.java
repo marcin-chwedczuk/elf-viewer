@@ -3,7 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class Elf32SegmentFactory {
         List<Elf32Segment> segments = new ArrayList<>();
 
         for (Elf32ProgramHeader programHeader : elfFile.programHeaders) {
-            List<Elf32Section> containedSections = elfFile.sections().stream()
+            List<Elf32BasicSection> containedSections = elfFile.sections().stream()
                     .filter(s -> s.header().type().isNot(ElfSectionType.NULL)
                             && programHeader.containsSection(s.header()))
                     .collect(toList());

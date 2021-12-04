@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfStringTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -7,20 +8,15 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
 
-public class Elf32StringTableSection extends Elf32Section {
-    public Elf32StringTableSection(Elf32File elfFile,
-                                   Elf32SectionHeader header) {
-        super(elfFile, header);
-
-        Args.checkSectionType(header, STRING_TABLE);
+public class Elf32StringTableSection extends Elf32BasicSection {
+    private final ElfStringTableSection<Integer> section;
+    public Elf32StringTableSection(ElfStringTableSection<Integer> section) {
+        super(section);
+        this.section = section;
     }
 
-    public StringTable32 stringTable() {
-        // TODO: Add ctor contents + size
-        return new StringTable32(
-                contents(),
-                Elf32Offset.ZERO,
-                Elf32Offset.ZERO.plus(header().size()));
+    public Elf32StringTable stringTable() {
+        return new Elf32StringTable(section.stringTable());
     }
 
     @Override

@@ -1,31 +1,26 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfDynamicSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
+public class Elf32DynamicSection extends Elf32BasicSection {
+    private final ElfDynamicSection<Integer> section;
 
-public class Elf32DynamicSection extends Elf32Section {
-    public Elf32DynamicSection(Elf32File elfFile,
-                               Elf32SectionHeader header) {
-        super(elfFile, header);
-        Args.checkSectionType(header, DYNAMIC);
-   }
+    public Elf32DynamicSection(ElfDynamicSection<Integer> section) {
+        super(section);
+        this.section = section;
+    }
 
-   public List<Elf32DynamicTag> dynamicTags() {
-        Elf32DynamicTags dynamicTags = new Elf32DynamicTags(
-                elfFile(),
-                header());
-
-        return dynamicTags.getTags();
+    public List<Elf32DynamicTag> dynamicTags() {
+        return section.dynamicTags()
+                .stream().map(Elf32DynamicTag::new)
+                .collect(Collectors.toList());
    }
 
     @Override
@@ -35,19 +30,6 @@ public class Elf32DynamicSection extends Elf32Section {
     }
 
     public Optional<String> getDynamicLibraryName(Elf32DynamicTag neededTag) {
-        Args.checkDynamicTagType(neededTag, Elf32DynamicTagType.NEEDED);
-
-        Optional<Elf32DynamicTag> maybeStrTab = dynamicTags().stream()
-                .filter(t -> t.type().is(Elf32DynamicTagType.STRTAB))
-                .findFirst();
-
-        return maybeStrTab
-                .flatMap(strTab -> {
-                    Elf32Address inMemAddress = strTab.address();
-                    return elfFile().sectionContainingAddress(inMemAddress);
-                })
-                .filter(section -> section.header().type().is(ElfSectionType.STRING_TABLE))
-                .map(section -> ((Elf32StringTableSection)section).stringTable())
-                .map(st -> st.getStringAtIndex(new StringTableIndex(neededTag.value())));
+        return section.getDynamicLibraryName(neededTag.unwrap());
     }
 }

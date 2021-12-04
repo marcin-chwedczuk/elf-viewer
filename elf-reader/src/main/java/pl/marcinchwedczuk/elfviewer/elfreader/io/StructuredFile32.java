@@ -17,11 +17,11 @@ public class StructuredFile32 extends StructuredFile<Integer> {
         super(file, endianness, initialOffset);
     }
 
-    public StructuredFile32(AbstractFile file, Endianness endianness, Elf32Offset offset) {
+    public StructuredFile32(AbstractFile file, Endianness endianness, ElfOffset<Integer> offset) {
         super(file, endianness, offset);
     }
 
-    public StructuredFile32(Elf32File file, Elf32Offset offset) {
+    public StructuredFile32(ElfFile<Integer> file, ElfOffset<Integer> offset) {
         super(file, offset);
     }
 

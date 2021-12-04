@@ -1,7 +1,5 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf64;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes;

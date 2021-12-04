@@ -18,7 +18,7 @@ public abstract class ElfAddress<
 
     public NATIVE_WORD value() { return address; }
 
-    protected abstract ElfAddress<NATIVE_WORD> mkAddress(long value);
+    protected abstract ElfAddress<NATIVE_WORD> mkAddress(NATIVE_WORD value);
 
     public boolean isNull() {
         return (address.longValue() == 0);
@@ -43,8 +43,12 @@ public abstract class ElfAddress<
     }
 
     public ElfAddress<NATIVE_WORD> plus(long bytesCount) {
+        long result = address.longValue() + bytesCount;
         // TODO: Check overflow
-        return mkAddress(address.longValue() + bytesCount);
+        return mkAddress((address instanceof Integer)
+                // TODO: Think how to remove type check, maybe use static method?
+                ? (NATIVE_WORD)(Integer)Math.toIntExact(result)
+                : (NATIVE_WORD)(Long)result);
     }
 
     public long minus(ElfAddress<NATIVE_WORD> address) {
@@ -55,7 +59,8 @@ public abstract class ElfAddress<
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        // TODO: Multiple classes
+        if (o == null || !(o instanceof ElfAddress<?>)) return false;
         ElfAddress<?> that = (ElfAddress<?>) o;
         // TODO: Check returns false addr<int> and addr<long>
         return Objects.equals(address, that.address);

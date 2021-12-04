@@ -1,58 +1,45 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Header;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64SectionHeader;
 
 import static java.util.Objects.requireNonNull;
 
-public class TableHelper {
-    public static TableHelper forSectionHeaders(Elf32Header header) {
-        return new TableHelper(
+public class TableHelper<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        > {
+    public static <NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+    TableHelper<NATIVE_WORD> forSectionHeaders(ElfHeader<NATIVE_WORD> header) {
+        return new TableHelper<NATIVE_WORD>(
                 header.sectionHeaderTableOffset(),
                 header.sectionHeaderSize(),
                 header.numberOfSectionHeaders());
     }
 
-    public static TableHelper forProgramHeaders(Elf32Header header) {
-        return new TableHelper(
+    public static <NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+    TableHelper<NATIVE_WORD> forProgramHeaders(ElfHeader<NATIVE_WORD> header) {
+        return new TableHelper<>(
                 header.programHeaderTableOffset(),
                 header.programHeaderSize(),
                 header.numberOfProgramHeaders());
     }
 
-    public static TableHelper forSectionEntries(Elf32SectionHeader sectionHeader) {
-        return new TableHelper(
+    public static <NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+    TableHelper<NATIVE_WORD> forSectionEntries(ElfSectionHeader<NATIVE_WORD> sectionHeader) {
+        return new TableHelper<>(
                 sectionHeader.fileOffset(),
-                sectionHeader.containedEntrySize(),
+                sectionHeader.containedEntrySize().intValue(),
                 // TODO: Use actual section size
-                sectionHeader.size() / sectionHeader.containedEntrySize());
+                sectionHeader.size().intValue() / sectionHeader.containedEntrySize().intValue());
     }
 
-    public static TableHelper forSectionHeaders(Elf64Header header) {
-        // TODO: This is just a stub, This class NEEDS BADLY refactoring
-        return new TableHelper(
-                new Elf32Offset(
-                        Math.toIntExact(header.sectionHeaderTableOffset().value())),
-                header.sectionHeaderSize(),
-                header.numberOfSectionHeaders());
-    }
-
-    public static TableHelper forSectionEntries(Elf64SectionHeader sectionHeader) {
-        // TODO: This is just a stub, This class NEEDS BADLY refactoring
-        return new TableHelper(
-                new Elf32Offset(Math.toIntExact(sectionHeader.fileOffset().value())),
-                Math.toIntExact(sectionHeader.containedEntrySize()),
-                // TODO: Use actual section size
-                Math.toIntExact(sectionHeader.size()) / Math.toIntExact(sectionHeader.containedEntrySize()));
-    }
-
-    private final Elf32Offset startOffset;
+    private final ElfOffset<NATIVE_WORD> startOffset;
     private final int entrySize;
     private final int entriesCount;
 
-    private TableHelper(Elf32Offset startOffset,
+    private TableHelper(ElfOffset<NATIVE_WORD> startOffset,
                        int entrySize,
                        int entriesCount) {
         requireNonNull(startOffset);
@@ -68,38 +55,19 @@ public class TableHelper {
         return entriesCount;
     }
 
-    public Elf32Offset offsetForEntry(int index) {
+    public ElfOffset<NATIVE_WORD> offsetForEntry(int index) {
         if (index >= tableSize()) {
             throw new IndexOutOfBoundsException("Index is out of bounds: " + index);
         }
 
-        int entryOffset = startOffset.intValue() + index * entrySize;
-        return new Elf32Offset(entryOffset);
+        return startOffset.plus(index * entrySize);
     }
 
-    public Elf32Offset offsetForEntry(SectionHeaderIndex index) {
+    public ElfOffset<NATIVE_WORD> offsetForEntry(SectionHeaderIndex index) {
         return offsetForEntry(index.intValue());
     }
 
-    public Elf32Offset offsetForEntry(SymbolTableIndex index) {
+    public ElfOffset<NATIVE_WORD> offsetForEntry(SymbolTableIndex index) {
         return offsetForEntry(index.intValue());
-    }
-
-    // TODO: Base class + 32 & 64 variants
-    public Elf64Offset offsetForEntry64(long index) {
-        if (index >= tableSize()) {
-            throw new IndexOutOfBoundsException("Index is out of bounds: " + index);
-        }
-
-        long entryOffset = startOffset.intValue() + index * entrySize;
-        return new Elf64Offset(entryOffset);
-    }
-
-    public Elf64Offset offsetForEntry64(SectionHeaderIndex index) {
-        return offsetForEntry64(index.intValue());
-    }
-
-    public Elf64Offset offsetForEntry64(SymbolTableIndex index) {
-        return offsetForEntry64(index.intValue());
     }
 }

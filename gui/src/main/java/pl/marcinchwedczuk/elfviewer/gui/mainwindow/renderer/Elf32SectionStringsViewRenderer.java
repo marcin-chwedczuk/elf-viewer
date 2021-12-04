@@ -1,9 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
 
 import java.util.List;
 
@@ -11,9 +9,9 @@ import static java.util.function.Function.identity;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
 public class Elf32SectionStringsViewRenderer extends BaseRenderer<String> {
-    private final Elf32Section section;
+    private final Elf32BasicSection section;
 
-    public Elf32SectionStringsViewRenderer(Elf32Section section) {
+    public Elf32SectionStringsViewRenderer(Elf32BasicSection section) {
         if (!section.header().flags().hasFlag(STRINGS))
             throw new IllegalArgumentException("Section contents does not consist from strings.");
 

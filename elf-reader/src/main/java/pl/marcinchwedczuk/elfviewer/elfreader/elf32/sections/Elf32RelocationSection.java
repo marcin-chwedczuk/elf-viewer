@@ -1,32 +1,27 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Relocation;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.RelocationsTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
+public class Elf32RelocationSection extends Elf32BasicSection {
+    private final ElfRelocationSection<Integer> section;
 
-public class Elf32RelocationSection extends Elf32Section {
-    public Elf32RelocationSection(Elf32File elfFile,
-                                  Elf32SectionHeader header) {
-        super(elfFile, header);
-        Args.checkSectionType(header, REL);
+    public Elf32RelocationSection(ElfRelocationSection<Integer> section) {
+        super(section);
+        this.section = section;
     }
 
-    public List<Elf32Relocation> relocations() {
-        RelocationsTable relocationsTable =
-                new RelocationsTable(header(), elfFile());
 
-        return new ArrayList<>(relocationsTable.relocations());
+    public List<Elf32Relocation> relocations() {
+        return section.relocations().stream()
+                .map(Elf32Relocation::new)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,10 +1,6 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf64;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
-
-import java.util.Objects;
 
 public class Elf64Offset extends ElfOffset<Long> {
     public static final Elf64Offset ZERO = new Elf64Offset(0);
@@ -14,7 +10,7 @@ public class Elf64Offset extends ElfOffset<Long> {
     }
 
     @Override
-    protected ElfOffset<Long> mkFileOffset(long value) {
+    protected ElfOffset<Long> mkFileOffset(Long value) {
         return new Elf64Offset(value);
     }
 

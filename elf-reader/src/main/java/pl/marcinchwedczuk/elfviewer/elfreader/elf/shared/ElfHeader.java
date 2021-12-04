@@ -219,5 +219,4 @@ public class ElfHeader<
                 && identification.elfData() == ElfData.ELF_DATA_LSB
                 && machine == ElfMachine.INTEL_386;
     }
-
 }

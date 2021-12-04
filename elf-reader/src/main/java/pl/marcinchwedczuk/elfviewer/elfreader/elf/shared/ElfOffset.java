@@ -16,7 +16,7 @@ public abstract class ElfOffset<
 
     public NATIVE_WORD value() { return fileOffset; }
 
-    protected abstract ElfOffset<NATIVE_WORD> mkFileOffset(long value);
+    protected abstract ElfOffset<NATIVE_WORD> mkFileOffset(NATIVE_WORD value);
 
     public boolean isNull() {
         return (fileOffset.longValue() == 0);
@@ -41,8 +41,12 @@ public abstract class ElfOffset<
     }
 
     public ElfOffset<NATIVE_WORD> plus(long bytesCount) {
+        long result = fileOffset.longValue() + bytesCount;
         // TODO: Check overflow
-        return mkFileOffset(fileOffset.longValue() + bytesCount);
+        return mkFileOffset((fileOffset instanceof Integer)
+                // TODO: Think how to remove type check, maybe use static method?
+                ? (NATIVE_WORD)(Integer)Math.toIntExact(result)
+                : (NATIVE_WORD)(Long)result);
     }
 
     public long minus(ElfOffset<NATIVE_WORD> fileOffset) {

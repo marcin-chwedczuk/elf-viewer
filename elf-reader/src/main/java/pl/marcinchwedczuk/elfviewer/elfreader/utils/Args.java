@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
@@ -41,7 +42,7 @@ public class Args {
             throw new IllegalArgumentException("Expected value between 0 and 0xFF but got: " + value + ".");
     }
 
-    public static void checkDynamicTagType(Elf32DynamicTag tag, Elf32DynamicTagType type) {
+    public static void checkDynamicTagType(ElfDynamicTag<?> tag, Elf32DynamicTagType type) {
         if (tag.type().isNot(type))
             throw new IllegalArgumentException(String.format(
                     "Tag should have type %s but had type %s.", type, tag.type()));

@@ -1,18 +1,26 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
 
-public abstract class ElfSectionFactory<
+public class ElfSectionFactory<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
+
+    private final NativeWord<NATIVE_WORD> nativeWord;
+    private final StructuredFileFactory<NATIVE_WORD> structuredFileFactory;
+
+    public ElfSectionFactory(NativeWord<NATIVE_WORD> nativeWord, StructuredFileFactory<NATIVE_WORD> structuredFileFactory) {
+        this.nativeWord = nativeWord;
+        this.structuredFileFactory = structuredFileFactory;
+    }
 
     public List<? extends ElfSection<NATIVE_WORD>> createSections(ElfFile<NATIVE_WORD> elfFile)
     {
@@ -31,36 +39,27 @@ public abstract class ElfSectionFactory<
         try {
             if (header.type().is(PROGBITS)
                     && header.hasName(ElfSectionNames.INTERP)) {
-                return mkInterpreterSection(elfFile, header);
+                return new ElfInterpreterSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(STRING_TABLE)) {
-                return mkStringTableSection(elfFile, header);
+                return new ElfStringTableSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
-                return mkSymbolTableSection(elfFile, header);
+                return new ElfSymbolTableSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(DYNAMIC)) {
-                return mkDynamicSection(elfFile, header);
+                return new ElfDynamicSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(REL)) {
-                return mkRelocationsSection(elfFile, header);
+                return new ElfRelocationSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(NOTE)) {
-                return mkNotesSection(elfFile, header);
+                return new ElfNotesSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(GNU_HASH)) {
-                return mkGnuHashSection(elfFile, header);
+                return new ElfGnuHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
-            return mkSection(elfFile, header);
+            return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header) {
+            };
         } catch (Exception error) {
             // TODO: This exception type is too broad...
             // We should catch RuntimeExceptions + IO exceptions maybe?
-            return mkInvalidSection(elfFile, header, error);
+            return new ElfInvalidSection<>(nativeWord, structuredFileFactory, elfFile, header, error);
         }
     }
-
-    protected abstract ElfSection<NATIVE_WORD> mkInterpreterSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkStringTableSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkSymbolTableSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkDynamicSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkRelocationsSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkNotesSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkGnuHashSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header);
-    protected abstract ElfSection<NATIVE_WORD> mkInvalidSection(ElfFile<NATIVE_WORD> file, ElfSectionHeader<NATIVE_WORD> header, Exception error);
 }

@@ -1,50 +1,24 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTags;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NULL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
 
 public class Elf32DynamicTags {
-    private final Elf32File elfFile;
-    private final Elf32SectionHeader dynamicSection;
-    private final TableHelper tableHelper;
+    private final ElfDynamicTags<Integer> dynamicTags;
 
-    public Elf32DynamicTags(Elf32File elfFile,
-                            Elf32SectionHeader dynamicSection) {
-        requireNonNull(elfFile);
-        requireNonNull(dynamicSection);
-
-        Args.checkSectionType(dynamicSection, DYNAMIC);
-
-        this.elfFile = elfFile;
-        this.dynamicSection = dynamicSection;
-        this.tableHelper = TableHelper.forSectionEntries(dynamicSection);
+    public Elf32DynamicTags(ElfDynamicTags<Integer> dynamicTags) {
+        this.dynamicTags = dynamicTags;
     }
 
+
     public List<Elf32DynamicTag> getTags() {
-        Elf32Offset startOffset = dynamicSection.fileOffset();
-        StructuredFile32 sf = new StructuredFile32(elfFile, startOffset);
-
-        List<Elf32DynamicTag> result = new ArrayList<>();
-
-        for (int i = 0; i < tableHelper.tableSize(); i++) {
-            Elf32DynamicTagType tag =
-                    Elf32DynamicTagType.fromValue(sf.readUnsignedInt());
-
-            // NULL tag marks end of the dynamic section
-            if (tag.is(NULL)) break;
-
-            int value = sf.readUnsignedInt();
-            result.add(new Elf32DynamicTag(tag, value));
-        }
-
-        return result;
+        return dynamicTags.getTags().stream()
+                .map(Elf32DynamicTag::new)
+                .collect(Collectors.toList());
     }
 }

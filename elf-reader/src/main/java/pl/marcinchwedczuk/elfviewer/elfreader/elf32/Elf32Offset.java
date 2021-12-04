@@ -1,10 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
-
-import java.util.Objects;
 
 @ElfApi("Elf32_Off")
 public class Elf32Offset extends ElfOffset<Integer> {
@@ -15,7 +12,7 @@ public class Elf32Offset extends ElfOffset<Integer> {
     }
 
     @Override
-    protected ElfOffset<Integer> mkFileOffset(long value) {
+    protected ElfOffset<Integer> mkFileOffset(Integer value) {
         return new Elf32Offset(Math.toIntExact(value));
     }
 

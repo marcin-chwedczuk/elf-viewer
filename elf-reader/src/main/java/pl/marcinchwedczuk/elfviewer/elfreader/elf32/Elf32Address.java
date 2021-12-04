@@ -1,10 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
-
-import java.util.Objects;
 
 @ElfApi("Elf32_Addr")
 public class Elf32Address extends ElfAddress<Integer> {
@@ -13,7 +10,7 @@ public class Elf32Address extends ElfAddress<Integer> {
     }
 
     @Override
-    protected ElfAddress<Integer> mkAddress(long value) {
+    protected ElfAddress<Integer> mkAddress(Integer value) {
         return new Elf32Address(Math.toIntExact(value));
     }
 

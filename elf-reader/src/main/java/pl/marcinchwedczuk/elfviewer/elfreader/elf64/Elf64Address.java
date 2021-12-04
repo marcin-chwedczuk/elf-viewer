@@ -1,10 +1,7 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf.elf64;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf64;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
-
-import java.util.Objects;
 
 @ElfApi("Elf64_Addr")
 public class Elf64Address extends ElfAddress<Long> {
@@ -13,7 +10,7 @@ public class Elf64Address extends ElfAddress<Long> {
     }
 
     @Override
-    protected ElfAddress<Long> mkAddress(long value) {
+    protected ElfAddress<Long> mkAddress(Long value) {
         return new Elf64Address(value);
     }
 

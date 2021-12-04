@@ -2,7 +2,6 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 
@@ -21,9 +20,9 @@ public abstract class BaseElf32Visitor implements Elf32Visitor {
     public void enterSections() { }
 
     @Override
-    public void enter(Elf32Section section) { }
+    public void enter(Elf32BasicSection section) { }
     @Override
-    public void exit(Elf32Section section) { }
+    public void exit(Elf32BasicSection section) { }
 
     @Override
     public void enter(Elf32DynamicSection section) { }

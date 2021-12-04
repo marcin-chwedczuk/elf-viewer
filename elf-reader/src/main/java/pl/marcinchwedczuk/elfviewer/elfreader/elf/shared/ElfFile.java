@@ -1,10 +1,11 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -12,8 +13,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
-public abstract class ElfFile<
+public class ElfFile<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     private final AbstractFile storage;
@@ -28,7 +30,7 @@ public abstract class ElfFile<
     private final List<ElfSectionHeader<NATIVE_WORD>> sectionHeaders;
     private final Memoized<List<? extends ElfSection<NATIVE_WORD>>> sectionsMemoized;
 
-    protected ElfFile(AbstractFile storage,
+    public ElfFile(AbstractFile storage,
                       Endianness endianness,
                       ElfHeader<NATIVE_WORD> header,
                       List<? extends ElfSectionHeader<NATIVE_WORD>> sectionHeaders,
@@ -69,4 +71,34 @@ public abstract class ElfFile<
                 .findFirst();
     }
 
+    public Optional<ElfSection<NATIVE_WORD>> sectionContainingAddress(ElfAddress<NATIVE_WORD> inMemoryAddress) {
+        for (ElfSection<NATIVE_WORD> section: sections()) {
+            ElfSectionHeader<NATIVE_WORD> header = section.header();
+
+            if (inMemoryAddress.isAfterOrAt(header.virtualAddress()) &&
+                    inMemoryAddress.isBefore(header.endVirtualAddress())) {
+                return Optional.of(section);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+
+    public List<ElfSection<NATIVE_WORD>> sectionsOfType(ElfSectionType type) {
+        return sections().stream()
+                .filter(s -> s.header().type().is(type))
+                .collect(toList());
+    }
+
+    public Optional<ElfSection<NATIVE_WORD>> sectionOfType(ElfSectionType type) {
+        List<ElfSection<NATIVE_WORD>> sections = sectionsOfType(type);
+
+        if (sections.size() > 1)
+            throw new ElfReaderException("More than one section has type " + type + ".");
+
+        return sections.size() == 1
+                ? Optional.of(sections.get(0))
+                : Optional.empty();
+    }
 }

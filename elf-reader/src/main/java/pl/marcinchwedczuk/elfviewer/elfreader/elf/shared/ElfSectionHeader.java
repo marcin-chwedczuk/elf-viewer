@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class ElfSectionHeader<
+public class ElfSectionHeader<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     @ElfApi("sh_name")

@@ -3,7 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 
@@ -16,11 +16,11 @@ import static java.util.Objects.requireNonNull;
 public class Elf32Segment extends Elf32Element {
     private final Elf32File elfFile;
     private final Elf32ProgramHeader programHeader;
-    private final List<Elf32Section> sections;
+    private final List<Elf32BasicSection> sections;
 
     public Elf32Segment(Elf32File elfFile,
                         Elf32ProgramHeader programHeader,
-                        List<Elf32Section> sections) {
+                        List<Elf32BasicSection> sections) {
         this.elfFile = elfFile;
         this.programHeader = requireNonNull(programHeader);
         this.sections = new ArrayList<>(sections);
@@ -30,7 +30,7 @@ public class Elf32Segment extends Elf32Element {
         return programHeader;
     }
 
-    public List<Elf32Section> containedSections() {
+    public List<Elf32BasicSection> containedSections() {
         return Collections.unmodifiableList(sections);
     }
 

@@ -3,8 +3,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
@@ -14,46 +15,50 @@ import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 public class Elf32File
-        extends ElfFile<Integer>
         implements Elf32Visitable
 {
+    private final Elf32SectionFactory sectionFactory = new Elf32SectionFactory();
+
+    private final ElfFile<Integer> elfFile;
+    public ElfFile<Integer> rawElfFile() { return elfFile; }
 
     public final Memoized<List<Elf32Segment>> segmentsMemoized = new Memoized<>(() ->
             new Elf32SegmentFactory(this).createSegments());
 
-    /**
-     * The section header for index 0 (SHN_UNDEF) _always_ exists,
-     * even though the index marks undefined section references.
-     */
-    public final List<Elf32SectionHeader> sectionHeaders;
-    public final List<Elf32ProgramHeader> programHeaders;
+   public final List<Elf32ProgramHeader> programHeaders;
 
-    public Elf32File(AbstractFile storage,
-                     Endianness endianness,
-                     Elf32Header header,
-                     List<Elf32SectionHeader> sectionHeaders,
-                     List<Elf32ProgramHeader> programHeaders
-                     ) {
-        super(storage, endianness, header, sectionHeaders,
-                new Elf32SectionFactory());
-        this.sectionHeaders = sectionHeaders;
+    public Elf32File(ElfFile<Integer> elfFile,
+                     List<Elf32ProgramHeader> programHeaders) {
+        this.elfFile = requireNonNull(elfFile);
         this.programHeaders = programHeaders;
     }
 
-    @Override
-    public Elf32Header header() {
-        return (Elf32Header) super.header();
+    public Elf32Header header() { return new Elf32Header(elfFile.header()); }
+    public final AbstractFile storage() { return elfFile.storage(); }
+    public final Endianness endianness() { return elfFile.endianness(); }
+
+    public List<Elf32SectionHeader> sectionHeaders() {
+        return elfFile.sectionHeaders().stream()
+                .map(Elf32SectionHeader::new)
+                .collect(toList());
     }
 
-    public List<Elf32Section> sections() {
-        return (List<Elf32Section>) super.sections();
+    public List<Elf32BasicSection> sections() {
+        return sectionFactory.wrap(elfFile.sections());
+    }
+
+    public Optional<Elf32BasicSection> sectionWithName(String name) {
+        return elfFile.sectionWithName(name)
+                .map(sectionFactory::wrap);
     }
 
     public List<Elf32Segment> segments() {
@@ -61,7 +66,7 @@ public class Elf32File
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {
-        Optional<Elf32SectionHeader> maybeSymbolTableSection = sectionHeaders.stream()
+        Optional<Elf32SectionHeader> maybeSymbolTableSection = sectionHeaders().stream()
                 .filter(s -> s.name().equals(sectionName))
                 .findFirst();
 
@@ -76,8 +81,8 @@ public class Elf32File
         return programHeaders;
     }
 
-    public Optional<Elf32Section> sectionContainingAddress(Elf32Address inMemoryAddress) {
-        for (Elf32Section section: sections()) {
+    public Optional<Elf32BasicSection> sectionContainingAddress(Elf32Address inMemoryAddress) {
+        for (Elf32BasicSection section: sections()) {
             Elf32SectionHeader header = section.header();
 
             if (inMemoryAddress.isAfterOrAt(header.virtualAddress()) &&
@@ -118,7 +123,7 @@ public class Elf32File
         header().accept(visitor);
 
         visitor.enterSections();
-        for (Elf32Section section : sections()) {
+        for (Elf32BasicSection section : sections()) {
             section.accept(visitor);
         }
         visitor.exitSections();
@@ -130,32 +135,22 @@ public class Elf32File
         visitor.exitSegments();
     }
 
-    public List<Elf32Section> sectionsOfType(ElfSectionType type) {
-        return sections().stream()
-                .filter(s -> s.header().type().is(type))
+    public List<Elf32BasicSection> sectionsOfType(ElfSectionType type) {
+        return elfFile.sectionsOfType(type)
+                // TODO: Map though factory to map sections to their types
+                .stream().map(sectionFactory::wrap)
                 .collect(toList());
     }
 
-    public Optional<Elf32Section> sectionOfType(ElfSectionType type) {
-        List<Elf32Section> sections = sectionsOfType(type);
-
-        if (sections.size() > 1)
-            throw new ElfReaderException("More than one section has type " + type + ".");
-
-        return sections.size() == 1
-                ? Optional.of(sections.get(0))
-                : Optional.empty();
+    public Optional<Elf32BasicSection> sectionOfType(ElfSectionType type) {
+        return elfFile.sectionOfType(type)
+                // TODO: Map though factory to map sections to their types
+                .map(sectionFactory::wrap);
     }
 
     public List<Elf32Segment> segmentsOfType(Elf32SegmentType type) {
         return segments().stream()
                 .filter(s -> s.programHeader().type().is(type))
                 .collect(toList());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Optional<Elf32Section> sectionWithName(String name) {
-        return (Optional<Elf32Section>) super.sectionWithName(name);
     }
 }

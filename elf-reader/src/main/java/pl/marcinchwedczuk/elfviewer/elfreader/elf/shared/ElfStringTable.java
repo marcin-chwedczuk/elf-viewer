@@ -24,7 +24,7 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING
  * string table's last byte is defined to hold a null byte, ensuring
  * null termination for all strings.
  */
-public class StringTable<
+public class ElfStringTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >
 {
@@ -32,8 +32,8 @@ public class StringTable<
     private final ElfOffset<NATIVE_WORD> offsetInFile;
     private final ElfOffset<NATIVE_WORD> endOffsetInFile;
 
-    public StringTable(AbstractFile file,
-                       ElfSectionHeader<NATIVE_WORD> section) {
+    public ElfStringTable(AbstractFile file,
+                          ElfSectionHeader<NATIVE_WORD> section) {
         requireNonNull(file);
         requireNonNull(section);
 
@@ -44,9 +44,9 @@ public class StringTable<
         this.endOffsetInFile = section.sectionEndOffsetInFile();
     }
 
-    public StringTable(AbstractFile file,
-                       ElfOffset<NATIVE_WORD> offsetInFile,
-                       ElfOffset<NATIVE_WORD> endOffsetInFile) {
+    public ElfStringTable(AbstractFile file,
+                          ElfOffset<NATIVE_WORD> offsetInFile,
+                          ElfOffset<NATIVE_WORD> endOffsetInFile) {
         // TODO: Improve
         this.file = file;
         this.offsetInFile = offsetInFile;
