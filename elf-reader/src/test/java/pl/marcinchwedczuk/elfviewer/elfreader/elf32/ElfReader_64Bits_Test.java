@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -17,7 +18,6 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALL
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
 
 public class ElfReader_64Bits_Test {
-    /*
     private final AbstractFile helloWorld64;
 
     public ElfReader_64Bits_Test() throws IOException {
@@ -145,5 +145,5 @@ public class ElfReader_64Bits_Test {
 
         assertThat(textSection.size())
                 .isEqualTo(0x181);
-    } */
+    }
 }

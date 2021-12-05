@@ -9,6 +9,10 @@ public class Elf64Address extends ElfAddress<Long> {
         super(address);
     }
 
+    public Elf64Address(ElfAddress<Long> address) {
+        super(address.value());
+    }
+
     @Override
     protected ElfAddress<Long> mkAddress(Long value) {
         return new Elf64Address(value);

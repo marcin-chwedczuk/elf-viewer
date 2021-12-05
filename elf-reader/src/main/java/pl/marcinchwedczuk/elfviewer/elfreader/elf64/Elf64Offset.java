@@ -9,6 +9,10 @@ public class Elf64Offset extends ElfOffset<Long> {
         super(offset);
     }
 
+    public Elf64Offset(ElfOffset<Long> offset) {
+        super(offset.value());
+    }
+
     @Override
     protected ElfOffset<Long> mkFileOffset(Long value) {
         return new Elf64Offset(value);
