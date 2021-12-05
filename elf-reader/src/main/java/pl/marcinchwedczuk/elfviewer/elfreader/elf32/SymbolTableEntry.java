@@ -12,6 +12,6 @@ public class SymbolTableEntry {
         this.index = s.index;
         // TODO: not effective
         this.symbol = new Elf32Symbol(s.symbol);
-        this.relatedSection = new Elf32SectionHeader(s.relatedSection);
+        this.relatedSection = Elf32SectionHeader.safeWrap(s.relatedSection);
     }
 }

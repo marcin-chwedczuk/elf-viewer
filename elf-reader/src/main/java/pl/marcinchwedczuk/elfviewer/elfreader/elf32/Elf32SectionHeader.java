@@ -5,7 +5,12 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import static java.util.Objects.requireNonNull;
 
 public class Elf32SectionHeader {
+    public static Elf32SectionHeader safeWrap(ElfSectionHeader<Integer> header) {
+        return header == null ? null : new Elf32SectionHeader(header);
+    }
+
     private final ElfSectionHeader<Integer> sectionHeader;
+    public ElfSectionHeader<Integer> unwrap() { return sectionHeader; }
 
     public Elf32SectionHeader(ElfSectionHeader<Integer> sectionHeader) {
         this.sectionHeader = requireNonNull(sectionHeader);

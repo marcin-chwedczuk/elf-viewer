@@ -2,10 +2,13 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -30,11 +33,16 @@ public class ElfFile<
     private final List<ElfSectionHeader<NATIVE_WORD>> sectionHeaders;
     private final Memoized<List<? extends ElfSection<NATIVE_WORD>>> sectionsMemoized;
 
+    private final List<ElfProgramHeader<NATIVE_WORD>> programHeaders;
+    private final Memoized<List<ElfSegment<NATIVE_WORD>>> segmentsMemoized;
+
     public ElfFile(AbstractFile storage,
-                      Endianness endianness,
-                      ElfHeader<NATIVE_WORD> header,
-                      List<? extends ElfSectionHeader<NATIVE_WORD>> sectionHeaders,
-                      ElfSectionFactory<NATIVE_WORD> sectionFactory) {
+                   Endianness endianness,
+                   ElfHeader<NATIVE_WORD> header,
+                   List<? extends ElfSectionHeader<NATIVE_WORD>> sectionHeaders,
+                   ElfSectionFactory<NATIVE_WORD> sectionFactory,
+                   List<? extends ElfProgramHeader<NATIVE_WORD>> programHeaders,
+                   ElfSegmentFactory<NATIVE_WORD> segmentFactory) {
         this.storage = requireNonNull(storage);
         this.endianness = requireNonNull(endianness);
 
@@ -43,6 +51,10 @@ public class ElfFile<
         this.sectionHeaders = new ArrayList<>(sectionHeaders);
         this.sectionsMemoized = new Memoized<>(
                 () -> sectionFactory.createSections(this));
+
+        this.programHeaders = new ArrayList<>(programHeaders);
+        this.segmentsMemoized = new Memoized<>(
+                () -> segmentFactory.createSegments(this));
     }
 
     public final AbstractFile storage() {
@@ -57,12 +69,17 @@ public class ElfFile<
         return header;
     }
 
-    public List<? extends ElfSectionHeader<NATIVE_WORD>> sectionHeaders() {
+    public List<ElfSectionHeader<NATIVE_WORD>> sectionHeaders() {
         return Collections.unmodifiableList(sectionHeaders);
     }
 
     public List<? extends ElfSection<NATIVE_WORD>> sections() {
         return sectionsMemoized.get();
+    }
+
+    public List<ElfProgramHeader<NATIVE_WORD>> programHeaders() {return programHeaders;}
+    public List<? extends ElfSegment<NATIVE_WORD>> segments() {
+        return segmentsMemoized.get();
     }
 
     public Optional<? extends ElfSection<NATIVE_WORD>> sectionWithName(String name) {
@@ -100,5 +117,52 @@ public class ElfFile<
         return sections.size() == 1
                 ? Optional.of(sections.get(0))
                 : Optional.empty();
+    }
+
+    public Optional<ElfSectionHeader<NATIVE_WORD>> getSectionHeader(String sectionName) {
+        Optional<ElfSectionHeader<NATIVE_WORD>> maybeSymbolTableSection = sectionHeaders().stream()
+                .filter(s -> s.name().equals(sectionName))
+                .findFirst();
+
+        return maybeSymbolTableSection;
+    }
+
+    public List<ElfProgramHeader<NATIVE_WORD>> getProgramHeadersOfType(Elf32SegmentType segmentType) {
+        List<ElfProgramHeader<NATIVE_WORD>> programHeaders = this.programHeaders.stream()
+                .filter(ph -> ph.type().equals(segmentType))
+                .collect(toList());
+
+        return programHeaders;
+    }
+
+    public Optional<ElfSegment<NATIVE_WORD>> segmentContainingAddress(ElfAddress<NATIVE_WORD> inMemoryAddress) {
+        for (ElfSegment<NATIVE_WORD> segment: segments()) {
+            ElfProgramHeader<NATIVE_WORD> ph = segment.programHeader();
+
+            if (inMemoryAddress.isAfterOrAt(ph.virtualAddress()) &&
+                    inMemoryAddress.isBefore(ph.endVirtualAddressInFile())) {
+                return Optional.of(segment);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<ElfOffset<NATIVE_WORD>> virtualAddressToFileOffset(ElfAddress<NATIVE_WORD> addr) {
+        Optional<ElfSegment<NATIVE_WORD>> maybeSegment = segmentContainingAddress(addr);
+
+        return maybeSegment.map(segment -> {
+            long offset = addr.minus(segment.programHeader().virtualAddress());
+
+            return segment.programHeader().fileOffset()
+                    .plus(offset);
+        });
+    }
+
+
+    public List<ElfSegment<NATIVE_WORD>> segmentsOfType(Elf32SegmentType type) {
+        return segments().stream()
+                .filter(s -> s.programHeader().type().is(type))
+                .collect(toList());
     }
 }

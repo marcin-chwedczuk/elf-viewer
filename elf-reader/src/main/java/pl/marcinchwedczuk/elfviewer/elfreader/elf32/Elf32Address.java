@@ -9,6 +9,10 @@ public class Elf32Address extends ElfAddress<Integer> {
         super(address);
     }
 
+    public Elf32Address(ElfAddress<Integer> other) {
+        super(other.value());
+    }
+
     @Override
     protected ElfAddress<Integer> mkAddress(Integer value) {
         return new Elf32Address(Math.toIntExact(value));

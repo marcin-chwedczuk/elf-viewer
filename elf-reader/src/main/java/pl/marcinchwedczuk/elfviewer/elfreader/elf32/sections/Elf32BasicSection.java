@@ -22,7 +22,7 @@ public class Elf32BasicSection implements Elf32Visitable {
         this.section = requireNonNull(section);
     }
 
-    public Elf32File elfFile() { return new Elf32File(section.elfFile(), null); }
+    public Elf32File elfFile() { return new Elf32File(section.elfFile()); }
     public Elf32SectionHeader header() { return new Elf32SectionHeader(section.header()); }
 
     public String name() { return section.name(); }

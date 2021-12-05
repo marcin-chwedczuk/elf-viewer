@@ -11,6 +11,10 @@ public class Elf32Offset extends ElfOffset<Integer> {
         super(offset);
     }
 
+    public Elf32Offset(ElfOffset<Integer> other) {
+        super(other.value());
+    }
+
     @Override
     protected ElfOffset<Integer> mkFileOffset(Integer value) {
         return new Elf32Offset(Math.toIntExact(value));

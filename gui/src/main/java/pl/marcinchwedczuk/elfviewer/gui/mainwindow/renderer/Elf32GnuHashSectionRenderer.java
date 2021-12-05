@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfGnuHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32GnuHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Symbol;
@@ -83,7 +84,7 @@ public class Elf32GnuHashSectionRenderer extends BaseRenderer<GnuHashTableEntryD
 
                 hashIndex++;
 
-                if (Elf32GnuHashTable.isHashChainEnd(hash)) {
+                if (ElfGnuHashTable.isHashChainEnd(hash)) {
                     // Chain ended let's move to the next bucket
                     nextBucket = true;
                     hashIndex = 0;

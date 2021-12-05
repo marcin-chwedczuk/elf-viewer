@@ -1,44 +1,40 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
-public class Elf32Segment extends Elf32Element {
-    private final Elf32File elfFile;
-    private final Elf32ProgramHeader programHeader;
-    private final List<Elf32BasicSection> sections;
+public class Elf32Segment implements Elf32Visitable {
+    // TODO: Inject
+    private final Elf32SectionFactory sectionFactory = new Elf32SectionFactory();
 
-    public Elf32Segment(Elf32File elfFile,
-                        Elf32ProgramHeader programHeader,
-                        List<Elf32BasicSection> sections) {
-        this.elfFile = elfFile;
-        this.programHeader = requireNonNull(programHeader);
-        this.sections = new ArrayList<>(sections);
+    private final ElfSegment<Integer> segment;
+
+    public Elf32Segment(ElfSegment<Integer> segment) {
+        this.segment = requireNonNull(segment);
     }
 
     public Elf32ProgramHeader programHeader() {
-        return programHeader;
+        return new Elf32ProgramHeader(segment.programHeader());
     }
 
     public List<Elf32BasicSection> containedSections() {
-        return Collections.unmodifiableList(sections);
+        return segment.containedSections().stream()
+                .map(sectionFactory::wrap)
+                .collect(toList());
     }
 
     public FileView contents() {
-        return new FileView(
-                elfFile.storage(),
-                programHeader.fileOffset(),
-                programHeader.fileSize());
+        return segment.contents();
     }
 
     @Override

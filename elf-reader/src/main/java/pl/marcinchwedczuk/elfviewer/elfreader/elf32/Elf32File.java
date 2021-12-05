@@ -27,19 +27,13 @@ public class Elf32File
         implements Elf32Visitable
 {
     private final Elf32SectionFactory sectionFactory = new Elf32SectionFactory();
+    private final Elf32SegmentFactory segmentFactory = new Elf32SegmentFactory();
 
     private final ElfFile<Integer> elfFile;
-    public ElfFile<Integer> rawElfFile() { return elfFile; }
+    public ElfFile<Integer> unwrap() { return elfFile; }
 
-    public final Memoized<List<Elf32Segment>> segmentsMemoized = new Memoized<>(() ->
-            new Elf32SegmentFactory(this).createSegments());
-
-   public final List<Elf32ProgramHeader> programHeaders;
-
-    public Elf32File(ElfFile<Integer> elfFile,
-                     List<Elf32ProgramHeader> programHeaders) {
+    public Elf32File(ElfFile<Integer> elfFile) {
         this.elfFile = requireNonNull(elfFile);
-        this.programHeaders = programHeaders;
     }
 
     public Elf32Header header() { return new Elf32Header(elfFile.header()); }
@@ -62,60 +56,45 @@ public class Elf32File
     }
 
     public List<Elf32Segment> segments() {
-        return segmentsMemoized.get();
+        return elfFile.segments().stream()
+                .map(segmentFactory::wrap)
+                .collect(toList());
     }
 
     public Optional<Elf32SectionHeader> getSectionHeader(String sectionName) {
-        Optional<Elf32SectionHeader> maybeSymbolTableSection = sectionHeaders().stream()
-                .filter(s -> s.name().equals(sectionName))
-                .findFirst();
-
-        return maybeSymbolTableSection;
+        return elfFile
+                .getSectionHeader(sectionName)
+                .map(Elf32SectionHeader::new);
     }
 
     public List<Elf32ProgramHeader> getProgramHeadersOfType(Elf32SegmentType segmentType) {
-        List<Elf32ProgramHeader> programHeaders = this.programHeaders.stream()
-                .filter(ph -> ph.type().equals(segmentType))
+        return elfFile.getProgramHeadersOfType(segmentType).stream()
+                .map(Elf32ProgramHeader::new)
                 .collect(toList());
-
-        return programHeaders;
     }
 
     public Optional<Elf32BasicSection> sectionContainingAddress(Elf32Address inMemoryAddress) {
-        for (Elf32BasicSection section: sections()) {
-            Elf32SectionHeader header = section.header();
-
-            if (inMemoryAddress.isAfterOrAt(header.virtualAddress()) &&
-                    inMemoryAddress.isBefore(header.endVirtualAddress())) {
-                return Optional.of(section);
-            }
-        }
-
-        return Optional.empty();
+        return elfFile
+                .sectionContainingAddress(inMemoryAddress)
+                .map(sectionFactory::wrap);
     }
 
     public Optional<Elf32Segment> segmentContainingAddress(Elf32Address inMemoryAddress) {
-        for (Elf32Segment segment: segments()) {
-            Elf32ProgramHeader ph = segment.programHeader();
-
-            if (inMemoryAddress.isAfterOrAt(ph.virtualAddress()) &&
-                    inMemoryAddress.isBefore(ph.endVirtualAddressInFile())) {
-                return Optional.of(segment);
-            }
-        }
-
-        return Optional.empty();
+        return elfFile
+                .segmentContainingAddress(inMemoryAddress)
+                .map(segmentFactory::wrap);
     }
 
     public Optional<Elf32Offset> virtualAddressToFileOffset(Elf32Address addr) {
-        Optional<Elf32Segment> maybeSegment = segmentContainingAddress(addr);
+        return elfFile
+                .virtualAddressToFileOffset(addr)
+                .map(Elf32Offset::new);
+    }
 
-        return maybeSegment.map(segment -> {
-            long offset = addr.minus(segment.programHeader().virtualAddress());
-
-            return segment.programHeader().fileOffset()
-                    .plus(offset);
-        });
+    public List<Elf32Segment> segmentsOfType(Elf32SegmentType type) {
+        return elfFile.segmentsOfType(type).stream()
+                .map(segmentFactory::wrap)
+                .collect(toList());
     }
 
     @Override
@@ -146,11 +125,5 @@ public class Elf32File
         return elfFile.sectionOfType(type)
                 // TODO: Map though factory to map sections to their types
                 .map(sectionFactory::wrap);
-    }
-
-    public List<Elf32Segment> segmentsOfType(Elf32SegmentType type) {
-        return segments().stream()
-                .filter(s -> s.programHeader().type().is(type))
-                .collect(toList());
     }
 }

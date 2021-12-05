@@ -1,13 +1,11 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +15,9 @@ import static java.util.stream.Collectors.toList;
 
 public class ElfSegmentFactory<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
-        >
-{
-    private final ElfFile<NATIVE_WORD> elfFile;
+        > {
 
-    public ElfSegmentFactory(ElfFile<NATIVE_WORD> elfFile) {
-        this.elfFile = Objects.requireNonNull(elfFile);
-    }
-
-    public List<ElfSegment<NATIVE_WORD>> createSegments() {
+    public List<ElfSegment<NATIVE_WORD>> createSegments(ElfFile<NATIVE_WORD> elfFile) {
         List<ElfSegment<NATIVE_WORD>> segments = new ArrayList<>();
 
         for (ElfProgramHeader<NATIVE_WORD> programHeader : elfFile.programHeaders()) {

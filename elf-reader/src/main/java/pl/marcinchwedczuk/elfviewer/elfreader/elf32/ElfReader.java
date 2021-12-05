@@ -3,6 +3,8 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
@@ -19,7 +21,7 @@ public class ElfReader {
 
     public static Elf32File readElf32(AbstractFile file) {
         // TODO: This is weak check
-        return new Elf32File((ElfFile<Integer>) readElf(file), List.of());
+        return new Elf32File((ElfFile<Integer>) readElf(file));
     }
 
     public static ElfFile<?> readElf(AbstractFile file) {
@@ -188,38 +190,40 @@ public class ElfReader {
                 header.sectionContainingSectionNames(),
                 TableHelper.forSectionHeaders(header));
 
-        List<Elf32ProgramHeader> programHeaders = readElf32ProgramHeaders(
+        List<ElfProgramHeader<Integer>> programHeaders = readElf32ProgramHeaders(
                 file,
                 endianness,
                 TableHelper.forProgramHeaders(header));
 
-        return new ElfFile<Integer>(
+        return new ElfFile<>(
                 file,
                 endianness,
                 header,
                 sectionHeaders,
-                new ElfSectionFactory<>(nativeWord, structuredFileFactory));
+                new ElfSectionFactory<>(nativeWord, structuredFileFactory),
+                programHeaders,
+                new ElfSegmentFactory<>());
     }
 
-    private static List<Elf32ProgramHeader> readElf32ProgramHeaders(
+    private static List<ElfProgramHeader<Integer>> readElf32ProgramHeaders(
             AbstractFile file,
             Endianness endianness,
             TableHelper programHeadersTable)
     {
-        List<Elf32ProgramHeader> headers = new ArrayList<>(programHeadersTable.tableSize());
+        List<ElfProgramHeader<Integer>> headers = new ArrayList<>(programHeadersTable.tableSize());
 
         for (int i = 0; i < programHeadersTable.tableSize(); i++) {
             ElfOffset<Integer> offset = programHeadersTable.offsetForEntry(i);
             StructuredFile32 headerFile = new StructuredFile32(file, endianness, offset);
 
-            Elf32ProgramHeader sectionHeader = readElf32ProgramHeader(headerFile);
+            ElfProgramHeader<Integer> sectionHeader = readElf32ProgramHeader(headerFile);
             headers.add(sectionHeader);
         }
 
         return headers;
     }
 
-    private static Elf32ProgramHeader readElf32ProgramHeader(StructuredFile32 headerFile) {
+    private static ElfProgramHeader<Integer> readElf32ProgramHeader(StructuredFile32 headerFile) {
         Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
         Elf32Offset fileOffset = headerFile.readOffset();
         Elf32Address virtualAddress = headerFile.readAddress();
@@ -229,7 +233,7 @@ public class ElfReader {
         Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
         int alignment = headerFile.readUnsignedInt();
 
-        return new Elf32ProgramHeader(
+        return new ElfProgramHeader<>(
                 type,
                 fileOffset,
                 virtualAddress,
