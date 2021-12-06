@@ -1,7 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Symbol;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 

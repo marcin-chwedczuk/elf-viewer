@@ -6,9 +6,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHead
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;

@@ -13,8 +13,8 @@ public interface Elf32Visitor {
     void exit(Elf32Header header);
 
     void enterSections();
-    void enter(Elf32BasicSection section);
-    void exit(Elf32BasicSection section);
+    void enter(Elf32Section section);
+    void exit(Elf32Section section);
     void enter(Elf32DynamicSection section);
     void exit(Elf32DynamicSection section);
     void enter(Elf32InterpreterSection section);

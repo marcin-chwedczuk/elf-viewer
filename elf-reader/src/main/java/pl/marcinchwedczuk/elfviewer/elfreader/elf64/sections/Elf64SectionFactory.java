@@ -32,10 +32,10 @@ public class Elf64SectionFactory {
         }
         if (section instanceof ElfStringTableSection<?>) {
             return new Elf64StringTableSection((ElfStringTableSection<Long>) section);
-        }
+        }*/
         if (section instanceof ElfSymbolTableSection<?>) {
             return new Elf64SymbolTableSection((ElfSymbolTableSection<Long>) section);
-        }
+        } /*
         if (section instanceof ElfGnuHashSection<?>) {
             return new Elf64GnuHashSection((ElfGnuHashSection<Long>) section);
         }

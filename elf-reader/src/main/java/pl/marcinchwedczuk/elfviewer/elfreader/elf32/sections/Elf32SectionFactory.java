@@ -1,24 +1,19 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionFactory;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Elf32SectionFactory {
 
-    public List<Elf32BasicSection> wrap(List<? extends ElfSection<Integer>> sections) {
+    public List<Elf32Section> wrap(List<? extends ElfSection<Integer>> sections) {
         return sections.stream()
                 .map(this::wrap)
                 .collect(Collectors.toList());
     }
 
-    public Elf32BasicSection wrap(ElfSection<Integer> section) {
+    public Elf32Section wrap(ElfSection<Integer> section) {
         if (section instanceof ElfDynamicSection<?>) {
             return new Elf32DynamicSection((ElfDynamicSection<Integer>) section);
         }
@@ -44,6 +39,6 @@ public class Elf32SectionFactory {
             return new Elf32GnuHashSection((ElfGnuHashSection<Integer>) section);
         }
 
-        return new Elf32BasicSection(section);
+        return new Elf32Section(section);
     }
 }

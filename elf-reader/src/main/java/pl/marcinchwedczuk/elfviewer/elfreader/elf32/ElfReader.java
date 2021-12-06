@@ -2,10 +2,12 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.IntegerNativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;

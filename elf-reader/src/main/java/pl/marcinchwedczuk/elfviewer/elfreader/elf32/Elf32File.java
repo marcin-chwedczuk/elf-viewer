@@ -1,11 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32SegmentFactory;
@@ -13,11 +9,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -46,11 +39,11 @@ public class Elf32File
                 .collect(toList());
     }
 
-    public List<Elf32BasicSection> sections() {
+    public List<Elf32Section> sections() {
         return sectionFactory.wrap(elfFile.sections());
     }
 
-    public Optional<Elf32BasicSection> sectionWithName(String name) {
+    public Optional<Elf32Section> sectionWithName(String name) {
         return elfFile.sectionWithName(name)
                 .map(sectionFactory::wrap);
     }
@@ -73,7 +66,7 @@ public class Elf32File
                 .collect(toList());
     }
 
-    public Optional<Elf32BasicSection> sectionContainingAddress(Elf32Address inMemoryAddress) {
+    public Optional<Elf32Section> sectionContainingAddress(Elf32Address inMemoryAddress) {
         return elfFile
                 .sectionContainingAddress(inMemoryAddress)
                 .map(sectionFactory::wrap);
@@ -102,7 +95,7 @@ public class Elf32File
         header().accept(visitor);
 
         visitor.enterSections();
-        for (Elf32BasicSection section : sections()) {
+        for (Elf32Section section : sections()) {
             section.accept(visitor);
         }
         visitor.exitSections();
@@ -114,14 +107,14 @@ public class Elf32File
         visitor.exitSegments();
     }
 
-    public List<Elf32BasicSection> sectionsOfType(ElfSectionType type) {
+    public List<Elf32Section> sectionsOfType(ElfSectionType type) {
         return elfFile.sectionsOfType(type)
                 // TODO: Map though factory to map sections to their types
                 .stream().map(sectionFactory::wrap)
                 .collect(toList());
     }
 
-    public Optional<Elf32BasicSection> sectionOfType(ElfSectionType type) {
+    public Optional<Elf32Section> sectionOfType(ElfSectionType type) {
         return elfFile.sectionOfType(type)
                 // TODO: Map though factory to map sections to their types
                 .map(sectionFactory::wrap);

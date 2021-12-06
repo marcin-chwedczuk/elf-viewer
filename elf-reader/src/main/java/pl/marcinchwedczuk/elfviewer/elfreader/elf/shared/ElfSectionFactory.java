@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 

@@ -1,18 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuHashSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
-import java.util.List;
-
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_HASH;
-
-public class Elf32GnuHashSection extends Elf32BasicSection {
+public class Elf32GnuHashSection extends Elf32Section {
     private final ElfGnuHashSection<Integer> section;
 
     public Elf32GnuHashSection(ElfGnuHashSection<Integer> section1) {

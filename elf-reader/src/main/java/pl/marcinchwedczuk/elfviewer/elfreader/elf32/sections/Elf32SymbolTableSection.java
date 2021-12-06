@@ -1,11 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 
-public class Elf32SymbolTableSection extends Elf32BasicSection {
+public class Elf32SymbolTableSection extends Elf32Section {
     private final ElfSymbolTableSection<Integer> section;
 
     public Elf32SymbolTableSection(ElfSymbolTableSection<Integer> section) {
@@ -14,8 +13,8 @@ public class Elf32SymbolTableSection extends Elf32BasicSection {
     }
 
 
-    public SymbolTable symbolTable() {
-        return new SymbolTable(section.symbolTable());
+    public Elf32SymbolTable symbolTable() {
+        return new Elf32SymbolTable(section.symbolTable());
     }
 
     @Override

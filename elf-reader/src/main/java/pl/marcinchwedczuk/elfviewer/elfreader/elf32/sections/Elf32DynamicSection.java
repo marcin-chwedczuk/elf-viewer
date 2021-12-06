@@ -3,13 +3,12 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfDynamicSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Elf32DynamicSection extends Elf32BasicSection {
+public class Elf32DynamicSection extends Elf32Section {
     private final ElfDynamicSection<Integer> section;
 
     public Elf32DynamicSection(ElfDynamicSection<Integer> section) {

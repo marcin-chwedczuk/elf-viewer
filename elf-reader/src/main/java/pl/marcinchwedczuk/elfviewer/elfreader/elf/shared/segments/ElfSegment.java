@@ -2,11 +2,6 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Element;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 
 import java.util.ArrayList;

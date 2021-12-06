@@ -1,9 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -16,8 +15,8 @@ public class ElfDynamicSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > extends ElfSection<NATIVE_WORD> {
     public ElfDynamicSection(NativeWord<NATIVE_WORD> nativeWord, StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
-                               ElfFile<NATIVE_WORD> elfFile,
-                               ElfSectionHeader<NATIVE_WORD> header) {
+                             ElfFile<NATIVE_WORD> elfFile,
+                             ElfSectionHeader<NATIVE_WORD> header) {
         super(nativeWord, structuredFileFactory, elfFile, header);
 
         Args.checkSectionType(header, DYNAMIC);

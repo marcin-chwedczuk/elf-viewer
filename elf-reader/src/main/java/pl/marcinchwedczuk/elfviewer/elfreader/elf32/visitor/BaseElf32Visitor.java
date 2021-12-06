@@ -20,9 +20,9 @@ public abstract class BaseElf32Visitor implements Elf32Visitor {
     public void enterSections() { }
 
     @Override
-    public void enter(Elf32BasicSection section) { }
+    public void enter(Elf32Section section) { }
     @Override
-    public void exit(Elf32BasicSection section) { }
+    public void exit(Elf32Section section) { }
 
     @Override
     public void enter(Elf32DynamicSection section) { }

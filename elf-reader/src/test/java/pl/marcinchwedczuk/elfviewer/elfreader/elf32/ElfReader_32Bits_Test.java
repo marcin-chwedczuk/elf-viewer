@@ -117,12 +117,12 @@ class ElfReader_32Bits_Test {
     @Test
     public void elf32_section_header() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
-        Optional<Elf32BasicSection> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
+        Optional<Elf32Section> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
 
         assertThat(maybeTextSection)
                 .isPresent();
         Elf32SectionHeader textSection = maybeTextSection
-                .map(Elf32BasicSection::header)
+                .map(Elf32Section::header)
                 .get();
 
         assertThat(textSection.addressAlignment())
@@ -159,7 +159,7 @@ class ElfReader_32Bits_Test {
     void elf32_symbol_table() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeSymtabSection =
+        Optional<Elf32Section> maybeSymtabSection =
                 elfFile.sectionWithName(ElfSectionNames.SYMTAB);
 
         assertThat(maybeSymtabSection)
@@ -169,7 +169,7 @@ class ElfReader_32Bits_Test {
                             .isInstanceOf(Elf32SymbolTableSection.class);
                 });
 
-        SymbolTable symbols = ((Elf32SymbolTableSection)maybeSymtabSection.get()).symbolTable();
+        Elf32SymbolTable symbols = ((Elf32SymbolTableSection)maybeSymtabSection.get()).symbolTable();
 
         // 1. Check Section symbols have their names resolved
         Optional<Elf32Symbol> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
@@ -208,7 +208,7 @@ class ElfReader_32Bits_Test {
     void elf32_relocation_table() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeRelSection =
+        Optional<Elf32Section> maybeRelSection =
                 elfFile.sectionWithName(ElfSectionNames.REL(".dyn"));
 
         assertThat(maybeRelSection)
@@ -267,7 +267,7 @@ class ElfReader_32Bits_Test {
     void elf32_notes_abi_tag() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
+        Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
         assertThat(maybeNotesSection)
                 .isPresent()
                 .hasValueSatisfying(value -> {
@@ -286,7 +286,7 @@ class ElfReader_32Bits_Test {
     void elf32_notes_build_id() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
+        Optional<Elf32Section> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
         assertThat(maybeNotesSection)
                 .isPresent()
                 .hasValueSatisfying(value -> {
@@ -305,7 +305,7 @@ class ElfReader_32Bits_Test {
     void elf32_interpreter() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeInterp = elfFile.sectionWithName(ElfSectionNames.INTERP);
+        Optional<Elf32Section> maybeInterp = elfFile.sectionWithName(ElfSectionNames.INTERP);
         assertThat(maybeInterp)
                 .isPresent()
                 .hasValueSatisfying(value -> {
@@ -323,7 +323,7 @@ class ElfReader_32Bits_Test {
     void elf32_dynamic_section() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeDynamic =
+        Optional<Elf32Section> maybeDynamic =
                 elfFile.sectionOfType(ElfSectionType.DYNAMIC);
 
         assertThat(maybeDynamic)
@@ -354,7 +354,7 @@ class ElfReader_32Bits_Test {
     void elf32_gnu_hash_section() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeGnuHash =
+        Optional<Elf32Section> maybeGnuHash =
                 elfFile.sectionOfType(ElfSectionType.GNU_HASH);
 
         assertThat(maybeGnuHash)
@@ -380,12 +380,12 @@ class ElfReader_32Bits_Test {
     void read_comment_section_contents() {
         Elf32File elfFile = ElfReader.readElf32(helloWorld32);
 
-        Optional<Elf32BasicSection> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
+        Optional<Elf32Section> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
 
         assertThat(maybeComment)
                 .isPresent();
 
-        Elf32BasicSection comment = maybeComment.get();
+        Elf32Section comment = maybeComment.get();
         List<String> comments = comment.readContentsAsStrings();
 
         assertThat(comments)

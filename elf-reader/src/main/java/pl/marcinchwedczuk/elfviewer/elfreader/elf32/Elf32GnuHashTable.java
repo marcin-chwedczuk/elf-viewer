@@ -26,8 +26,8 @@ public class Elf32GnuHashTable {
         return table.toString();
     }
 
-    public SymbolTable symbolTable() {
-        return new SymbolTable(table.symbolTable());
+    public Elf32SymbolTable symbolTable() {
+        return new Elf32SymbolTable(table.symbolTable());
     }
 
     public int nBuckets() {

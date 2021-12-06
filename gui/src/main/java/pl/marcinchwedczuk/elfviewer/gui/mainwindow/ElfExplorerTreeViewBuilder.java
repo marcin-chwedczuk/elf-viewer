@@ -95,7 +95,7 @@ public class ElfExplorerTreeViewBuilder {
             enterNode(new TreeItem<>(new DisplayAction("Sections")));
         }
 
-        private void genericSectionEnter(Elf32BasicSection section) {
+        private void genericSectionEnter(Elf32Section section) {
             String displayName = (section.name() == null || section.name().isEmpty())
                     ? "(empty)"
                     : section.name();
@@ -123,12 +123,12 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
-        public void enter(Elf32BasicSection section) {
+        public void enter(Elf32Section section) {
             genericSectionEnter(section);
         }
 
         @Override
-        public void exit(Elf32BasicSection section) {
+        public void exit(Elf32Section section) {
             genericSectionExit();
         }
 
@@ -262,7 +262,7 @@ public class ElfExplorerTreeViewBuilder {
                         tv -> new FileViewRenderer(segment.contents()).renderDataOn(tv))));
             }
 
-            for (Elf32BasicSection section : segment.containedSections()) {
+            for (Elf32Section section : segment.containedSections()) {
                 // Recreate section submenu
                 section.accept(this);
             }

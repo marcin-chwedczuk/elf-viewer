@@ -1,8 +1,11 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.TableHelper;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -28,10 +31,9 @@ public class ElfSymbolTable<
     private final StructuredFileFactory<NATIVE_WORD> structuredFileFactory;
 
     public ElfSymbolTable(NativeWord<NATIVE_WORD> nativeWord, StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
-            ElfFile<NATIVE_WORD> elfFile,
+                          ElfFile<NATIVE_WORD> elfFile,
                           ElfSectionHeader<NATIVE_WORD> section,
-                          ElfStringTable<NATIVE_WORD> symbolNames)
-    {
+                          ElfStringTable<NATIVE_WORD> symbolNames) {
         this.nativeWord = nativeWord;
         this.structuredFileFactory = structuredFileFactory;
         requireNonNull(elfFile);
@@ -56,12 +58,49 @@ public class ElfSymbolTable<
         ElfOffset<NATIVE_WORD> startOffset = tableHelper.offsetForEntry(index);
         StructuredFile<NATIVE_WORD> sf = structuredFileFactory.mkStructuredFile(elfFile, startOffset);
 
+        // Order of fields in 32 and 64 bit version is different due to alignment constraints
+        switch (nativeWord.type()) {
+            case INT_32_BITS:
+                return readSymbol32(sf);
+
+            case INT_64_BITS:
+                return readSymbol64(sf);
+
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    private ElfSymbol<NATIVE_WORD> readSymbol32(StructuredFile<NATIVE_WORD> sf) {
         StringTableIndex nameIndex = new StringTableIndex(sf.readUnsignedInt());
         ElfAddress<NATIVE_WORD> value = sf.readAddress();
-        int size = sf.readUnsignedInt();
+        NATIVE_WORD size = nativeWord.readNativeWordFrom(sf);
         byte info = sf.readByte();
         byte other = sf.readByte();
         SectionHeaderIndex symbolIndex = new SectionHeaderIndex(sf.readUnsignedShort());
+
+        String name = isSectionSymbol(nameIndex, Elf32SymbolType.fromSymbolInfo(info))
+                // TODO: Add boundary check, validate logic with readelf source code
+                ? elfFile.sectionHeaders().get(symbolIndex.intValue()).name()
+                : symbolNames.getStringAtIndex(nameIndex);
+
+        return new ElfSymbol<>(
+                nameIndex,
+                name,
+                value,
+                size,
+                info,
+                other,
+                symbolIndex);
+    }
+
+    private ElfSymbol<NATIVE_WORD> readSymbol64(StructuredFile<NATIVE_WORD> sf) {
+        StringTableIndex nameIndex = new StringTableIndex(sf.readUnsignedInt());
+        byte info = sf.readByte();
+        byte other = sf.readByte();
+        SectionHeaderIndex symbolIndex = new SectionHeaderIndex(sf.readUnsignedShort());
+        ElfAddress<NATIVE_WORD> value = sf.readAddress();
+        NATIVE_WORD size = nativeWord.readNativeWordFrom(sf);
 
         String name = isSectionSymbol(nameIndex, Elf32SymbolType.fromSymbolInfo(info))
                 // TODO: Add boundary check, validate logic with readelf source code

@@ -2,14 +2,12 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Relocation;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.RelocationsTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Elf32RelocationSection extends Elf32BasicSection {
+public class Elf32RelocationSection extends Elf32Section {
     private final ElfRelocationSection<Integer> section;
 
     public Elf32RelocationSection(ElfRelocationSection<Integer> section) {

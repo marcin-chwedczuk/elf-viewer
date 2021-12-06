@@ -1,7 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.SymbolTableEntryDto;
 
@@ -37,9 +37,9 @@ public class Elf32SymbolTableSectionRenderer extends BaseRenderer<SymbolTableEnt
 
     @Override
     protected List<? extends SymbolTableEntryDto> defineRows() {
-        SymbolTable symbolTable = symbolTableSection.symbolTable();
+        Elf32SymbolTable elf32SymbolTable = symbolTableSection.symbolTable();
 
-        return symbolTable.symbols().stream()
+        return elf32SymbolTable.symbols().stream()
                 .map(entry -> new SymbolTableEntryDto(
                         hex(entry.index.intValue()),
                         hex(entry.symbol.nameIndex().intValue()),

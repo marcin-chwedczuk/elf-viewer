@@ -2,13 +2,9 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;

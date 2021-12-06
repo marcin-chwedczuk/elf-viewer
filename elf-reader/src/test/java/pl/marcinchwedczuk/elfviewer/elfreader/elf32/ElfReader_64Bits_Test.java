@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -13,6 +15,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolBinding.GLOBAL;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.FUNCTION;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolVisibility.DEFAULT;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
@@ -145,5 +150,54 @@ public class ElfReader_64Bits_Test {
 
         assertThat(textSection.size())
                 .isEqualTo(0x181);
+    }
+
+    @Test
+    void elf64_symbol_table() {
+        Elf64File elfFile = ElfReader.readElf64(helloWorld64);
+
+        Optional<Elf64Section> maybeSymtabSection =
+                elfFile.sectionWithName(ElfSectionNames.SYMTAB);
+
+        assertThat(maybeSymtabSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf64SymbolTableSection.class);
+                });
+
+        Elf64SymbolTable symbols = ((Elf64SymbolTableSection)maybeSymtabSection.get()).symbolTable();
+
+        // 1. Check Section symbols have their names resolved
+        Optional<Elf64Symbol> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
+        assertThat(textSectionSymbol)
+                .isPresent();
+
+        // 2. Check symbol for 'main' is defined and all values are set
+        Optional<Elf64Symbol> maybeMain = symbols.slowlyFindSymbolByName("main");
+        assertThat(maybeMain)
+                .isPresent()
+                .hasValueSatisfying(main -> {
+                    assertThat(main.binding())
+                            .isEqualTo(GLOBAL);
+                    assertThat(main.symbolType())
+                            .isEqualTo(FUNCTION);
+
+                    assertThat(main.other())
+                            .isEqualTo((byte)0);
+                    assertThat(main.visibility())
+                            .isEqualTo(DEFAULT);
+
+                    assertThat(main.size())
+                            .isEqualTo(34);
+                    assertThat(main.value())
+                            .isEqualTo(new Elf64Address(0x0000000000001135L));
+
+                    // Check section header index, it should point to .text section
+                    assertThat(main.index())
+                            .isEqualTo(new SectionHeaderIndex(14));
+                    assertThat(elfFile.sectionHeaders().get(14).name())
+                            .isEqualTo(".text");
+                });
     }
 }

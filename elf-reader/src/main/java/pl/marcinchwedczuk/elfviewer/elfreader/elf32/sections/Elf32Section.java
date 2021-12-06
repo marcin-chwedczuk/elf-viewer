@@ -15,10 +15,10 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
-public class Elf32BasicSection implements Elf32Visitable {
+public class Elf32Section implements Elf32Visitable {
     private final ElfSection<Integer> section;
 
-    public Elf32BasicSection(ElfSection<Integer> section) {
+    public Elf32Section(ElfSection<Integer> section) {
         this.section = requireNonNull(section);
     }
 

@@ -2,22 +2,17 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbol;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.SECTION;
 
-public class SymbolTable {
+public class Elf32SymbolTable {
     private final ElfSymbolTable<Integer> symbolTable;
 
-    public SymbolTable(ElfSymbolTable<Integer> symbolTable)
+    public Elf32SymbolTable(ElfSymbolTable<Integer> symbolTable)
     {
 
         this.symbolTable = symbolTable;
@@ -37,9 +32,9 @@ public class SymbolTable {
                 .map(Elf32Symbol::new);
     }
 
-    public Collection<SymbolTableEntry> symbols() {
+    public Collection<Elf32SymbolTableEntry> symbols() {
         return symbolTable.symbols().stream()
-                .map(SymbolTableEntry::new)
+                .map(Elf32SymbolTableEntry::new)
                 .collect(Collectors.toList());
    }
 }

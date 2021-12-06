@@ -2,7 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32BasicSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
@@ -27,7 +27,7 @@ public class Elf32Segment implements Elf32Visitable {
         return new Elf32ProgramHeader(segment.programHeader());
     }
 
-    public List<Elf32BasicSection> containedSections() {
+    public List<Elf32Section> containedSections() {
         return segment.containedSections().stream()
                 .map(sectionFactory::wrap)
                 .collect(toList());

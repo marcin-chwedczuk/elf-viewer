@@ -15,7 +15,7 @@ public class ElfSymbol<
     private final ElfAddress<NATIVE_WORD> value;
 
     @ElfApi("st_size")
-    private final int size;
+    private final NATIVE_WORD size;
 
     @ElfApi("st_info")
     private final byte info;
@@ -29,7 +29,7 @@ public class ElfSymbol<
     public ElfSymbol(StringTableIndex nameIndex,
                      String name,
                      ElfAddress<NATIVE_WORD> value,
-                     int size,
+                     NATIVE_WORD size,
                      byte info,
                      byte other,
                      SectionHeaderIndex index) {
@@ -71,7 +71,7 @@ public class ElfSymbol<
      * Many symbols have associated sizes.  This member holds
      * zero if the symbol has no size or an unknown size.
      */
-    public int size() {
+    public NATIVE_WORD size() {
         return size;
     }
 

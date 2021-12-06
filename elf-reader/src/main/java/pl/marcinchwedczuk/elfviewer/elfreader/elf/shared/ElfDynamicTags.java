@@ -1,8 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -52,7 +52,7 @@ public class ElfDynamicTags<
             // NULL tag marks end of the dynamic section
             if (tag.is(NULL)) break;
 
-            NATIVE_WORD value = nativeWord.readFrom(sf);
+            NATIVE_WORD value = nativeWord.readNativeWordFrom(sf);
             result.add(new ElfDynamicTag<NATIVE_WORD>(tag, value));
         }
 
