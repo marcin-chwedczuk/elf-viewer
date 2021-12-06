@@ -22,7 +22,7 @@ public class ElfRelocationSection<
 
     public List<ElfRelocation<NATIVE_WORD>> relocations() {
         ElfRelocationsTable<NATIVE_WORD> relocationsTable =
-                new ElfRelocationsTable<NATIVE_WORD>(structuredFileFactory, header(), elfFile());
+                new ElfRelocationsTable<NATIVE_WORD>(nativeWord, structuredFileFactory, header(), elfFile());
 
         return new ArrayList<>(relocationsTable.relocations());
     }

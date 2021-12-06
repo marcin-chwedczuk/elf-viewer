@@ -7,15 +7,15 @@ import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import java.util.Objects;
 
 // TODO: @ElfApi("Elf32_Rel")
-public class ElfRelocation<
+public abstract class ElfRelocation<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     @ElfApi("r_offset")
     private final ElfAddress<NATIVE_WORD> offset;
     @ElfApi("r_info")
-    private final int info;
+    private final NATIVE_WORD info;
 
-    public ElfRelocation(ElfAddress<NATIVE_WORD> offset, int info) {
+    public ElfRelocation(ElfAddress<NATIVE_WORD> offset, NATIVE_WORD info) {
         this.offset = offset;
         this.info = info;
     }
@@ -41,17 +41,12 @@ public class ElfRelocation<
      *               of applying ELF[32|64]_R_TYPE or ELF[32|64]_R_SYM,
      *               respectively, to the entry's r_info member.
      */
-    public int info() {
+    public NATIVE_WORD info() {
         return info;
     }
 
-    public int symbol() {
-        return (info >>> 8) & 0xff;
-    }
-
-    public int type() {
-        return (info & 0xff);
-    }
+    public abstract int symbol();
+    public abstract int type();
 
     public Intel386RelocationType intel386RelocationType() {
         return Intel386RelocationType.fromType(type());
@@ -73,5 +68,33 @@ public class ElfRelocation<
     @Override
     public String toString() {
         return String.format("%s 0x%08x", offset, info);
+    }
+
+    public static class ElfRelocation32 extends ElfRelocation<Integer> {
+        public ElfRelocation32(ElfAddress<Integer> offset, Integer info) {
+            super(offset, info);
+        }
+
+        public int symbol() {
+            return (info() >>> 8) & 0xff;
+        }
+
+        public int type() {
+            return (info() & 0xff);
+        }
+    }
+
+    public static class ElfRelocation64 extends ElfRelocation<Long> {
+        public ElfRelocation64(ElfAddress<Long> offset, Long info) {
+            super(offset, info);
+        }
+
+        public int symbol() {
+            return (int)(info() >> 32);
+        }
+
+        public int type() {
+            return (int)(info() & 0xffffffffL);
+        }
     }
 }

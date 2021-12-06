@@ -27,9 +27,10 @@ public class Elf64SectionFactory {
         if (section instanceof ElfNotesSection<?>) {
             return new Elf64NotesSection((ElfNotesSection<Long>) section);
         }
+        */
         if (section instanceof ElfRelocationSection<?>) {
             return new Elf64RelocationSection((ElfRelocationSection<Long>) section);
-        }
+        }/*
         if (section instanceof ElfStringTableSection<?>) {
             return new Elf64StringTableSection((ElfStringTableSection<Long>) section);
         }*/

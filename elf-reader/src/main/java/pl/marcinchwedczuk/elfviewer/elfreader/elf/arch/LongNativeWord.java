@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
@@ -30,5 +31,10 @@ public class LongNativeWord extends NativeWord<Long> {
     @Override
     public String toHexString(Long value) {
         return String.format("0x%16x", value);
+    }
+
+    @Override
+    public ElfRelocation<Long> mkRelocation(ElfAddress<Long> offset, Long info) {
+        return new ElfRelocation.ElfRelocation64(offset, info);
     }
 }

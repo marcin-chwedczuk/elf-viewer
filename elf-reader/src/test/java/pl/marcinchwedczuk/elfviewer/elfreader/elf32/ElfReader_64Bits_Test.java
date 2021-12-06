@@ -1,17 +1,22 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -199,5 +204,35 @@ public class ElfReader_64Bits_Test {
                     assertThat(elfFile.sectionHeaders().get(14).name())
                             .isEqualTo(".text");
                 });
+    }
+
+    @Test
+    @Disabled("Need to create RelA structures")
+    void elf64_relocation_table() {
+        Elf64File elfFile = ElfReader.readElf64(helloWorld64);
+
+        // TODO: Create RelA section
+        Optional<Elf64Section> maybeRelSection =
+                elfFile.sectionWithName(ElfSectionNames.REL(".dyn"));
+
+        assertThat(maybeRelSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(Elf64RelocationSection.class);
+                });
+
+        Elf64RelocationSection relSection = ((Elf64RelocationSection)maybeRelSection.get());
+        List<Elf64Relocation> relocations = relSection.relocations();
+
+        assertThat(relocations.size())
+                .isEqualTo(1);
+
+        Elf64Relocation relocation = relocations.get(0);
+        assertThat(relocation.offset())
+                .isEqualTo(new Elf64Address(0x08049ffc));
+
+        assertThat(relocation.info())
+                .isEqualTo(0x00000206);
     }
 }

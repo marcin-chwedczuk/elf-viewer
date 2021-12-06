@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
@@ -30,5 +31,10 @@ public class IntegerNativeWord extends NativeWord<Integer> {
     @Override
     public String toHexString(Integer value) {
         return String.format("0x%08x", value);
+    }
+
+    @Override
+    public ElfRelocation<Integer> mkRelocation(ElfAddress<Integer> offset, Integer info) {
+        return new ElfRelocation.ElfRelocation32(offset, info);
     }
 }

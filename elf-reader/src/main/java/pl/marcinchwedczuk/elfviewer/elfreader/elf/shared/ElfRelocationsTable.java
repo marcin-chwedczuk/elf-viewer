@@ -1,8 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.TableHelper;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -20,11 +20,14 @@ public class ElfRelocationsTable<
     private final ElfFile<NATIVE_WORD> elfFile;
 
     private final TableHelper tableHelper;
+    private final NativeWord<NATIVE_WORD> nativeWord;
     private final StructuredFileFactory<NATIVE_WORD> structuredFileFactory;
 
-    public ElfRelocationsTable(StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
+    public ElfRelocationsTable(NativeWord<NATIVE_WORD> nativeWord,
+                               StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
                                ElfSectionHeader<NATIVE_WORD> section,
                                ElfFile<NATIVE_WORD> elfFile) {
+        this.nativeWord = nativeWord;
         this.structuredFileFactory = structuredFileFactory;
         requireNonNull(section);
         requireNonNull(elfFile);
@@ -42,16 +45,15 @@ public class ElfRelocationsTable<
         return tableHelper.tableSize();
     }
 
+    @SuppressWarnings("unchecked")
     public ElfRelocation<NATIVE_WORD> get(int index) {
         ElfOffset<NATIVE_WORD> startOffset = tableHelper.offsetForEntry(index);
         StructuredFile<NATIVE_WORD> sf = structuredFileFactory.mkStructuredFile(elfFile, startOffset);
 
         ElfAddress<NATIVE_WORD> offset = sf.readAddress();
-        int info = sf.readUnsignedInt();
+        NATIVE_WORD info = nativeWord.readNativeWordFrom(sf);
 
-        return new ElfRelocation<>(
-                offset,
-                info);
+        return nativeWord.mkRelocation(offset, info);
     }
 
     public Collection<ElfRelocation<NATIVE_WORD>> relocations() {
