@@ -69,10 +69,15 @@ public class ElfReader {
                 header.sectionContainingSectionNames(),
                 TableHelper.forSectionHeaders(header));
 
+        List<ElfProgramHeader<Long>> programHeaders = readElf64ProgramHeaders(
+                file,
+                endianness,
+                TableHelper.forProgramHeaders(header));
+
         return new ElfFile<>(file, endianness, header,
                 sectionHeaders,
                 new ElfSectionFactory<>(new LongNativeWord(), new StructuredFileFactory64()),
-                List.of(), // TODO: Segments
+                programHeaders,
                 new ElfSegmentFactory<>());
     }
 
@@ -180,6 +185,46 @@ public class ElfReader {
                 addressAlignment,
                 containedEntrySize);
     }
+
+    private static List<ElfProgramHeader<Long>> readElf64ProgramHeaders(
+            AbstractFile file,
+            Endianness endianness,
+            TableHelper<Long> programHeadersTable)
+    {
+        List<ElfProgramHeader<Long>> headers = new ArrayList<>(programHeadersTable.tableSize());
+
+        for (int i = 0; i < programHeadersTable.tableSize(); i++) {
+            ElfOffset<Long> offset = programHeadersTable.offsetForEntry(i);
+            StructuredFile64 headerFile = new StructuredFile64(file, endianness, offset);
+
+            ElfProgramHeader<Long> sectionHeader = readElf64ProgramHeader(headerFile);
+            headers.add(sectionHeader);
+        }
+
+        return headers;
+    }
+
+    private static ElfProgramHeader<Long> readElf64ProgramHeader(StructuredFile64 headerFile) {
+        Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
+        Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
+        Elf64Offset fileOffset = headerFile.readOffset();
+        Elf64Address virtualAddress = headerFile.readAddress();
+        Elf64Address physicalAddress = headerFile.readAddress();
+        long fileSize = headerFile.readUnsignedLong();
+        long memorySize = headerFile.readUnsignedLong();
+        long alignment = headerFile.readUnsignedLong();
+
+        return new ElfProgramHeader<>(
+                type,
+                fileOffset,
+                virtualAddress,
+                physicalAddress,
+                fileSize,
+                memorySize,
+                flags,
+                alignment);
+    }
+
 
     private static ElfFile<Integer> readElf32(AbstractFile file,
                                        ElfIdentification identification,
@@ -294,7 +339,7 @@ public class ElfReader {
     private static List<ElfSectionHeader<Integer>> readElf32SectionHeaders(AbstractFile file,
                                                                     Endianness endianness,
                                                                     SectionHeaderIndex sectionHeaderTable,
-                                                                    TableHelper sectionHeaders) {
+                                                                    TableHelper<Integer> sectionHeaders) {
         ElfStringTable<Integer> sectionNames = loadSectionsNameStringTable(
                 file, endianness, sectionHeaderTable, sectionHeaders);
 

@@ -9,11 +9,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationTy
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationAddendSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64SymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.segments.Elf64ProgramHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.segments.Elf64Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -240,5 +243,40 @@ public class ElfReader_64Bits_Test {
 
         assertThat(relocation.addend())
                 .isEqualTo(0x1130);
+    }
+
+    @Test
+    void elf64_segment_header() {
+        List<Elf64Segment> segments = ElfReader
+                .readElf64(helloWorld64)
+                .segments();
+
+        assertThat(segments.size())
+                .isEqualTo(11);
+
+        Elf64ProgramHeader textSegment = segments.get(3).programHeader();
+
+        assertThat(textSegment.type())
+                .isEqualTo(Elf32SegmentType.LOAD);
+
+        assertThat(textSegment.fileOffset())
+                .isEqualTo(new Elf64Offset(0x0000000000001000L));
+        assertThat(textSegment.virtualAddress())
+                .isEqualTo(new Elf64Address(0x0000000000001000L));
+        assertThat(textSegment.physicalAddress())
+                .isEqualTo(new Elf64Address(0x0000000000001000L));
+
+        assertThat(textSegment.fileSize())
+                .isEqualTo(0x00000000000001dd);
+        assertThat(textSegment.memorySize())
+                .isEqualTo(0x00000000000001dd);
+
+        assertThat(textSegment.flags())
+                .isEqualTo(new Elf32SegmentFlags(
+                        Elf32SegmentFlags.Readable,
+                        Elf32SegmentFlags.Executable));
+
+        assertThat(textSegment.alignment())
+                .isEqualTo(0x1000);
     }
 }

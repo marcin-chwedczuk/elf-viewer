@@ -5,6 +5,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 @ElfApi("Elf64_Addr")
 public class Elf64Address extends ElfAddress<Long> {
+    public static final Elf64Address ZERO = new Elf64Address(0);
+
     public Elf64Address(long address) {
         super(address);
     }
