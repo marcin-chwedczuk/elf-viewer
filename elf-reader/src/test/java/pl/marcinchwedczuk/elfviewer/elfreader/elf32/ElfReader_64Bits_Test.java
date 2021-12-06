@@ -1,18 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationAddendSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.segments.Elf64ProgramHeader;

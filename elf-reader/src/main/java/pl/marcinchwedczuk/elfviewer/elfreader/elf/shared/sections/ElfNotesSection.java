@@ -1,10 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
@@ -21,12 +21,11 @@ public class ElfNotesSection<
     public ElfNotesSection(NativeWord<NATIVE_WORD> nativeWord, StructuredFileFactory<NATIVE_WORD> structuredFileFactory, ElfFile<NATIVE_WORD> elfFile, ElfSectionHeader<NATIVE_WORD> header) {
         super(nativeWord, structuredFileFactory, elfFile, header);
 
-
         Args.checkSectionType(header, NOTE);
     }
 
-    public List<Elf32Note> notes() {
-        List<Elf32Note> notes = new ArrayList<>();
+    public List<ElfNote> notes() {
+        List<ElfNote> notes = new ArrayList<>();
 
         long curr = 0L;
         FileView contents = contents();
@@ -46,12 +45,12 @@ public class ElfNotesSection<
 
             // TODO: Extract factory
             if ("GNU".equals(name)) {
-                notes.add(Elf32NoteGnu.createGnuNote(
+                notes.add(ElfNoteGnu.createGnuNote(
                         nameLen, name,
                         descLen, descriptor,
                         type));
             } else {
-                notes.add(new Elf32Note(
+                notes.add(new ElfNote(
                         nameLen, name,
                         descLen, descriptor,
                         type));

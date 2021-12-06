@@ -5,8 +5,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -277,7 +277,7 @@ class ElfReader_32Bits_Test {
 
         Elf32NotesSection notesSection = (Elf32NotesSection) maybeNotesSection.get();
 
-        Elf32NoteGnuABITag gnuAbi = (Elf32NoteGnuABITag) notesSection.notes().get(0);
+        ElfNoteGnuABITag gnuAbi = (ElfNoteGnuABITag) notesSection.notes().get(0);
         assertThat(gnuAbi.minSupportedKernelVersion())
                 .isEqualTo("2.6.32");
     }
@@ -296,7 +296,7 @@ class ElfReader_32Bits_Test {
 
         Elf32NotesSection notesSection = (Elf32NotesSection) maybeNotesSection.get();
 
-        Elf32NoteGnuBuildId buildId = (Elf32NoteGnuBuildId) notesSection.notes().get(0);
+        ElfNoteGnuBuildId buildId = (ElfNoteGnuBuildId) notesSection.notes().get(0);
         assertThat(buildId.buildId())
                 .isEqualTo("70faabdeb335c923041b807b56a05bc131883779");
     }

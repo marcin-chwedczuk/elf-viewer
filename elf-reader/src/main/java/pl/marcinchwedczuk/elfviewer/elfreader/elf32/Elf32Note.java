@@ -1,71 +1,38 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
-
-import java.util.Arrays;
 
 @ElfApi("Elf32_Nhdr")
 public class Elf32Note {
-    @ElfApi("namesz")
-    private int nameLength;
+    private final ElfNote note;
 
-    @ElfApi("name")
-    private String name;
-
-    @ElfApi("descsz")
-    private int descriptorLength;
-
-    @ElfApi("desc")
-    private byte[] descriptor;
-
-    @ElfApi("type")
-    private int type;
-
-    public Elf32Note(int nameLength,
-                     String name,
-                     int descriptorLength,
-                     byte[] descriptor,
-                     int type) {
-        this.nameLength = nameLength;
-        this.name = name;
-        this.descriptorLength = descriptorLength;
-        this.descriptor = descriptor;
-        this.type = type;
+    public Elf32Note(ElfNote note) {
+        this.note = note;
     }
 
-    /**
-     * The length of the name field in bytes.  The contents will
-     *               immediately follow this note in memory.  The name is null
-     *               terminated.  For example, if the name is "GNU", then
-     *               n_namesz will be set to 4.
-     */
     public int nameLength() {
-        return nameLength;
+        return note.nameLength();
     }
 
     public String name() {
-        return name;
+        return note.name();
     }
 
-    /**
-     * The length of the descriptor field in bytes.  The contents
-     *               will immediately follow the name field in memory.
-     */
     public int descriptorLength() {
-        return descriptorLength;
+        return note.descriptorLength();
     }
 
     public byte[] descriptor() {
-        return Arrays.copyOf(descriptor, descriptor.length);
+        return note.descriptor();
     }
 
     public int type() {
-        return type;
+        return note.type();
     }
 
     @Override
     public String toString() {
-       return String.format("%4d %s %4d %s 0x%08x",
-               nameLength, name, descriptorLength, Arrays.toString(descriptor), type);
+       return note.toString();
     }
 }

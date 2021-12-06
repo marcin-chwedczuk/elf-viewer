@@ -185,6 +185,16 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
+        public void enter(Elf32RelocationAddendSection section) {
+
+        }
+
+        @Override
+        public void exit(Elf32RelocationAddendSection section) {
+
+        }
+
+        @Override
         public void enter(Elf32StringTableSection section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(

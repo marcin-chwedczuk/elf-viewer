@@ -1,10 +1,11 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnu;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuABITag;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
@@ -41,28 +42,28 @@ public class Elf32NotesSectionRenderer extends BaseRenderer<NoteDto> {
                 .collect(toList());
     }
 
-    private NoteDto toNoteDto(Elf32Note note) {
+    private NoteDto toNoteDto(ElfNote note) {
         return new NoteDto(
                 dec(note.nameLength()),
                 note.name(),
                 dec(note.descriptorLength()),
                 ByteArrays.toHexString(note.descriptor(), ":"),
                 hex(note.type()),
-                (note instanceof Elf32NoteGnu)
-                    ? ((Elf32NoteGnu)note).gnuType().apiName()
+                (note instanceof ElfNoteGnu)
+                    ? ((ElfNoteGnu)note).gnuType().apiName()
                     : "",
                 comment(note)
         );
     }
 
-    private String comment(Elf32Note note) {
-        if (note instanceof Elf32NoteGnuABITag) {
+    private String comment(ElfNote note) {
+        if (note instanceof ElfNoteGnuABITag) {
             return String.format(
                     "Min supported Linux kernel version: %s",
-                    ((Elf32NoteGnuABITag)note).minSupportedKernelVersion());
-        } else if (note instanceof Elf32NoteGnuBuildId) {
+                    ((ElfNoteGnuABITag)note).minSupportedKernelVersion());
+        } else if (note instanceof ElfNoteGnuBuildId) {
             return String.format(
-                    "Build ID: %s", ((Elf32NoteGnuBuildId)note).buildId());
+                    "Build ID: %s", ((ElfNoteGnuBuildId)note).buildId());
         } else {
             return "";
         }

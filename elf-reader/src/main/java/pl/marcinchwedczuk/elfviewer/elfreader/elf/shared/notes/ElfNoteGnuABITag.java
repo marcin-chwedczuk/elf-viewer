@@ -1,25 +1,19 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
-import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
-import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
-import java.nio.ByteBuffer;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteTypeGnu.GNU_ABI_TAG;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.notes.Elf32NoteTypeGnu.GNU_ABI_TAG;
-
-public class Elf32NoteGnuABITag extends Elf32NoteGnu {
-    public Elf32NoteGnuABITag(
+public class ElfNoteGnuABITag extends ElfNoteGnu {
+    public ElfNoteGnuABITag(
             int nameLength,
             String name,
             int descriptorLength,
             byte[] descriptor,
-            Elf32NoteTypeGnu type) {
+            ElfNoteTypeGnu type) {
         super(nameLength, name, descriptorLength, descriptor, type);
 
         if (type.isNot(GNU_ABI_TAG)) {
