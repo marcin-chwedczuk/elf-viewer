@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocationAddend;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32RelocationAddend;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +30,9 @@ public class Elf32SectionFactory {
         }
         if (section instanceof ElfRelocationSection<?>) {
             return new Elf32RelocationSection((ElfRelocationSection<Integer>) section);
+        }
+        if (section instanceof ElfRelocationAddendSection<?>) {
+            return new Elf32RelocationAddendSection((ElfRelocationAddendSection<Integer>) section);
         }
         if (section instanceof ElfStringTableSection<?>) {
             return new Elf32StringTableSection((ElfStringTableSection<Integer>) section);

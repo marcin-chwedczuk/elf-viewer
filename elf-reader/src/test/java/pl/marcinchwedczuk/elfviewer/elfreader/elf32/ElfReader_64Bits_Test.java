@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionHeaderIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationAddendSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64RelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64Section;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.sections.Elf64SymbolTableSection;
@@ -207,32 +209,36 @@ public class ElfReader_64Bits_Test {
     }
 
     @Test
-    @Disabled("Need to create RelA structures")
     void elf64_relocation_table() {
         Elf64File elfFile = ElfReader.readElf64(helloWorld64);
 
-        // TODO: Create RelA section
         Optional<Elf64Section> maybeRelSection =
-                elfFile.sectionWithName(ElfSectionNames.REL(".dyn"));
+                elfFile.sectionWithName(ElfSectionNames.RELA(".dyn"));
 
         assertThat(maybeRelSection)
                 .isPresent()
                 .hasValueSatisfying(value -> {
                     assertThat(value)
-                            .isInstanceOf(Elf64RelocationSection.class);
+                            .isInstanceOf(Elf64RelocationAddendSection.class);
                 });
 
-        Elf64RelocationSection relSection = ((Elf64RelocationSection)maybeRelSection.get());
-        List<Elf64Relocation> relocations = relSection.relocations();
+        Elf64RelocationAddendSection relSection = ((Elf64RelocationAddendSection)maybeRelSection.get());
+        List<Elf64RelocationAddend> relocations = relSection.relocations();
 
         assertThat(relocations.size())
-                .isEqualTo(1);
+                .isEqualTo(8);
 
-        Elf64Relocation relocation = relocations.get(0);
+        Elf64RelocationAddend relocation = relocations.get(0);
         assertThat(relocation.offset())
-                .isEqualTo(new Elf64Address(0x08049ffc));
+                .isEqualTo(new Elf64Address(0x000000003de8L));
 
         assertThat(relocation.info())
-                .isEqualTo(0x00000206);
+                .isEqualTo(0x000000000008);
+
+        assertThat(relocation.intel386RelocationType())
+                .isEqualTo(Intel386RelocationType.RELATIVE);
+
+        assertThat(relocation.addend())
+                .isEqualTo(0x1130);
     }
 }

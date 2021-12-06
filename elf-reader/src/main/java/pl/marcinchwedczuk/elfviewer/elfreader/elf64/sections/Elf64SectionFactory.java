@@ -30,7 +30,10 @@ public class Elf64SectionFactory {
         */
         if (section instanceof ElfRelocationSection<?>) {
             return new Elf64RelocationSection((ElfRelocationSection<Long>) section);
-        }/*
+        } else if (section instanceof ElfRelocationAddendSection<?>) {
+            return new Elf64RelocationAddendSection(((ElfRelocationAddendSection<Long>) section));
+        }
+        /*
         if (section instanceof ElfStringTableSection<?>) {
             return new Elf64StringTableSection((ElfStringTableSection<Long>) section);
         }*/

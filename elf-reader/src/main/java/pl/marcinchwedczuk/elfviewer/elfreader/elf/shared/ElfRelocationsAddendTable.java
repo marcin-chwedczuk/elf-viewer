@@ -12,8 +12,9 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.RELA;
 
-public class ElfRelocationsTable<
+public class ElfRelocationsAddendTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     private final ElfSectionHeader<NATIVE_WORD> section;
@@ -23,17 +24,17 @@ public class ElfRelocationsTable<
     private final NativeWord<NATIVE_WORD> nativeWord;
     private final StructuredFileFactory<NATIVE_WORD> structuredFileFactory;
 
-    public ElfRelocationsTable(NativeWord<NATIVE_WORD> nativeWord,
-                               StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
-                               ElfSectionHeader<NATIVE_WORD> section,
-                               ElfFile<NATIVE_WORD> elfFile) {
+    public ElfRelocationsAddendTable(NativeWord<NATIVE_WORD> nativeWord,
+                                     StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
+                                     ElfSectionHeader<NATIVE_WORD> section,
+                                     ElfFile<NATIVE_WORD> elfFile) {
         this.nativeWord = nativeWord;
         this.structuredFileFactory = structuredFileFactory;
         requireNonNull(section);
         requireNonNull(elfFile);
 
         // TODO: Check this condition
-        Args.checkSectionType(section, REL);
+        Args.checkSectionType(section, RELA);
 
         this.section = section;
         this.elfFile = elfFile;
@@ -45,18 +46,19 @@ public class ElfRelocationsTable<
         return tableHelper.tableSize();
     }
 
-    public ElfRelocation<NATIVE_WORD> get(int index) {
+    public ElfRelocationAddend<NATIVE_WORD> get(int index) {
         ElfOffset<NATIVE_WORD> startOffset = tableHelper.offsetForEntry(index);
         StructuredFile<NATIVE_WORD> sf = structuredFileFactory.mkStructuredFile(elfFile, startOffset);
 
         ElfAddress<NATIVE_WORD> offset = sf.readAddress();
         NATIVE_WORD info = nativeWord.readNativeWordFrom(sf);
+        NATIVE_WORD addend = nativeWord.readNativeWordFrom(sf);
 
-        return nativeWord.mkRelocation(offset, info);
+        return nativeWord.mkRelocationA(offset, info, addend);
     }
 
-    public Collection<ElfRelocation<NATIVE_WORD>> relocations() {
-        List<ElfRelocation<NATIVE_WORD>> result = new ArrayList<>(size());
+    public Collection<ElfRelocationAddend<NATIVE_WORD>> relocations() {
+        List<ElfRelocationAddend<NATIVE_WORD>> result = new ArrayList<>(size());
 
         for (int i = 0; i < size(); i++) {
             result.add(get(i));

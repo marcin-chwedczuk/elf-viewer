@@ -1,7 +1,9 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
@@ -49,14 +51,15 @@ public class ElfSectionFactory<
                 return new ElfDynamicSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(REL)) {
                 return new ElfRelocationSection<>(nativeWord, structuredFileFactory, elfFile, header);
+            } else if (header.type().is(RELA)) {
+                return new ElfRelocationAddendSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(NOTE)) {
                 return new ElfNotesSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(GNU_HASH)) {
                 return new ElfGnuHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
-            return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header) {
-            };
+            return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header);
         } catch (Exception error) {
             // TODO: This exception type is too broad...
             // We should catch RuntimeExceptions + IO exceptions maybe?

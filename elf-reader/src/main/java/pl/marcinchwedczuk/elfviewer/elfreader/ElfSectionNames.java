@@ -206,6 +206,10 @@ public class ElfSectionNames {
      */
     public static final String RELA_PREFIX = ".rela";
 
+    public static String RELA(String forSection) {
+        return RELA_PREFIX + forSection;
+    }
+
     /**
      * This section holds read-only data that typically
      * contributes to a nonwritable segment in the process image.

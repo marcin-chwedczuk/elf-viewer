@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocationAddend;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
@@ -36,5 +37,13 @@ public class LongNativeWord extends NativeWord<Long> {
     @Override
     public ElfRelocation<Long> mkRelocation(ElfAddress<Long> offset, Long info) {
         return new ElfRelocation.ElfRelocation64(offset, info);
+    }
+
+
+    @Override
+    public ElfRelocationAddend<Long> mkRelocationA(ElfAddress<Long> offset,
+                                                   Long info,
+                                                   Long addend) {
+        return new ElfRelocationAddend.ElfRelocationAddend64(offset, info, addend);
     }
 }

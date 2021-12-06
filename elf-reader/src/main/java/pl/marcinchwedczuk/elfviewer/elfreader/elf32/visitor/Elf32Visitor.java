@@ -23,6 +23,8 @@ public interface Elf32Visitor {
     void exit(Elf32NotesSection section);
     void enter(Elf32RelocationSection section);
     void exit(Elf32RelocationSection section);
+    void enter(Elf32RelocationAddendSection section);
+    void exit(Elf32RelocationAddendSection section);
     void enter(Elf32StringTableSection section);
     void exit(Elf32StringTableSection section);
     void enter(Elf32SymbolTableSection section);

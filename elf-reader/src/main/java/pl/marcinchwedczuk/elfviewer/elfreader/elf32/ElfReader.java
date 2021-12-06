@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.IntegerNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
