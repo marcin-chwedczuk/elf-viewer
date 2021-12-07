@@ -25,7 +25,7 @@ public class ElfSectionFactory<
         this.structuredFileFactory = structuredFileFactory;
     }
 
-    public List<? extends ElfSection<NATIVE_WORD>> createSections(ElfFile<NATIVE_WORD> elfFile)
+    public List<ElfSection<NATIVE_WORD>> createSections(ElfFile<NATIVE_WORD> elfFile)
     {
         List<ElfSection<NATIVE_WORD>> sections = new ArrayList<>();
 

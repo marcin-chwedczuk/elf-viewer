@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import java.util.Objects;
+
 public class ElfOffsetAny<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > extends ElfOffset<NATIVE_WORD> {
@@ -15,6 +17,6 @@ public class ElfOffsetAny<
 
     @Override
     public String toString() {
-        return "TODO";
+        return Objects.toString(value());
     }
 }

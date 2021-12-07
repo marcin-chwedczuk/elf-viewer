@@ -29,7 +29,7 @@ public class ElfFile<
      * even though the index marks undefined section references.
      */
     private final List<ElfSectionHeader<NATIVE_WORD>> sectionHeaders;
-    private final Memoized<List<? extends ElfSection<NATIVE_WORD>>> sectionsMemoized;
+    private final Memoized<List<ElfSection<NATIVE_WORD>>> sectionsMemoized;
 
     private final List<ElfProgramHeader<NATIVE_WORD>> programHeaders;
     private final Memoized<List<ElfSegment<NATIVE_WORD>>> segmentsMemoized;
@@ -71,16 +71,16 @@ public class ElfFile<
         return Collections.unmodifiableList(sectionHeaders);
     }
 
-    public List<? extends ElfSection<NATIVE_WORD>> sections() {
+    public List<ElfSection<NATIVE_WORD>> sections() {
         return sectionsMemoized.get();
     }
 
     public List<ElfProgramHeader<NATIVE_WORD>> programHeaders() {return programHeaders;}
-    public List<? extends ElfSegment<NATIVE_WORD>> segments() {
+    public List<ElfSegment<NATIVE_WORD>> segments() {
         return segmentsMemoized.get();
     }
 
-    public Optional<? extends ElfSection<NATIVE_WORD>> sectionWithName(String name) {
+    public Optional<ElfSection<NATIVE_WORD>> sectionWithName(String name) {
         return sections().stream()
                 .filter(s -> Objects.equals(name, s.header().name()))
                 .findFirst();
