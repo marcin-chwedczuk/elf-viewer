@@ -6,7 +6,7 @@
 
 Current status:
 * Supporting Intel 32-bit ELFs - DONE
-* TODO: 64-bit ELFs
+* 64-bit ELFs: Partially
 * TODO: Intel 64, ARM & ARM64
 
 Right now I am playing with the API and I try to figure out the most
