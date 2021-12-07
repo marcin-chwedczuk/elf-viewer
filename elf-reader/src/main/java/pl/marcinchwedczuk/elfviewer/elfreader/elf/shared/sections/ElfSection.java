@@ -1,9 +1,11 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfElement;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
@@ -16,7 +18,9 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STR
 
 public class ElfSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
-        > {
+        >
+    extends ElfElement<NATIVE_WORD>
+{
 
     protected final NativeWord<NATIVE_WORD> nativeWord;
     protected final StructuredFileFactory<NATIVE_WORD> structuredFileFactory;
@@ -73,4 +77,9 @@ public class ElfSection<
         return result;
     }
 
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
+    }
 }

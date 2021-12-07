@@ -6,7 +6,11 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFact
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -18,7 +22,9 @@ import static java.util.stream.Collectors.toList;
 
 public class ElfFile<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
-        > {
+        >
+    extends ElfElement<NATIVE_WORD>
+{
     private final AbstractFile storage;
     private final Endianness endianness;
 
@@ -162,5 +168,22 @@ public class ElfFile<
         return segments().stream()
                 .filter(s -> s.programHeader().type().is(type))
                 .collect(toList());
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        header().accept(visitor);
+
+        visitor.enterSections();
+        for (ElfSection<NATIVE_WORD> section : sections()) {
+            section.accept(visitor);
+        }
+        visitor.exitSections();
+
+        visitor.enterSegments();
+        for (ElfSegment<NATIVE_WORD> segment : segments()) {
+            segment.accept(visitor);
+        }
+        visitor.exitSegments();
     }
 }

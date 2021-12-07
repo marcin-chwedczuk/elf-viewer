@@ -1,11 +1,14 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 public class ElfHeader<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
-        > {
+        >
+    extends ElfElement<NATIVE_WORD>
+{
 
     @ElfApi("e_ident")
     private final ElfIdentification identification;
@@ -218,5 +221,11 @@ public class ElfHeader<
         return identification.elfClass() == ElfClass.ELF_CLASS_32
                 && identification.elfData() == ElfData.ELF_DATA_LSB
                 && machine == ElfMachine.INTEL_386;
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

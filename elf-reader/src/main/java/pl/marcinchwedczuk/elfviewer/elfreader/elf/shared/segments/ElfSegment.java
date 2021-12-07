@@ -1,7 +1,9 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfElement;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import static java.util.Objects.requireNonNull;
 public class ElfSegment<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >
+    extends ElfElement<NATIVE_WORD>
 {
     private final ElfFile<NATIVE_WORD> elfFile;
     private final ElfProgramHeader<NATIVE_WORD> programHeader;
@@ -39,5 +42,11 @@ public class ElfSegment<
                 elfFile.storage(),
                 programHeader.fileOffset(),
                 programHeader.fileSize().longValue());
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

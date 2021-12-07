@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfStringTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -28,5 +29,11 @@ public class ElfStringTableSection<
                 contents(),
                 nativeWord.zeroOffset(),
                 nativeWord.zeroOffset().plus(header().size().longValue()));
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

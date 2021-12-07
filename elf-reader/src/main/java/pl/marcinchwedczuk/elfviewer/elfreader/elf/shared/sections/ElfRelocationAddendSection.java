@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
@@ -28,5 +29,11 @@ public class ElfRelocationAddendSection<
                 new ElfRelocationsAddendTable<NATIVE_WORD>(nativeWord, structuredFileFactory, header(), elfFile());
 
         return new ArrayList<>(relocationsTable.relocations());
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

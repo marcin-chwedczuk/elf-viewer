@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -48,5 +49,11 @@ public class ElfDynamicSection<
                 .map(section -> ((ElfStringTableSection<NATIVE_WORD>)section).stringTable())
                 // TODO: intValue overflow?
                 .map(st -> st.getStringAtIndex(new StringTableIndex(neededTag.value().intValue())));
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

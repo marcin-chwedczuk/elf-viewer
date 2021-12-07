@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
@@ -60,5 +61,11 @@ public class ElfNotesSection<
         }
 
         return notes;
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }
