@@ -2,7 +2,6 @@ package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64File;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;

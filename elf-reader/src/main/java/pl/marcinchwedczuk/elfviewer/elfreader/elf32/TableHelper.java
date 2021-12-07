@@ -1,9 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64SectionHeader;
 
 import static java.util.Objects.requireNonNull;
 

@@ -27,10 +27,6 @@ public class ElfReader {
         return new Elf32File((ElfFile<Integer>) readElf(file));
     }
 
-    public static Elf64File readElf64(AbstractFile file) {
-        return new Elf64File((ElfFile<Long>) readElf(file));
-    }
-
     public static ElfFile<?> readElf(AbstractFile file) {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);
         ElfIdentification identification = ElfIdentification.parseBytes(identificationBytes);
