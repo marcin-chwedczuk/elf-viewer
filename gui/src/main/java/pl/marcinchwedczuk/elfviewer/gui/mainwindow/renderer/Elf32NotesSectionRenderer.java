@@ -1,11 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Note;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
@@ -15,10 +16,14 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32NotesSectionRenderer extends BaseRenderer<NoteDto> {
-    private final Elf32NotesSection notesSection;
+public class Elf32NotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<NoteDto, NATIVE_WORD>
+{
+    private final ElfNotesSection<NATIVE_WORD> notesSection;
 
-    public Elf32NotesSectionRenderer(Elf32NotesSection notesSection) {
+    public Elf32NotesSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     ElfNotesSection<NATIVE_WORD> notesSection) {
+        super(nativeWord);
         this.notesSection = notesSection;
     }
 

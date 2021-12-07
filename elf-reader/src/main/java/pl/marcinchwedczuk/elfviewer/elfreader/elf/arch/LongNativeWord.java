@@ -35,10 +35,14 @@ public class LongNativeWord extends NativeWord<Long> {
     }
 
     @Override
+    public String toDecString(Long value) {
+        return String.format("%d", value);
+    }
+
+    @Override
     public ElfRelocation<Long> mkRelocation(ElfAddress<Long> offset, Long info) {
         return new ElfRelocation.ElfRelocation64(offset, info);
     }
-
 
     @Override
     public ElfRelocationAddend<Long> mkRelocationA(ElfAddress<Long> offset,

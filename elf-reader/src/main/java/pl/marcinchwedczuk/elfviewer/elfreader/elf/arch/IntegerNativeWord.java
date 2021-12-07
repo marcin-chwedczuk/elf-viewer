@@ -35,6 +35,11 @@ public class IntegerNativeWord extends NativeWord<Integer> {
     }
 
     @Override
+    public String toDecString(Integer value) {
+        return String.format("%d", value);
+    }
+
+    @Override
     public ElfRelocation<Integer> mkRelocation(ElfAddress<Integer> offset, Integer info) {
         return new ElfRelocation.ElfRelocation32(offset, info);
     }

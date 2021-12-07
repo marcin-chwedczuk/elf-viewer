@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.HexRowDto;
 
@@ -9,10 +10,14 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class FileViewRenderer extends BaseRenderer<HexRowDto> {
+public class FileViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<HexRowDto, NATIVE_WORD>
+{
     private final FileView fileView;
 
-    public FileViewRenderer(FileView fileView) {
+    public FileViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                            FileView fileView) {
+        super(nativeWord);
         this.fileView = fileView;
     }
 

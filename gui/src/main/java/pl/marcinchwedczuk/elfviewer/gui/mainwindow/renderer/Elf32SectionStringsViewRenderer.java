@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
 
 import java.util.List;
@@ -8,10 +10,14 @@ import java.util.List;
 import static java.util.function.Function.identity;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
-public class Elf32SectionStringsViewRenderer extends BaseRenderer<String> {
-    private final Elf32Section section;
+public class Elf32SectionStringsViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<String, NATIVE_WORD>
+{
+    private final ElfSection<NATIVE_WORD> section;
 
-    public Elf32SectionStringsViewRenderer(Elf32Section section) {
+    public Elf32SectionStringsViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                           ElfSection<NATIVE_WORD> section) {
+        super(nativeWord);
         if (!section.header().flags().hasFlag(STRINGS))
             throw new IllegalArgumentException("Section contents does not consist from strings.");
 

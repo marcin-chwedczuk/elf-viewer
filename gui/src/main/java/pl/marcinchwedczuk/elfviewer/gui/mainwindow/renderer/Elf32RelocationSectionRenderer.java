@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32RelocationSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.RelocationDto;
 
@@ -9,10 +11,14 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32RelocationSectionRenderer extends BaseRenderer<RelocationDto> {
-    private final Elf32RelocationSection relocationSection;
+public class Elf32RelocationSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<RelocationDto, NATIVE_WORD>
+{
+    private final ElfRelocationSection<NATIVE_WORD> relocationSection;
 
-    public Elf32RelocationSectionRenderer(Elf32RelocationSection relocationSection) {
+    public Elf32RelocationSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                          ElfRelocationSection<NATIVE_WORD> relocationSection) {
+        super(nativeWord);
         this.relocationSection = relocationSection;
     }
 

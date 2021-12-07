@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
@@ -8,9 +9,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32Section;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -25,6 +23,8 @@ public class ElfFile<
         >
     extends ElfElement<NATIVE_WORD>
 {
+    private final NativeWord<NATIVE_WORD> nativeWord;
+
     private final AbstractFile storage;
     private final Endianness endianness;
 
@@ -40,13 +40,15 @@ public class ElfFile<
     private final List<ElfProgramHeader<NATIVE_WORD>> programHeaders;
     private final Memoized<List<ElfSegment<NATIVE_WORD>>> segmentsMemoized;
 
-    public ElfFile(AbstractFile storage,
+    public ElfFile(NativeWord<NATIVE_WORD> nativeWord,
+                   AbstractFile storage,
                    Endianness endianness,
                    ElfHeader<NATIVE_WORD> header,
                    List<? extends ElfSectionHeader<NATIVE_WORD>> sectionHeaders,
                    ElfSectionFactory<NATIVE_WORD> sectionFactory,
                    List<? extends ElfProgramHeader<NATIVE_WORD>> programHeaders,
                    ElfSegmentFactory<NATIVE_WORD> segmentFactory) {
+        this.nativeWord = requireNonNull(nativeWord);
         this.storage = requireNonNull(storage);
         this.endianness = requireNonNull(endianness);
 
@@ -60,6 +62,8 @@ public class ElfFile<
         this.segmentsMemoized = new Memoized<>(
                 () -> segmentFactory.createSegments(this));
     }
+
+    public final NativeWord<NATIVE_WORD> nativeWordMetadata() { return nativeWord; }
 
     public final AbstractFile storage() {
         return storage;

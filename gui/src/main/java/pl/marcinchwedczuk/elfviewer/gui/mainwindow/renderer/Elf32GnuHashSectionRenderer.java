@@ -1,25 +1,27 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfGnuHashTable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbol;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuHashSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32GnuHashTable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Symbol;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32GnuHashSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.GnuHashTableEntryDto;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
+public class Elf32GnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<GnuHashTableEntryDto, NATIVE_WORD>
+{
+    private final ElfGnuHashSection<NATIVE_WORD> section;
 
-public class Elf32GnuHashSectionRenderer extends BaseRenderer<GnuHashTableEntryDto> {
-    private final Elf32GnuHashSection section;
-
-    public Elf32GnuHashSectionRenderer(Elf32GnuHashSection section) {
+    public Elf32GnuHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                       ElfGnuHashSection<NATIVE_WORD> section) {
+        super(nativeWord);
         this.section = section;
     }
 
@@ -35,7 +37,7 @@ public class Elf32GnuHashSectionRenderer extends BaseRenderer<GnuHashTableEntryD
 
     @Override
     protected List<? extends GnuHashTableEntryDto> defineRows() {
-        Elf32GnuHashTable hashTable = section.gnuHashTable();
+        ElfGnuHashTable<NATIVE_WORD> hashTable = section.gnuHashTable();
 
         List<GnuHashTableEntryDto> result = new ArrayList<>();
         result.add(new GnuHashTableEntryDto(
@@ -73,7 +75,7 @@ public class Elf32GnuHashSectionRenderer extends BaseRenderer<GnuHashTableEntryD
                 hashCol = hex(hash);
 
                 // Fill symbol data
-                Elf32Symbol symbol = hashTable.symbolTable().get(
+                ElfSymbol<NATIVE_WORD> symbol = hashTable.symbolTable().get(
                         new SymbolTableIndex(hashIndex));
 
                 int gnuHash = Elf32GnuHashTable.gnuHash(symbol.name());

@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
@@ -9,10 +10,14 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class ElfIdentificationRenderer extends BaseRenderer<StructureFieldDto> {
+public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+{
     private final ElfIdentification identification;
 
-    public ElfIdentificationRenderer(ElfIdentification identification) {
+    public ElfIdentificationRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     ElfIdentification identification) {
+        super(nativeWord);
         this.identification = identification;
     }
 

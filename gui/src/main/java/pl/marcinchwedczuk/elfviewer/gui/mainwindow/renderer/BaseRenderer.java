@@ -2,13 +2,22 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.LambdaValueFactory;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class BaseRenderer<R> implements Renderer {
+public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        implements Renderer
+{
+    private final NativeWord<NATIVE_WORD> nativeWordMetadata;
+
+    protected BaseRenderer(NativeWord<NATIVE_WORD> nativeWordMetadata) {
+        this.nativeWordMetadata = nativeWordMetadata;
+    }
+
     @Override
     public void renderDataOn(TableView<Object> tableView) {
         resetTable(tableView);
@@ -57,9 +66,14 @@ public abstract class BaseRenderer<R> implements Renderer {
         return String.format("0x%04x", (int)b & 0xffff);
     }
 
-    protected static String hex(Integer value) {
+    protected String hex(NATIVE_WORD value) {
         if (value == null) return "";
-        return hex((int)value);
+        return nativeWordMetadata.toHexString(value);
+    }
+
+    protected String dec(NATIVE_WORD value) {
+        if (value == null) return "";
+        return nativeWordMetadata.toDecString(value);
     }
 
     protected static String hex(int value) {

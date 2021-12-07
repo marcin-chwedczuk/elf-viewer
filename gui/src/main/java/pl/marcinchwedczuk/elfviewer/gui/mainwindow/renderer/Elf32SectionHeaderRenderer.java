@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
@@ -8,10 +10,14 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> {
-    private final Elf32SectionHeader header;
+public class Elf32SectionHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+{
+    private final ElfSectionHeader<NATIVE_WORD> header;
 
-    public Elf32SectionHeaderRenderer(Elf32SectionHeader header) {
+    public Elf32SectionHeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                      ElfSectionHeader<NATIVE_WORD> header) {
+        super(nativeWord);
         this.header = header;
     }
 
@@ -45,11 +51,11 @@ public class Elf32SectionHeaderRenderer extends BaseRenderer<StructureFieldDto> 
 
                 new StructureFieldDto("sh_addr", header.virtualAddress()),
                 new StructureFieldDto("sh_offset", header.fileOffset()),
-                new StructureFieldDto("sh_size", header.size()),
+                new StructureFieldDto("sh_size", dec(header.size())),
                 new StructureFieldDto("sh_link", hex(header.link())),
                 new StructureFieldDto("sh_info", hex(header.info())),
-                new StructureFieldDto("sh_addralign", header.addressAlignment()),
-                new StructureFieldDto("sh_entsize", header.containedEntrySize())
+                new StructureFieldDto("sh_addralign", dec(header.addressAlignment())),
+                new StructureFieldDto("sh_entsize", dec(header.containedEntrySize()))
         );
     }
 }

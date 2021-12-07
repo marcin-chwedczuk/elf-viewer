@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 
@@ -59,7 +60,7 @@ public class MainWindow implements Initializable {
     private FileChooser openFileChooser;
 
     private File currentElfPath;
-    private Elf32File currentElfFile;
+    private ElfFile<?> currentElfFile;
 
     @FXML
     private Menu recentlyOpen;
@@ -98,7 +99,7 @@ public class MainWindow implements Initializable {
     }
 
     private void loadElfFile(File f) {
-        currentElfFile = ElfReader.readElf32(new FileSystemFile(f));
+        currentElfFile = ElfReader.readElf(new FileSystemFile(f));
         currentElfPath = f;
 
         recreateTreeView();

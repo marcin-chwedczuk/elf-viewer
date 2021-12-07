@@ -1,16 +1,22 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfInterpreterSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32InterpreterSection;
 
 import java.util.List;
 
 import static java.util.function.Function.identity;
 
-public class Elf32InterpreterSectionRenderer extends BaseRenderer<String> {
-    private final Elf32InterpreterSection interpreterSection;
+public class Elf32InterpreterSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<String, NATIVE_WORD>
+{
+    private final ElfInterpreterSection interpreterSection;
 
-    public Elf32InterpreterSectionRenderer(Elf32InterpreterSection interpreterSection) {
+    public Elf32InterpreterSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                           ElfInterpreterSection interpreterSection) {
+        super(nativeWord);
         this.interpreterSection = interpreterSection;
     }
 

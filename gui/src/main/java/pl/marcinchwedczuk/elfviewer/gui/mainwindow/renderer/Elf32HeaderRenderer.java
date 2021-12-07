@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 
@@ -8,10 +10,14 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32HeaderRenderer extends BaseRenderer<StructureFieldDto> {
-    private final Elf32Header header;
+public class Elf32HeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+{
+    private final ElfHeader<NATIVE_WORD> header;
 
-    public Elf32HeaderRenderer(Elf32Header header) {
+    public Elf32HeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                               ElfHeader<NATIVE_WORD> header) {
+        super(nativeWord);
         this.header = header;
     }
 

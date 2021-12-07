@@ -225,6 +225,9 @@ public class ElfHeader<
 
     @Override
     public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(identification());
+        visitor.exit(identification());
+
         visitor.enter(this);
         visitor.exit(this);
     }

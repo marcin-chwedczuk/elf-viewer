@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfStringTableSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32StringTableSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StringTableEntryDto;
 
@@ -9,10 +11,14 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32StringTableSectionRenderer extends BaseRenderer<StringTableEntryDto> {
-    private final Elf32StringTableSection section;
+public class Elf32StringTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+        extends BaseRenderer<StringTableEntryDto, NATIVE_WORD>
+{
+    private final ElfStringTableSection<NATIVE_WORD> section;
 
-    public Elf32StringTableSectionRenderer(Elf32StringTableSection section) {
+    public Elf32StringTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                           ElfStringTableSection<NATIVE_WORD> section) {
+        super(nativeWord);
         this.section = section;
     }
 

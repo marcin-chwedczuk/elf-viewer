@@ -1,5 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 
@@ -34,10 +36,10 @@ public class StructureFieldDto {
     }
 
     // For address & offset
-    public StructureFieldDto(String fieldName, Elf32Address value) {
+    public StructureFieldDto(String fieldName, ElfAddress<?> value) {
         this(fieldName, value.toString());
     }
-    public StructureFieldDto(String fieldName, Elf32Offset value) {
+    public StructureFieldDto(String fieldName, ElfOffset<?> value) {
         // TODO: int -> long as this is wrong currently
         this(fieldName, value.toString());
     }

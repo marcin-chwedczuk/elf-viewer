@@ -74,7 +74,7 @@ public class ElfReader {
                 endianness,
                 TableHelper.forProgramHeaders(header));
 
-        return new ElfFile<>(file, endianness, header,
+        return new ElfFile<>(new LongNativeWord(), file, endianness, header,
                 sectionHeaders,
                 new ElfSectionFactory<>(new LongNativeWord(), new StructuredFileFactory64()),
                 programHeaders,
@@ -248,7 +248,7 @@ public class ElfReader {
                 TableHelper.forProgramHeaders(header));
 
         return new ElfFile<>(
-                file,
+                nativeWord, file,
                 endianness,
                 header,
                 sectionHeaders,

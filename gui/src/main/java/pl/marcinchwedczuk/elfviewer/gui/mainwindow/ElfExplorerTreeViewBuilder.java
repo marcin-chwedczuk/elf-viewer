@@ -3,12 +3,13 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32File;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32ProgramHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.visitor.Elf32Visitor;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 
 import java.io.File;
@@ -16,13 +17,13 @@ import java.util.Stack;
 
 public class ElfExplorerTreeViewBuilder {
     private final File elfPath;
-    private final Elf32File elfFile;
+    private final ElfFile<?> elfFile;
     private final TableView<Object> tableView;
 
     private final Stack<TreeItem<DisplayAction>> parents = new Stack<>();
 
     public ElfExplorerTreeViewBuilder(File elfPath,
-                                      Elf32File elfFile,
+                                      ElfFile<?> elfFile,
                                       TableView<Object> tableView) {
         this.elfPath = elfPath;
         this.elfFile = elfFile;
@@ -38,7 +39,7 @@ public class ElfExplorerTreeViewBuilder {
                 tv -> clearTable()));
         parents.add(rootItem);
 
-        elfFile.accept(new BuildMenuVisitor());
+        elfFile.accept(new BuildMenuVisitor(elfFile.nativeWordMetadata()));
 
         if (parents.size() != 1)
             throw new AssertionError();
@@ -64,12 +65,18 @@ public class ElfExplorerTreeViewBuilder {
         tableView.getColumns().clear();
     }
 
-    class BuildMenuVisitor implements Elf32Visitor {
+    class BuildMenuVisitor<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>> implements ElfVisitor<NATIVE_WORD> {
+        private final NativeWord<NATIVE_WORD> nativeWord;
+
+        BuildMenuVisitor(NativeWord<NATIVE_WORD> nativeWord) {
+            this.nativeWord = nativeWord;
+        }
+
         @Override
         public void enter(ElfIdentification identification) {
             enterNode(new TreeItem<>(new DisplayAction(
                     "Identification Bytes",
-                    tv -> new ElfIdentificationRenderer(identification).renderDataOn(tv))));
+                    tv -> new ElfIdentificationRenderer<>(nativeWord, identification).renderDataOn(tv))));
         }
 
         @Override
@@ -78,15 +85,15 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
-        public void enter(Elf32Header header) {
+        public void enter(ElfHeader<NATIVE_WORD> header) {
             enterNode(new TreeItem<>(new DisplayAction(
                     "ELF Header",
-                    tv -> new Elf32HeaderRenderer(header).renderDataOn(tv)
+                    tv -> new Elf32HeaderRenderer<>(nativeWord, header).renderDataOn(tv)
             )));
         }
 
         @Override
-        public void exit(Elf32Header header) {
+        public void exit(ElfHeader<NATIVE_WORD> header) {
             exitNode();
         }
 
@@ -95,26 +102,26 @@ public class ElfExplorerTreeViewBuilder {
             enterNode(new TreeItem<>(new DisplayAction("Sections")));
         }
 
-        private void genericSectionEnter(Elf32Section section) {
+        private void genericSectionEnter(ElfSection<NATIVE_WORD> section) {
             String displayName = (section.name() == null || section.name().isEmpty())
                     ? "(empty)"
                     : section.name();
 
             enterNode(new TreeItem<>(new DisplayAction(
                     displayName,
-                    tv -> new Elf32SectionHeaderRenderer(section.header()).renderDataOn(tv))));
+                    tv -> new Elf32SectionHeaderRenderer<>(nativeWord, section.header()).renderDataOn(tv))));
 
             /* Various heuristics */
             if (section.containsStrings()) {
                 addChild(new TreeItem<>(new DisplayAction(
                         "(Null Terminated Strings)",
-                        tv -> new Elf32SectionStringsViewRenderer(section).renderDataOn(tv))));
+                        tv -> new Elf32SectionStringsViewRenderer<>(nativeWord, section).renderDataOn(tv))));
             }
 
-            if (section.header().size() > 0) {
+            if (section.header().size().longValue() > 0) {
                 addChild(new TreeItem<>(new DisplayAction(
                         "(Contents)",
-                        tv -> new FileViewRenderer(section.contents()).renderDataOn(tv))));
+                        tv -> new FileViewRenderer<>(nativeWord, section.contents()).renderDataOn(tv))));
             }
         }
 
@@ -123,125 +130,125 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
-        public void enter(Elf32Section section) {
+        public void enter(ElfSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
         }
 
         @Override
-        public void exit(Elf32Section section) {
+        public void exit(ElfSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32DynamicSection section) {
+        public void enter(ElfDynamicSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Dynamic Tags",
-                    tv -> new Elf32DynamicSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32DynamicSectionRenderer<NATIVE_WORD>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32DynamicSection section) {
+        public void exit(ElfDynamicSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32InterpreterSection section) {
+        public void enter(ElfInterpreterSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Interpreter",
-                    tv -> new Elf32InterpreterSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32InterpreterSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32InterpreterSection section) {
+        public void exit(ElfInterpreterSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32NotesSection section) {
+        public void enter(ElfNotesSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Notes",
-                    tv -> new Elf32NotesSectionRenderer(section).renderDataOn(tableView))));
+                    tv -> new Elf32NotesSectionRenderer<>(nativeWord, section).renderDataOn(tableView))));
         }
 
         @Override
-        public void exit(Elf32NotesSection section) {
+        public void exit(ElfNotesSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32RelocationSection section) {
+        public void enter(ElfRelocationSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Relocations",
-                    tv -> new Elf32RelocationSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32RelocationSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32RelocationSection section) {
+        public void exit(ElfRelocationSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32RelocationAddendSection section) {
+        public void enter(ElfRelocationAddendSection<NATIVE_WORD> section) {
 
         }
 
         @Override
-        public void exit(Elf32RelocationAddendSection section) {
+        public void exit(ElfRelocationAddendSection<NATIVE_WORD> section) {
 
         }
 
         @Override
-        public void enter(Elf32StringTableSection section) {
+        public void enter(ElfStringTableSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "String Table",
-                    tv -> new Elf32StringTableSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32StringTableSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32StringTableSection section) {
+        public void exit(ElfStringTableSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32SymbolTableSection section) {
+        public void enter(ElfSymbolTableSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Symbol Table",
-                    tv -> new Elf32SymbolTableSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32SymbolTableSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
         @Override
-        public void exit(Elf32SymbolTableSection section) {
+        public void exit(ElfSymbolTableSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32GnuHashSection section) {
+        public void enter(ElfGnuHashSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "Gnu Hash Table",
-                    tv -> new Elf32GnuHashSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32GnuHashSectionRenderer(elfFile.nativeWordMetadata(), section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32GnuHashSection section) {
+        public void exit(ElfGnuHashSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
         @Override
-        public void enter(Elf32InvalidSection section) {
+        public void enter(ElfInvalidSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
             addChild(new TreeItem<>(new DisplayAction(
                     "(Parsing Errors)",
-                    tv -> new Elf32InvalidSectionRenderer(section).renderDataOn(tv))));
+                    tv -> new Elf32InvalidSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
-        public void exit(Elf32InvalidSection section) {
+        public void exit(ElfInvalidSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 
@@ -256,30 +263,30 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
-        public void enter(Elf32Segment segment) {
-            Elf32ProgramHeader programHeader = segment.programHeader();
+        public void enter(ElfSegment<NATIVE_WORD> segment) {
+            ElfProgramHeader<NATIVE_WORD> programHeader = segment.programHeader();
             String segmentName = programHeader.type() + " (" +
                     programHeader.virtualAddress().toString() + " - " +
                     programHeader.endVirtualAddress() + ")";
 
             enterNode(new TreeItem<>(new DisplayAction(
                     segmentName,
-                    tv -> new Elf32SegmentRenderer(segment).renderDataOn(tv))));
+                    tv -> new Elf32SegmentRenderer<>(nativeWord, segment).renderDataOn(tv))));
 
-            if (segment.programHeader().fileSize() > 0) {
+            if (segment.programHeader().fileSize().longValue() > 0) {
                 addChild(new TreeItem<>(new DisplayAction(
                         "(Contents)",
-                        tv -> new FileViewRenderer(segment.contents()).renderDataOn(tv))));
+                        tv -> new FileViewRenderer<>(nativeWord, segment.contents()).renderDataOn(tv))));
             }
 
-            for (Elf32Section section : segment.containedSections()) {
+            for (ElfSection<NATIVE_WORD> section : segment.containedSections()) {
                 // Recreate section submenu
                 section.accept(this);
             }
         }
 
         @Override
-        public void exit(Elf32Segment programHeader) {
+        public void exit(ElfSegment<NATIVE_WORD> programHeader) {
             exitNode();
         }
 
