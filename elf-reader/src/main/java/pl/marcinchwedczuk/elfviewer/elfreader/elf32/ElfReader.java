@@ -22,11 +22,6 @@ import java.util.Optional;
 public class ElfReader {
     private ElfReader() { }
 
-    public static Elf32File readElf32(AbstractFile file) {
-        // TODO: This is weak check
-        return new Elf32File((ElfFile<Integer>) readElf(file));
-    }
-
     public static ElfFile<?> readElf(AbstractFile file) {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);
         ElfIdentification identification = ElfIdentification.parseBytes(identificationBytes);

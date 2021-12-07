@@ -7,7 +7,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32NotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
 

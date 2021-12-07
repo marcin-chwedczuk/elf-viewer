@@ -4,8 +4,6 @@ import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSymbolTableSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolTable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32SymbolTableSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.SymbolTableEntryDto;
 
 import java.util.List;

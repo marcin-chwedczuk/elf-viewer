@@ -4,9 +4,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Header;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.segments.Elf32Segment;
 
 public class BaseElfVisitor<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

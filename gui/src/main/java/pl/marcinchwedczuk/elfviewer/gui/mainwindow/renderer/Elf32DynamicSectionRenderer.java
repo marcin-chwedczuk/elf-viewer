@@ -4,7 +4,6 @@ import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfDynamicSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.DynamicTagDto;
 
 import java.util.List;

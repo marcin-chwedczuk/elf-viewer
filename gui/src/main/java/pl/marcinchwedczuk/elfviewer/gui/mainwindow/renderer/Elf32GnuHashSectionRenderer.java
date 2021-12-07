@@ -5,10 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfGnuHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbol;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuHashSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32GnuHashTable;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Symbol;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.sections.Elf32GnuHashSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.GnuHashTableEntryDto;
 
 import java.util.ArrayList;
@@ -78,7 +75,7 @@ public class Elf32GnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable
                 ElfSymbol<NATIVE_WORD> symbol = hashTable.symbolTable().get(
                         new SymbolTableIndex(hashIndex));
 
-                int gnuHash = Elf32GnuHashTable.gnuHash(symbol.name());
+                int gnuHash = ElfGnuHashTable.gnuHash(symbol.name());
                 symbolCol = String.format("%s (hash: 0x%08x, bucket: %d)",
                         symbol.name(),
                         gnuHash,

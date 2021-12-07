@@ -2,14 +2,11 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
