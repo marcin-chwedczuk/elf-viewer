@@ -193,12 +193,15 @@ public class ElfExplorerTreeViewBuilder {
 
         @Override
         public void enter(ElfRelocationAddendSection<NATIVE_WORD> section) {
-
+            genericSectionEnter(section);
+            addChild(new TreeItem<>(new DisplayAction(
+                    "Relocations (Addend)",
+                    tv -> new Elf32RelocationAddendSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
         }
 
         @Override
         public void exit(ElfRelocationAddendSection<NATIVE_WORD> section) {
-
+            genericSectionExit();
         }
 
         @Override

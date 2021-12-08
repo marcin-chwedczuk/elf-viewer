@@ -31,7 +31,7 @@ public class LongNativeWord extends NativeWord<Long> {
 
     @Override
     public String toHexString(Long value) {
-        return String.format("0x%16x", value);
+        return String.format("0x%016x", value);
     }
 
     @Override
