@@ -6,10 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationAddendSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSymbolTableSection;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
@@ -313,5 +310,24 @@ public class ElfReader_64Bits_Test {
         assertThat(buildId.buildId())
                 .isEqualTo("cfc42fc9d9070c324115c2bb9e55fff59f2a86d6");
     }
+
+    @Test
+    void elf64_interpreter() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeInterp = elfFile.sectionWithName(ElfSectionNames.INTERP);
+        assertThat(maybeInterp)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(ElfInterpreterSection.class);
+                });
+
+        ElfInterpreterSection<Long> interp = ((ElfInterpreterSection<Long>) maybeInterp.get());
+
+        assertThat(interp.interpreterPath())
+                .isEqualTo("/lib64/ld-linux-x86-64.so.2");
+    }
+
 
 }
