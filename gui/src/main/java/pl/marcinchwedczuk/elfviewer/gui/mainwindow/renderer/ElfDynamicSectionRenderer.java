@@ -12,13 +12,13 @@ import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32DynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<DynamicTagDto, NATIVE_WORD>
 {
     private final ElfDynamicSection<NATIVE_WORD> dynamicSection;
 
-    public Elf32DynamicSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                       ElfDynamicSection<NATIVE_WORD> dynamicSection) {
+    public ElfDynamicSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     ElfDynamicSection<NATIVE_WORD> dynamicSection) {
         super(nativeWord);
         this.dynamicSection = dynamicSection;
     }

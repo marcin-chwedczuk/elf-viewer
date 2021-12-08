@@ -10,13 +10,13 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32RelocationSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfRelocationSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<RelocationDto, NATIVE_WORD>
 {
     private final ElfRelocationSection<NATIVE_WORD> relocationSection;
 
-    public Elf32RelocationSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                          ElfRelocationSection<NATIVE_WORD> relocationSection) {
+    public ElfRelocationSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                        ElfRelocationSection<NATIVE_WORD> relocationSection) {
         super(nativeWord);
         this.relocationSection = relocationSection;
     }

@@ -9,13 +9,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-public class Elf32InvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfInvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
 {
     private final ElfInvalidSection<NATIVE_WORD> invalidSection;
 
-    public Elf32InvalidSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                       ElfInvalidSection<NATIVE_WORD> invalidSection) {
+    public ElfInvalidSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     ElfInvalidSection<NATIVE_WORD> invalidSection) {
         super(nativeWord);
         this.invalidSection = invalidSection;
     }

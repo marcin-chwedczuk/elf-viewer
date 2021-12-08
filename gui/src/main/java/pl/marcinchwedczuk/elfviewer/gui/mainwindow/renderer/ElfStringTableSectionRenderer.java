@@ -10,13 +10,13 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32StringTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfStringTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<StringTableEntryDto, NATIVE_WORD>
 {
     private final ElfStringTableSection<NATIVE_WORD> section;
 
-    public Elf32StringTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                           ElfStringTableSection<NATIVE_WORD> section) {
+    public ElfStringTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         ElfStringTableSection<NATIVE_WORD> section) {
         super(nativeWord);
         this.section = section;
     }

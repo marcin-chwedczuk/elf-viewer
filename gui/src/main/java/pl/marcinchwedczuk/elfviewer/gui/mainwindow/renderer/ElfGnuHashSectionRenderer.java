@@ -11,13 +11,13 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.GnuHashTableEntr
 import java.util.ArrayList;
 import java.util.List;
 
-public class Elf32GnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<GnuHashTableEntryDto, NATIVE_WORD>
 {
     private final ElfGnuHashSection<NATIVE_WORD> section;
 
-    public Elf32GnuHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                       ElfGnuHashSection<NATIVE_WORD> section) {
+    public ElfGnuHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     ElfGnuHashSection<NATIVE_WORD> section) {
         super(nativeWord);
         this.section = section;
     }

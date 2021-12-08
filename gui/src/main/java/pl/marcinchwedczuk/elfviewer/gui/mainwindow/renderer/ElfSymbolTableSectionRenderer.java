@@ -11,13 +11,13 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32SymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<SymbolTableEntryDto, NATIVE_WORD>
 {
     private final ElfSymbolTableSection<NATIVE_WORD> symbolTableSection;
 
-    public Elf32SymbolTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                           ElfSymbolTableSection<NATIVE_WORD> symbolTableSection) {
+    public ElfSymbolTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         ElfSymbolTableSection<NATIVE_WORD> symbolTableSection) {
         super(nativeWord);
         this.symbolTableSection = symbolTableSection;
     }

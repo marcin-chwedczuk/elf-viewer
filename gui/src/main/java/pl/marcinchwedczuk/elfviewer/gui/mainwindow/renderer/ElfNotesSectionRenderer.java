@@ -15,13 +15,13 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32NotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<NoteDto, NATIVE_WORD>
 {
     private final ElfNotesSection<NATIVE_WORD> notesSection;
 
-    public Elf32NotesSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                     ElfNotesSection<NATIVE_WORD> notesSection) {
+    public ElfNotesSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                   ElfNotesSection<NATIVE_WORD> notesSection) {
         super(nativeWord);
         this.notesSection = notesSection;
     }

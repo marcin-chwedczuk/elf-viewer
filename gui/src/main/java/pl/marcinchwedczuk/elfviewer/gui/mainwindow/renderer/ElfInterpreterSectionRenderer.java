@@ -8,13 +8,13 @@ import java.util.List;
 
 import static java.util.function.Function.identity;
 
-public class Elf32InterpreterSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfInterpreterSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<String, NATIVE_WORD>
 {
     private final ElfInterpreterSection interpreterSection;
 
-    public Elf32InterpreterSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                           ElfInterpreterSection interpreterSection) {
+    public ElfInterpreterSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         ElfInterpreterSection interpreterSection) {
         super(nativeWord);
         this.interpreterSection = interpreterSection;
     }

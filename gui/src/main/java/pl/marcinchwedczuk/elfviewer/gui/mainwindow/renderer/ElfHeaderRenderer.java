@@ -9,13 +9,13 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32HeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
 {
     private final ElfHeader<NATIVE_WORD> header;
 
-    public Elf32HeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                               ElfHeader<NATIVE_WORD> header) {
+    public ElfHeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                             ElfHeader<NATIVE_WORD> header) {
         super(nativeWord);
         this.header = header;
     }

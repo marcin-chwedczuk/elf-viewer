@@ -9,13 +9,13 @@ import java.util.List;
 import static java.util.function.Function.identity;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
 
-public class Elf32SectionStringsViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfSectionStringsViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<String, NATIVE_WORD>
 {
     private final ElfSection<NATIVE_WORD> section;
 
-    public Elf32SectionStringsViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                           ElfSection<NATIVE_WORD> section) {
+    public ElfSectionStringsViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         ElfSection<NATIVE_WORD> section) {
         super(nativeWord);
         if (!section.header().flags().hasFlag(STRINGS))
             throw new IllegalArgumentException("Section contents does not consist from strings.");

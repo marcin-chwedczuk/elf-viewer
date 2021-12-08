@@ -10,13 +10,13 @@ import java.util.List;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
-public class Elf32SegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
+public class ElfSegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
 {
     private final ElfSegment<NATIVE_WORD> segment;
 
-    public Elf32SegmentRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                ElfSegment<NATIVE_WORD> segment) {
+    public ElfSegmentRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                              ElfSegment<NATIVE_WORD> segment) {
         super(nativeWord);
         this.segment = segment;
     }
