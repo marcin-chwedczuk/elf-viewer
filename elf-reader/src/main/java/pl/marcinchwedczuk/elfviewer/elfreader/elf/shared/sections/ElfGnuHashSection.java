@@ -42,7 +42,7 @@ public class ElfGnuHashSection<
         int shift2 = sf.readUnsignedInt();
 
         // TODO: Check boundary of section
-        int[] bloomFilter = sf.readIntArray(maskWords);
+        NATIVE_WORD[] bloomFilter = nativeWord.readArray(sf, maskWords);
         int[] buckets = sf.readIntArray(nbuckets);
         int[] hashValues = sf.readIntArray(symbolTable.size() - symbolIndex);
 
@@ -51,6 +51,7 @@ public class ElfGnuHashSection<
             throw new IllegalStateException("Read past section end.");
 
         return new ElfGnuHashTable<>(
+                elfFile().nativeWordMetadata(),
                 symbolTable,
                 nbuckets,
                 symbolIndex,

@@ -151,4 +151,14 @@ public abstract class StructuredFile<
         }
         return result;
     }
+
+    public long[] readLongArray(int size) {
+        if (size < 0) throw new IllegalArgumentException();
+
+        long[] result = new long[size];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = readUnsignedLong();
+        }
+        return result;
+    }
 }

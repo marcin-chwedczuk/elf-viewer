@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
@@ -332,7 +333,7 @@ public class ElfReader_64Bits_Test {
     }
 
     @Test
-    void elf32_dynamic_section() {
+    void elf64_dynamic_section() {
         ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
 
         Optional<ElfSection<Long>> maybeDynamic =
@@ -362,5 +363,30 @@ public class ElfReader_64Bits_Test {
                 .hasValue("libc.so.6");
     }
 
+    @Test
+    void elf32_gnu_hash_section() {
+        // TODO: https://flapenguin.me/elf-dt-gnu-hash
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeGnuHash =
+                elfFile.sectionOfType(ElfSectionType.GNU_HASH);
+
+        assertThat(maybeGnuHash)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(ElfGnuHashSection.class);
+                });
+
+        ElfGnuHashSection<Long> gnuHash = (ElfGnuHashSection<Long>)maybeGnuHash.get();
+        ElfGnuHashTable<Long> hashTable = gnuHash.gnuHashTable();
+
+        assertThat(hashTable.findSymbol("blah"))
+                .isEmpty();
+
+        assertThat(hashTable.findSymbol("__cxa_finalize").get().name())
+               .isEqualTo("__cxa_finalize");
+
+    }
 
 }

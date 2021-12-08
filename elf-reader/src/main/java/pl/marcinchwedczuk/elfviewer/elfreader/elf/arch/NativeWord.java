@@ -24,4 +24,9 @@ public abstract class NativeWord<
     public abstract ElfRelocationAddend<NATIVE_WORD> mkRelocationA(ElfAddress<NATIVE_WORD> offset,
                                                                    NATIVE_WORD info,
                                                                    NATIVE_WORD addend);
+
+    public abstract int size();
+    public abstract boolean hasBitsSet(NATIVE_WORD w, long value);
+
+    public abstract NATIVE_WORD[] readArray(StructuredFile<NATIVE_WORD> sf, int nelements);
 }

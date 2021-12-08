@@ -8,6 +8,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+
 public class LongNativeWord extends NativeWord<Long> {
     @Override
     public NativeWordType type() {
@@ -49,5 +52,22 @@ public class LongNativeWord extends NativeWord<Long> {
                                                    Long info,
                                                    Long addend) {
         return new ElfRelocationAddend.ElfRelocationAddend64(offset, info, addend);
+    }
+
+    @Override
+    public int size() {
+        return 8;
+    }
+
+    @Override
+    public boolean hasBitsSet(Long w, long value) {
+        return (((long)w) & value) == value;
+    }
+
+    @Override
+    public Long[] readArray(StructuredFile<Long> sf, int nelements) {
+        long[] tmp = sf.readLongArray(nelements);
+        // TODO: not optimal
+        return LongStream.of(tmp).boxed().toArray(Long[]::new);
     }
 }

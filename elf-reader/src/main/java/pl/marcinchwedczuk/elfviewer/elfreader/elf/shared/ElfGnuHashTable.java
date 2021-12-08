@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
@@ -12,6 +13,7 @@ import static java.util.Objects.requireNonNull;
 public class ElfGnuHashTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
+    private final NativeWord<NATIVE_WORD> nativeWord;
     private final ElfSymbolTable<NATIVE_WORD> dynsym;
 
     private final int nbuckets;
@@ -33,21 +35,22 @@ public class ElfGnuHashTable<
 
     // TODO: Add ElfApi annotations
     // Has size maskWords
-    private final int[] bloomFilter;
+    private final NATIVE_WORD[] bloomFilter;
 
     private final int[] buckets;
 
     // Has size dynsym.size() - symbolIndex
     private final int[] hashValues;
 
-    public ElfGnuHashTable(ElfSymbolTable<NATIVE_WORD> dynsym,
+    public ElfGnuHashTable(NativeWord<NATIVE_WORD> nativeWord, ElfSymbolTable<NATIVE_WORD> dynsym,
                            int nbuckets,
                            int startSymbolIndex,
                            int maskWords,
                            int shift2,
-                           int[] bloomFilter,
+                           NATIVE_WORD[] bloomFilter,
                            int[] buckets,
                            int[] hashValues) {
+        this.nativeWord = requireNonNull(nativeWord);
         this.dynsym = requireNonNull(dynsym);
         this.nbuckets = nbuckets;
         this.startSymbolIndex = startSymbolIndex;
@@ -80,12 +83,12 @@ public class ElfGnuHashTable<
         int h1 = gnuHash(symbolName);
         int h2 = h1 >> shift2;
 
-        int c = 4 * 8; // sizeof(int) * BITS_PER_BYTE
+        int c = nativeWord.size() * 8; // sizeof(int) * BITS_PER_BYTE
         int n = umod((h1 / c), maskWords); // bloom filter word
-        int bitmask = (1 << umod(h1, c))  // bits within bloom filter word
-                | (1 << umod(h2, c));
+        long bitmask = (1L << umod(h1, c))  // bits within bloom filter word
+                | (1L << umod(h2, c));
 
-        if ((bloomFilter[n] & bitmask) != bitmask) {
+        if (!nativeWord.hasBitsSet(bloomFilter[n], bitmask)) {
             // Symbol not in hashtable
             return Optional.empty();
         }
@@ -157,7 +160,7 @@ public class ElfGnuHashTable<
         return shift2;
     }
 
-    public int[] bloomFilter() {
+    public NATIVE_WORD[] bloomFilter() {
         return bloomFilter;
     }
 
