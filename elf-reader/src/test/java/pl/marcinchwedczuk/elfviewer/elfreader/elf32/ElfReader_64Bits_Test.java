@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationAddendSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSymbolTableSection;
@@ -272,4 +275,43 @@ public class ElfReader_64Bits_Test {
         assertThat(textSegment.alignment())
                 .isEqualTo(0x1000);
     }
+
+    @Test
+    void elf64_notes_abi_tag() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
+        assertThat(maybeNotesSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(ElfNotesSection.class);
+                });
+
+        ElfNotesSection<Long> notesSection = (ElfNotesSection<Long>) maybeNotesSection.get();
+
+        ElfNoteGnuABITag gnuAbi = (ElfNoteGnuABITag) notesSection.notes().get(0);
+        assertThat(gnuAbi.minSupportedKernelVersion())
+                .isEqualTo("3.2.0");
+    }
+
+    @Test
+    void elf64_notes_build_id() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
+        assertThat(maybeNotesSection)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(ElfNotesSection.class);
+                });
+
+        ElfNotesSection<Long> notesSection = (ElfNotesSection<Long>) maybeNotesSection.get();
+
+        ElfNoteGnuBuildId buildId = (ElfNoteGnuBuildId) notesSection.notes().get(0);
+        assertThat(buildId.buildId())
+                .isEqualTo("cfc42fc9d9070c324115c2bb9e55fff59f2a86d6");
+    }
+
 }
