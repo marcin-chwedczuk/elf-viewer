@@ -46,8 +46,10 @@ public class ElfDynamicTags<
         List<ElfDynamicTag<NATIVE_WORD>> result = new ArrayList<>();
 
         for (int i = 0; i < tableHelper.tableSize(); i++) {
+            NATIVE_WORD tagValue = nativeWord.readNativeWordFrom(sf);
+            // TODO: TagType is 32bit, value is 64bit -> Change TagType to 64 bit
             Elf32DynamicTagType tag =
-                    Elf32DynamicTagType.fromValue(sf.readUnsignedInt());
+                    Elf32DynamicTagType.fromValue(Math.toIntExact(tagValue.longValue()));
 
             // NULL tag marks end of the dynamic section
             if (tag.is(NULL)) break;

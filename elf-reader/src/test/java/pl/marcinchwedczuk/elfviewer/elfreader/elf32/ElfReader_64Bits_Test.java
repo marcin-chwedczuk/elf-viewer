@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.INIT;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolBinding.GLOBAL;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.FUNCTION;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolVisibility.DEFAULT;
@@ -327,6 +329,37 @@ public class ElfReader_64Bits_Test {
 
         assertThat(interp.interpreterPath())
                 .isEqualTo("/lib64/ld-linux-x86-64.so.2");
+    }
+
+    @Test
+    void elf32_dynamic_section() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeDynamic =
+                elfFile.sectionOfType(ElfSectionType.DYNAMIC);
+
+        assertThat(maybeDynamic)
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value)
+                            .isInstanceOf(ElfDynamicSection.class);
+                });
+
+        ElfDynamicSection<Long> dynamic = (ElfDynamicSection<Long>)maybeDynamic.get();
+        List<ElfDynamicTag<Long>> results = dynamic.dynamicTags();
+
+        assertThat(results.get(0))
+                .isEqualTo(new ElfDynamicTag<>(NEEDED, 39L));
+
+        assertThat(results.get(1))
+                .isEqualTo(new ElfDynamicTag<>(INIT, 0x1000L));
+
+        // Read library name
+        Optional<String> libName = dynamic.getDynamicLibraryName(results.get(0));
+
+        assertThat(libName)
+                .isPresent()
+                .hasValue("libc.so.6");
     }
 
 

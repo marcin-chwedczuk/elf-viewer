@@ -27,9 +27,9 @@ public class TableHelper<
     TableHelper<NATIVE_WORD> forSectionEntries(ElfSectionHeader<NATIVE_WORD> sectionHeader) {
         return new TableHelper<>(
                 sectionHeader.fileOffset(),
-                sectionHeader.containedEntrySize().intValue(),
+                Math.toIntExact(sectionHeader.containedEntrySize().longValue()),
                 // TODO: Use actual section size
-                sectionHeader.size().intValue() / sectionHeader.containedEntrySize().intValue());
+                Math.toIntExact(sectionHeader.size().longValue()) / Math.toIntExact(sectionHeader.containedEntrySize().longValue()));
     }
 
     private final ElfOffset<NATIVE_WORD> startOffset;
