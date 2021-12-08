@@ -366,6 +366,7 @@ public class ElfReader_64Bits_Test {
     @Test
     void elf32_gnu_hash_section() {
         // TODO: https://flapenguin.me/elf-dt-gnu-hash
+        // TODO: https://binutils.sourceware.narkive.com/6VzWCiUN/gnu-hash-section-format
         ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
 
         Optional<ElfSection<Long>> maybeGnuHash =
