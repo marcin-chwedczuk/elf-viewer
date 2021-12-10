@@ -256,6 +256,19 @@ public class ElfExplorerTreeViewBuilder {
         }
 
         @Override
+        public void enter(ElfGnuVersionSection<NATIVE_WORD> section) {
+            genericSectionEnter(section);
+            addChild(new TreeItem<>(new DisplayAction(
+                    "Symbol Versions",
+                    tv -> new ElfGnuVersionSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
+        }
+
+        @Override
+        public void exit(ElfGnuVersionSection<NATIVE_WORD> section) {
+            genericSectionExit();
+        }
+
+        @Override
         public void exitSections() {
             exitNode();
         }
