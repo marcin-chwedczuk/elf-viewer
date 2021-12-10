@@ -29,4 +29,6 @@ public abstract class NativeWord<
     public abstract boolean hasBitsSet(NATIVE_WORD w, long value);
 
     public abstract NATIVE_WORD[] readArray(StructuredFile<NATIVE_WORD> sf, int nelements);
+
+    public abstract NATIVE_WORD divideExact(NATIVE_WORD a, NATIVE_WORD b);
 }

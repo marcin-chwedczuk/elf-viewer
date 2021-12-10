@@ -16,5 +16,6 @@ module pl.marcinchwedczuk.elfviewer.elfreader {
     exports pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
     exports pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
     exports pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes;
+    exports pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions;
     exports pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor;
 }

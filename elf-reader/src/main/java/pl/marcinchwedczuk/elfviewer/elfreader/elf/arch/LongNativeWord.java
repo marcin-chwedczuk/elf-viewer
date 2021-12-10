@@ -70,4 +70,12 @@ public class LongNativeWord extends NativeWord<Long> {
         // TODO: not optimal
         return LongStream.of(tmp).boxed().toArray(Long[]::new);
     }
+
+    @Override
+    public Long divideExact(Long a, Long b) {
+        long result = a / b;
+        if ((result * b) != a)
+            throw new IllegalArgumentException("Number " + a + " is not exactly divisible by " + b + ".");
+        return result;
+    }
 }

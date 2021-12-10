@@ -107,12 +107,12 @@ public abstract class ShortPartialEnum<T extends ShortPartialEnum<T>> extends Ba
         return Collections.unmodifiableCollection(cache.values());
     }
 
-    protected static byte s(int value) {
+    protected static short s(int value) {
         if (value < 0 || value > 0xffff)
             throw new IllegalArgumentException(
                     "Value " + value + " is outside Byte's range.");
 
-        return (byte)(value & 0xffff);
+        return (short)(value & 0xffff);
     }
 }
 

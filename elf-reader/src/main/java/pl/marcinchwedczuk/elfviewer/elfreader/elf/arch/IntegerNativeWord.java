@@ -69,4 +69,12 @@ public class IntegerNativeWord extends NativeWord<Integer> {
         int[] tmp = sf.readIntArray(nelements);
         return IntStream.of(tmp).boxed().toArray(Integer[]::new);
     }
+
+    @Override
+    public Integer divideExact(Integer a, Integer b) {
+        int result = a / b;
+        if ((result * b) != a)
+            throw new IllegalArgumentException("Number " + a + " is not exactly divisible by " + b + ".");
+        return result;
+    }
 }

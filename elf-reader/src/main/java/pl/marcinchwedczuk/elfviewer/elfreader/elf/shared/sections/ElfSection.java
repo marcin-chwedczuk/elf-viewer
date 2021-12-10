@@ -82,4 +82,13 @@ public class ElfSection<
         visitor.enter(this);
         visitor.exit(this);
     }
+
+    // Casts
+    public ElfSymbolTableSection<NATIVE_WORD> asSymbolTableSection() {
+        return (ElfSymbolTableSection<NATIVE_WORD>) this;
+    }
+
+    public ElfGnuVersionSection<NATIVE_WORD> asGnuVersionSection() {
+        return (ElfGnuVersionSection<NATIVE_WORD>) this;
+    }
 }

@@ -14,8 +14,8 @@ public class SymbolTableIndex {
         this.index = index;
     }
 
-    boolean isDefined() {
-        return index != 0;
+    public boolean isUndefined() {
+        return index == 0;
     }
 
     public int intValue() { return index; }

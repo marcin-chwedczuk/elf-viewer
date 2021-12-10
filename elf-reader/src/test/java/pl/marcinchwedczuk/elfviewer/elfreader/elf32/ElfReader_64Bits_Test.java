@@ -10,6 +10,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfSymbolVersion;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -404,5 +405,26 @@ public class ElfReader_64Bits_Test {
         assertThat(comments)
                 .hasSize(1)
                 .contains("GCC: (Debian 10.2.1-6) 10.2.1 20210110");
+    }
+
+    @Test
+    void elf64_read_symbol_versions() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        ElfGnuVersionSection<Long> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION)
+                .map(ElfSection::asGnuVersionSection)
+                .get();
+
+        List<ElfSymbolVersion> versions = gnuVersion.symbolVersions();
+        assertThat(versions)
+                .isEqualTo(List.of(
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.fromValue((short)2),
+                        ElfSymbolVersion.fromValue((short)2),
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.fromValue((short)2)
+                ));
     }
 }
