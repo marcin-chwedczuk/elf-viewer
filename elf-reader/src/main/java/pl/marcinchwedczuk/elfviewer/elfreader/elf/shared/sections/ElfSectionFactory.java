@@ -57,8 +57,7 @@ public class ElfSectionFactory<
                 return new ElfNotesSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(GNU_HASH)) {
                 return new ElfGnuHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.hasName(ElfSectionNames.GNU_VERSION)) {
-                // TODO: Check type also
+            } else if (header.type().is(GNU_VERSYM)) {
                 return new ElfGnuVersionSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
