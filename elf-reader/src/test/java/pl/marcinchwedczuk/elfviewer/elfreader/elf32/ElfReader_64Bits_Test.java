@@ -387,7 +387,22 @@ public class ElfReader_64Bits_Test {
 
         assertThat(hashTable.findSymbol("__cxa_finalize").get().name())
                .isEqualTo("__cxa_finalize");
-
     }
 
+    @Test
+    void efl64_read_comment_section_contents() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        Optional<ElfSection<Long>> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
+
+        assertThat(maybeComment)
+                .isPresent();
+
+        ElfSection<Long> comment = maybeComment.get();
+        List<String> comments = comment.readContentsAsStrings();
+
+        assertThat(comments)
+                .hasSize(1)
+                .contains("GCC: (Debian 10.2.1-6) 10.2.1 20210110");
+    }
 }

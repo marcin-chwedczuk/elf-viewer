@@ -378,7 +378,7 @@ class ElfReader_32Bits_GenericApi_Test {
     }
 
     @Test
-    void read_comment_section_contents() {
+    void elf32_read_comment_section_contents() {
         ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(helloWorld32);
 
         Optional<ElfSection<Integer>> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
