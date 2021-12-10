@@ -1,7 +1,9 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.LambdaValueFactory;
 
@@ -46,7 +48,26 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
     protected TableColumn<R, String> mkColumn(String title,
                                               Function<? super R, Object> mapper,
                                               ColumnAttributes... attributes) {
+        return mkColumn(title, "", mapper, attributes);
+    }
+
+    protected TableColumn<R, String> mkColumn(String title,
+                                              String comment,
+                                              Function<? super R, Object> mapper,
+                                              ColumnAttributes... attributes) {
         TableColumn<R, String> column = new TableColumn<>(title);
+
+        if (comment != null && !comment.isBlank()) {
+            Label label = new Label(title);
+
+            Tooltip commentTooltip = new Tooltip(comment);
+            commentTooltip.setMaxWidth(200);
+            commentTooltip.setWrapText(true);
+            label.setTooltip(commentTooltip);
+
+            column.setGraphic(label);
+        }
+
         column.setCellValueFactory(new LambdaValueFactory<>(
                 rowData -> Objects.toString(mapper.apply(rowData))));
 

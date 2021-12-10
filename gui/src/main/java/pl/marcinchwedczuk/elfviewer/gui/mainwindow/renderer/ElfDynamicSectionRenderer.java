@@ -10,6 +10,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.VERNEEDNUM;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
@@ -47,6 +48,10 @@ public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<N
             return dynamicSection.getDynamicLibraryName(tag)
                 .map(name -> String.format("requires library: %s", name))
                 .orElse("");
+        }
+
+        if (tag.type().is(VERNEEDNUM)) {
+            return "number of entries in .gnu.version_r section";
         }
 
         return "";
