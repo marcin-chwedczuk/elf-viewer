@@ -99,4 +99,8 @@ public class ElfSection<
     public ElfGnuVersionRequirementsSection<NATIVE_WORD> asGnuVersionRequirementsSection() {
         return (ElfGnuVersionRequirementsSection<NATIVE_WORD>) this;
     }
+
+    public ElfGnuVersionDefinitionsSection<NATIVE_WORD> asGnuVersionDefinitionsSection() {
+        return (ElfGnuVersionDefinitionsSection<NATIVE_WORD>) this;
+    }
 }

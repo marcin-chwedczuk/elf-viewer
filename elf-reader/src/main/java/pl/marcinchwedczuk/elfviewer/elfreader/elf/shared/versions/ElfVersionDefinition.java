@@ -97,7 +97,7 @@ public class ElfVersionDefinition<
         return offsetNext;
     }
 
-    public List<ElfVersionDefinitionAuxiliary<NATIVE_WORD>> getAuxiliaryEntries() {
+    public List<ElfVersionDefinitionAuxiliary<NATIVE_WORD>> auxiliaryEntries() {
         return auxiliaryEntries;
     }
 }

@@ -9,10 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfSymbolVersion;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededRevision;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -34,13 +31,16 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXE
 
 public class ElfReader_64Bits_Test {
     private final AbstractFile helloWorld64;
+    private final AbstractFile libc64;
 
     public ElfReader_64Bits_Test() throws IOException {
-        byte[] binaryBytes = this.getClass()
+        helloWorld64 = new InMemoryFile(this.getClass()
                 .getResourceAsStream("hello-world-64")
-                .readAllBytes();
+                .readAllBytes());
 
-        helloWorld64 = new InMemoryFile(binaryBytes);
+        libc64 = new InMemoryFile(this.getClass()
+                .getResourceAsStream("libc-2.17.so")
+                .readAllBytes());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ElfReader_64Bits_Test {
         assertThat(identification.osAbi())
                 .isEqualTo(ElfOsAbi.NONE);
 
-        assertThat((int)identification.osAbiVersion())
+        assertThat((int) identification.osAbiVersion())
                 .isEqualTo(0);
 
         // elf type
@@ -176,7 +176,7 @@ public class ElfReader_64Bits_Test {
                             .isInstanceOf(ElfSymbolTableSection.class);
                 });
 
-        ElfSymbolTable<Long> symbols = ((ElfSymbolTableSection<Long>)maybeSymtabSection.get()).symbolTable();
+        ElfSymbolTable<Long> symbols = ((ElfSymbolTableSection<Long>) maybeSymtabSection.get()).symbolTable();
 
         // 1. Check Section symbols have their names resolved
         Optional<ElfSymbol<Long>> textSectionSymbol = symbols.slowlyFindSymbolByName(".text");
@@ -194,7 +194,7 @@ public class ElfReader_64Bits_Test {
                             .isEqualTo(FUNCTION);
 
                     assertThat(main.other())
-                            .isEqualTo((byte)0);
+                            .isEqualTo((byte) 0);
                     assertThat(main.visibility())
                             .isEqualTo(DEFAULT);
 
@@ -225,7 +225,7 @@ public class ElfReader_64Bits_Test {
                             .isInstanceOf(ElfRelocationAddendSection.class);
                 });
 
-        ElfRelocationAddendSection<Long> relSection = ((ElfRelocationAddendSection<Long>)maybeRelSection.get());
+        ElfRelocationAddendSection<Long> relSection = ((ElfRelocationAddendSection<Long>) maybeRelSection.get());
         List<ElfRelocationAddend<Long>> relocations = relSection.relocations();
 
         assertThat(relocations.size())
@@ -247,7 +247,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_segment_header() {
-        List<ElfSegment<Long>> segments = ((ElfFile<Long>)ElfReader.readElf(helloWorld64))
+        List<ElfSegment<Long>> segments = ((ElfFile<Long>) ElfReader.readElf(helloWorld64))
                 .segments();
 
         assertThat(segments.size())
@@ -349,7 +349,7 @@ public class ElfReader_64Bits_Test {
                             .isInstanceOf(ElfDynamicSection.class);
                 });
 
-        ElfDynamicSection<Long> dynamic = (ElfDynamicSection<Long>)maybeDynamic.get();
+        ElfDynamicSection<Long> dynamic = (ElfDynamicSection<Long>) maybeDynamic.get();
         List<ElfDynamicTag<Long>> results = dynamic.dynamicTags();
 
         assertThat(results.get(0))
@@ -382,14 +382,14 @@ public class ElfReader_64Bits_Test {
                             .isInstanceOf(ElfGnuHashSection.class);
                 });
 
-        ElfGnuHashSection<Long> gnuHash = (ElfGnuHashSection<Long>)maybeGnuHash.get();
+        ElfGnuHashSection<Long> gnuHash = (ElfGnuHashSection<Long>) maybeGnuHash.get();
         ElfGnuHashTable<Long> hashTable = gnuHash.gnuHashTable();
 
         assertThat(hashTable.findSymbol("blah"))
                 .isEmpty();
 
         assertThat(hashTable.findSymbol("__cxa_finalize").get().name())
-               .isEqualTo("__cxa_finalize");
+                .isEqualTo("__cxa_finalize");
     }
 
     @Test
@@ -422,11 +422,11 @@ public class ElfReader_64Bits_Test {
                 .isEqualTo(List.of(
                         ElfSymbolVersion.LOCAL,
                         ElfSymbolVersion.LOCAL,
-                        ElfSymbolVersion.fromValue((short)2),
-                        ElfSymbolVersion.fromValue((short)2),
+                        ElfSymbolVersion.fromValue((short) 2),
+                        ElfSymbolVersion.fromValue((short) 2),
                         ElfSymbolVersion.LOCAL,
                         ElfSymbolVersion.LOCAL,
-                        ElfSymbolVersion.fromValue((short)2)
+                        ElfSymbolVersion.fromValue((short) 2)
                 ));
     }
 
@@ -444,7 +444,7 @@ public class ElfReader_64Bits_Test {
         ElfVersionNeeded<Long> neededEntry = versions.get(0);
         assertThat(neededEntry.version())
                 .isEqualTo(ElfVersionNeededRevision.CURRENT);
-        assertThat((int)neededEntry.numberOfAuxiliaryEntries())
+        assertThat((int) neededEntry.numberOfAuxiliaryEntries())
                 .isEqualTo(1);
         assertThat(neededEntry.fileName())
                 .isEqualTo("libc.so.6");
@@ -459,13 +459,60 @@ public class ElfReader_64Bits_Test {
         ElfVersionNeededAuxiliary<Long> auxiliaryEntry = auxiliaryEntries.get(0);
         assertThat(auxiliaryEntry.hash())
                 .isEqualTo(ElfHashTable.elfHash("GLIBC_2.2.5"));
-        assertThat((int)auxiliaryEntry.flags())
+        assertThat((int) auxiliaryEntry.flags())
                 .isEqualTo(0);
         assertThat(auxiliaryEntry.other())
-                .isEqualTo(ElfSymbolVersion.fromValue((short)2));
+                .isEqualTo(ElfSymbolVersion.fromValue((short) 2));
         assertThat(auxiliaryEntry.name())
                 .isEqualTo("GLIBC_2.2.5");
         assertThat(auxiliaryEntry.offsetNext())
+                .isEqualTo(0);
+    }
+
+    @Test
+    void elf64_read_symbol_definitions() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(libc64);
+
+        ElfGnuVersionDefinitionsSection<Long> section = elfFile
+                .sectionWithName(ElfSectionNames.GNU_VERSION_D)
+                .map(ElfSection::asGnuVersionDefinitionsSection)
+                .get();
+
+        List<ElfVersionDefinition<Long>> definitions = section.definitions();
+        assertThat(definitions).hasSize(22);
+
+        ElfVersionDefinition<Long> def3 = definitions.get(3);
+        assertThat(def3.version())
+                .isEqualTo(ElfVersionDefinitionRevision.CURRENT);
+        assertThat((int)def3.flags())
+                .isEqualTo(0);
+        assertThat((int)def3.versionIndex())
+                .isEqualTo(4);
+        assertThat((int)def3.numberOfAuxiliaryEntries())
+                .isEqualTo(2);
+
+        // First aux entry contains definition name
+        assertThat(def3.nameHash())
+                .isEqualTo(ElfHashTable.elfHash("GLIBC_2.3"));
+
+        assertThat(def3.offsetAuxiliary())
+                .isEqualTo(20);
+        assertThat(def3.offsetNext())
+                .isEqualTo(36);
+
+        List<ElfVersionDefinitionAuxiliary<Long>> auxEntries = def3.auxiliaryEntries();
+        assertThat(auxEntries).hasSize(2);
+
+        ElfVersionDefinitionAuxiliary<Long> nameAuxEntry = auxEntries.get(0);
+        assertThat(nameAuxEntry.name())
+                .isEqualTo("GLIBC_2.3");
+        assertThat(nameAuxEntry.offsetNext())
+                .isEqualTo(8);
+
+        ElfVersionDefinitionAuxiliary<Long> parentEntry = auxEntries.get(1);
+        assertThat(parentEntry.name())
+                .isEqualTo("GLIBC_2.2.6");
+        assertThat(parentEntry.offsetNext())
                 .isEqualTo(0);
     }
 }
