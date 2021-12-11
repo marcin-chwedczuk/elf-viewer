@@ -1,40 +1,41 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfSymbolVersion;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededRevision;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfStringTable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERNEED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.GNU_VERSION;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERDEF;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERSYM;
 
-/**
- * This section describes the version information used by
- * the undefined versioned symbols in the module.
- */
-public class ElfGnuVersionRequirementsSection<
+public class ElfGnuVersionDefinitionsSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > extends ElfSection<NATIVE_WORD> {
-    public ElfGnuVersionRequirementsSection(NativeWord<NATIVE_WORD> nativeWord,
-                                            StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
-                                            ElfFile<NATIVE_WORD> elfFile,
-                                            ElfSectionHeader<NATIVE_WORD> header) {
+    public ElfGnuVersionDefinitionsSection(NativeWord<NATIVE_WORD> nativeWord,
+                                           StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
+                                           ElfFile<NATIVE_WORD> elfFile,
+                                           ElfSectionHeader<NATIVE_WORD> header) {
         super(nativeWord, structuredFileFactory, elfFile, header);
 
-        if (!header.type().is(GNU_VERNEED))
-            throw new IllegalArgumentException("Invalid section type: " + header.type() + ".");
+        if (!header.type().is(GNU_VERDEF))
+            throw new IllegalArgumentException("Invalid section name: " + header.name() + ".");
     }
 
-    public List<ElfVersionNeeded<NATIVE_WORD>> requirements() {
-        List<ElfVersionNeeded<NATIVE_WORD>> result = new ArrayList<>();
+
+    public List<ElfVersionDefinition<NATIVE_WORD>> definitions() {
+        List<ElfVersionDefinition<NATIVE_WORD>> result = new ArrayList<>();
 
         ElfStringTable<NATIVE_WORD> associatedStringTable = associatedStringTable();
 
@@ -44,23 +45,26 @@ public class ElfGnuVersionRequirementsSection<
             StructuredFile<NATIVE_WORD> sf = structuredFileFactory.mkStructuredFile(
                     contents(), elfFile().endianness(), currentOffset);
 
-            ElfVersionNeededRevision version = ElfVersionNeededRevision.fromValue(sf.readUnsignedShort());
+            ElfVersionDefinitionRevision version = ElfVersionDefinitionRevision.fromValue(sf.readUnsignedShort());
+            short flags = sf.readUnsignedShort();
+            short versionIndex = sf.readUnsignedShort();
             short numberAE = sf.readUnsignedShort();
-            StringTableIndex fileNameIdx = new StringTableIndex(sf.readUnsignedInt());
-            String fileName = associatedStringTable.getStringAtIndex(fileNameIdx);
+            int nameHash = sf.readUnsignedInt();
             int offsetAux = sf.readUnsignedInt();
             int offsetNext = sf.readUnsignedInt();
 
-            List<ElfVersionNeededAuxiliary<NATIVE_WORD>> auxiliaryEntries =
+            List<ElfVersionDefinitionAuxiliary<NATIVE_WORD>> auxiliaryEntries =
                     readAuxiliaryEntries(currentOffset, offsetAux, associatedStringTable);
 
-            result.add(new ElfVersionNeeded<NATIVE_WORD>(
+            result.add(new ElfVersionDefinition<NATIVE_WORD>(
                     version,
+                    flags,
+                    versionIndex,
                     numberAE,
-                    fileNameIdx,
-                    fileName,
+                    nameHash,
                     offsetAux,
-                    offsetNext, auxiliaryEntries));
+                    offsetNext,
+                    auxiliaryEntries));
 
             if (offsetNext == 0) break;
             currentOffset = currentOffset.plus(offsetNext);
@@ -69,7 +73,7 @@ public class ElfGnuVersionRequirementsSection<
         return result;
     }
 
-    private List<ElfVersionNeededAuxiliary<NATIVE_WORD>> readAuxiliaryEntries(
+    private List<ElfVersionDefinitionAuxiliary<NATIVE_WORD>> readAuxiliaryEntries(
             ElfOffset<NATIVE_WORD> currentOffset,
             int offsetAux,
             ElfStringTable<NATIVE_WORD> associatedStringTable)
@@ -78,23 +82,17 @@ public class ElfGnuVersionRequirementsSection<
             return List.of();
         }
 
-        List<ElfVersionNeededAuxiliary<NATIVE_WORD>> result = new ArrayList<>();
+        List<ElfVersionDefinitionAuxiliary<NATIVE_WORD>> result = new ArrayList<>();
 
         currentOffset = currentOffset.plus(offsetAux);
         StructuredFile<NATIVE_WORD> sf = structuredFileFactory.mkStructuredFile(
                 contents(), elfFile().endianness(), currentOffset);
         while (true) {
-            int hash = sf.readUnsignedInt();
-            short flags = sf.readUnsignedShort();
-            ElfSymbolVersion other = ElfSymbolVersion.fromValue(sf.readUnsignedShort());
             StringTableIndex nameIndex = new StringTableIndex(sf.readUnsignedInt());
             String name = associatedStringTable.getStringAtIndex(nameIndex);
             int nextOffset = sf.readUnsignedInt();
 
-            result.add(new ElfVersionNeededAuxiliary<NATIVE_WORD>(
-                    hash,
-                    flags,
-                    other,
+            result.add(new ElfVersionDefinitionAuxiliary<NATIVE_WORD>(
                     nameIndex,
                     name,
                     nextOffset));

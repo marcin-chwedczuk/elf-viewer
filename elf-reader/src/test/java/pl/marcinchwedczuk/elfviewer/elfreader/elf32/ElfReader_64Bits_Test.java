@@ -10,9 +10,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfSymbolVersion;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededRevision;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliaryEntry;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededEntry;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -438,12 +438,12 @@ public class ElfReader_64Bits_Test {
                 .map(ElfSection::asGnuVersionRequirementsSection)
                 .get();
 
-        List<ElfVersionNeededEntry<Long>> versions = gnuVersion.requirements();
+        List<ElfVersionNeeded<Long>> versions = gnuVersion.requirements();
         assertThat(versions).hasSize(1);
 
-        ElfVersionNeededEntry<Long> neededEntry = versions.get(0);
+        ElfVersionNeeded<Long> neededEntry = versions.get(0);
         assertThat(neededEntry.version())
-                .isEqualTo(ElfVersionNeeded.CURRENT);
+                .isEqualTo(ElfVersionNeededRevision.CURRENT);
         assertThat((int)neededEntry.numberOfAuxiliaryEntries())
                 .isEqualTo(1);
         assertThat(neededEntry.fileName())
@@ -453,10 +453,10 @@ public class ElfReader_64Bits_Test {
         assertThat(neededEntry.offsetNextEntry())
                 .isEqualTo(0);
 
-        List<ElfVersionNeededAuxiliaryEntry<Long>> auxiliaryEntries = neededEntry.auxiliaryEntries();
+        List<ElfVersionNeededAuxiliary<Long>> auxiliaryEntries = neededEntry.auxiliaryEntries();
         assertThat(auxiliaryEntries).hasSize(1);
 
-        ElfVersionNeededAuxiliaryEntry<Long> auxiliaryEntry = auxiliaryEntries.get(0);
+        ElfVersionNeededAuxiliary<Long> auxiliaryEntry = auxiliaryEntries.get(0);
         assertThat(auxiliaryEntry.hash())
                 .isEqualTo(ElfHashTable.elfHash("GLIBC_2.2.5"));
         assertThat((int)auxiliaryEntry.flags())

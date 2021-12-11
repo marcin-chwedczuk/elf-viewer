@@ -1,51 +1,89 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
-import pl.marcinchwedczuk.elfviewer.elfreader.utils.ShortPartialEnum;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
+import java.util.Objects;
 
-public class ElfVersionNeeded extends ShortPartialEnum<ElfVersionNeeded> {
-    private static final Map<Short, ElfVersionNeeded> byValue = mkByValueMap();
-    private static final Map<String, ElfVersionNeeded> byName = mkByNameMap();
+public class ElfVersionNeeded<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        > {
+    @ElfApi("vn_version")
+    private final ElfVersionNeededRevision version;
+
+    @ElfApi("vn_cnt")
+    private final short numberOfAuxiliaryEntries;
+
+    @ElfApi("vn_file")
+    private final StringTableIndex fileNameIndex;
+    private final String fileName;
+
+    @ElfApi("vn_aux")
+    private final int offsetAuxiliaryEntries;
+
+    @ElfApi("vn_next")
+    private final int offsetNextEntry;
+
+    private final List<ElfVersionNeededAuxiliary<NATIVE_WORD>> auxiliaryEntries;
+
+    public ElfVersionNeeded(ElfVersionNeededRevision version,
+                            short numberOfAuxiliaryEntries,
+                            StringTableIndex fileNameIndex,
+                            String fileName,
+                            int offsetAuxiliaryEntries,
+                            int offsetNextEntry,
+                            List<ElfVersionNeededAuxiliary<NATIVE_WORD>> auxiliaryEntries) {
+        this.version = version;
+        this.numberOfAuxiliaryEntries = numberOfAuxiliaryEntries;
+        this.fileNameIndex = fileNameIndex;
+        this.fileName = Objects.requireNonNull(fileName);
+        this.offsetAuxiliaryEntries = offsetAuxiliaryEntries;
+        this.offsetNextEntry = offsetNextEntry;
+        this.auxiliaryEntries = List.copyOf(auxiliaryEntries);
+    }
 
     /**
-     * Invalid version.
+     * This member identifies the version of the structure
      */
-    @ElfApi("VER_NEED_NONE")
-    public static final ElfVersionNeeded NONE = new ElfVersionNeeded(s(0), "NONE");
+    public ElfVersionNeededRevision version() {
+        return version;
+    }
 
     /**
-     * Current version.
+     * The number of elements in the Elf32_Vernaux array.
      */
-    @ElfApi("VER_NEED_CURRENT")
-    public static final ElfVersionNeeded CURRENT = new ElfVersionNeeded(s(1), "CURRENT");
-
-    private ElfVersionNeeded(short value) {
-        super(value);
+    public short numberOfAuxiliaryEntries() {
+        return numberOfAuxiliaryEntries;
     }
 
-    private ElfVersionNeeded(short value, String name) {
-        super(value, name, byValue, byName);
+    /**
+     * The string table offset to a null-terminated string, providing the file name of a version dependency.
+     * This name matches one of the .dynamic dependencies found in the file.
+     */
+    public StringTableIndex fileNameIndex() {
+        return fileNameIndex;
+    }
+    public String fileName() { return fileName; }
+
+    /**
+     * The byte offset, from the start of this Elf32_Verneed entry, to the Elf32_Vernaux array of
+     * version definitions that are required from the associated file dependency.
+     * At least one version dependency must exist. Additional version dependencies can
+     * be present, the number being indicated by the vn_cnt value.
+     */
+    public int offsetAuxiliaryEntries() {
+        return offsetAuxiliaryEntries;
     }
 
-    public static ElfVersionNeeded fromValue(short value) {
-        return ShortPartialEnum.fromValueOrCreate(value, byValue, ElfVersionNeeded::new);
+    /**
+     * The byte offset, from the start of this Elf32_Verneed entry, to the next Elf32_Verneed entry.
+     */
+    public int offsetNextEntry() {
+        return offsetNextEntry;
     }
 
-    public static ElfVersionNeeded fromName(String name) {
-        return ShortPartialEnum.fromName(name, byName);
-    }
-
-    public static Collection<ElfVersionNeeded> knownValues() {
-        return ShortPartialEnum.knownValues(byValue);
-    }
-
-    private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
-    @Override
-    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
-        return name2apiNameMappingContainer;
+    public List<ElfVersionNeededAuxiliary<NATIVE_WORD>> auxiliaryEntries() {
+        return auxiliaryEntries;
     }
 }

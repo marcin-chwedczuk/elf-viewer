@@ -7,7 +7,7 @@ import static java.util.Objects.requireNonNull;
 
 // TODO: @ElfApi32 @ElfApi64
 @ElfApi("Elf32_Vernaux")
-public class ElfVersionNeededAuxiliaryEntry<
+public class ElfVersionNeededAuxiliary<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     @ElfApi("vna_hash")
@@ -26,12 +26,12 @@ public class ElfVersionNeededAuxiliaryEntry<
     @ElfApi("vna_next")
     private final int offsetNext;
 
-    public ElfVersionNeededAuxiliaryEntry(int hash,
-                                          short flags,
-                                          ElfSymbolVersion other,
-                                          StringTableIndex nameIndex,
-                                          String name,
-                                          int offsetNext) {
+    public ElfVersionNeededAuxiliary(int hash,
+                                     short flags,
+                                     ElfSymbolVersion other,
+                                     StringTableIndex nameIndex,
+                                     String name,
+                                     int offsetNext) {
         this.hash = hash;
         this.flags = flags;
         this.other = other;

@@ -3,8 +3,8 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionRequirementsSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliaryEntry;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededEntry;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ElfGnuVersionRequirementsSectionRenderer<NATIVE_WORD extends Number
                 .collect(toList());
     }
 
-    private Stream<String[]> generateRows(ElfVersionNeededEntry<NATIVE_WORD> entry) {
+    private Stream<String[]> generateRows(ElfVersionNeeded<NATIVE_WORD> entry) {
         List<String[]> rows = new ArrayList<>();
 
         // Entry row
@@ -59,7 +59,7 @@ public class ElfGnuVersionRequirementsSectionRenderer<NATIVE_WORD extends Number
         });
 
         // Aux entries
-        for (ElfVersionNeededAuxiliaryEntry<NATIVE_WORD> auxEntry : entry.auxiliaryEntries()) {
+        for (ElfVersionNeededAuxiliary<NATIVE_WORD> auxEntry : entry.auxiliaryEntries()) {
             rows.add(new String[] {
                     " -> AUXILIARY",
                     hex(auxEntry.hash()),
