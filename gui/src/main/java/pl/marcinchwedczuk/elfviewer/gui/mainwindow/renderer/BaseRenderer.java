@@ -45,6 +45,10 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         column.setResizable(true);
     }
 
+    protected String titleDouble(String upperTitle, String lowerTitle) {
+        return String.format("%s\n---\n%s", upperTitle, lowerTitle);
+    }
+
     protected TableColumn<R, String> mkColumn(String title,
                                               Function<? super R, Object> mapper,
                                               ColumnAttributes... attributes) {
@@ -77,6 +81,10 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         }
 
         return column;
+    }
+
+    protected static Function<String[], Object> indexAccessor(final int index) {
+        return (String[] arr) -> arr[index];
     }
 
     protected static String hex(byte b) {
