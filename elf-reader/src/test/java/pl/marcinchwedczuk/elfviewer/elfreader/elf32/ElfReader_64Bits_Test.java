@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
@@ -11,6 +10,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfSymbolVersion;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliaryEntry;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededEntry;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
@@ -426,5 +428,44 @@ public class ElfReader_64Bits_Test {
                         ElfSymbolVersion.LOCAL,
                         ElfSymbolVersion.fromValue((short)2)
                 ));
+    }
+
+    @Test
+    void elf64_read_symbol_requirements() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+
+        ElfGnuVersionRequirementsSection<Long> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION_R)
+                .map(ElfSection::asGnuVersionRequirementsSection)
+                .get();
+
+        List<ElfVersionNeededEntry<Long>> versions = gnuVersion.requirements();
+        assertThat(versions).hasSize(1);
+
+        ElfVersionNeededEntry<Long> neededEntry = versions.get(0);
+        assertThat(neededEntry.version())
+                .isEqualTo(ElfVersionNeeded.CURRENT);
+        assertThat((int)neededEntry.numberOfAuxiliaryEntries())
+                .isEqualTo(1);
+        assertThat(neededEntry.fileName())
+                .isEqualTo("libc.so.6");
+        assertThat(neededEntry.offsetAuxiliaryEntries())
+                .isEqualTo(16);
+        assertThat(neededEntry.offsetNextEntry())
+                .isEqualTo(0);
+
+        List<ElfVersionNeededAuxiliaryEntry<Long>> auxiliaryEntries = neededEntry.auxiliaryEntries();
+        assertThat(auxiliaryEntries).hasSize(1);
+
+        ElfVersionNeededAuxiliaryEntry<Long> auxiliaryEntry = auxiliaryEntries.get(0);
+        assertThat(auxiliaryEntry.hash())
+                .isEqualTo(ElfHashTable.elfHash("GLIBC_2.2.5"));
+        assertThat((int)auxiliaryEntry.flags())
+                .isEqualTo(0);
+        assertThat(auxiliaryEntry.other())
+                .isEqualTo(ElfSymbolVersion.fromValue((short)2));
+        assertThat(auxiliaryEntry.name())
+                .isEqualTo("GLIBC_2.2.5");
+        assertThat(auxiliaryEntry.offsetNext())
+                .isEqualTo(0);
     }
 }

@@ -59,6 +59,8 @@ public class ElfSectionFactory<
                 return new ElfGnuHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(GNU_VERSYM)) {
                 return new ElfGnuVersionSection<>(nativeWord, structuredFileFactory, elfFile, header);
+            } else if (header.type().is(GNU_VERNEED)) {
+                return new ElfGnuVersionRequirementsSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
             return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header);

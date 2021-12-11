@@ -88,7 +88,15 @@ public class ElfSection<
         return (ElfSymbolTableSection<NATIVE_WORD>) this;
     }
 
+    public ElfStringTableSection<NATIVE_WORD> asStringTableSection() {
+        return (ElfStringTableSection<NATIVE_WORD>) this;
+    }
+
     public ElfGnuVersionSection<NATIVE_WORD> asGnuVersionSection() {
         return (ElfGnuVersionSection<NATIVE_WORD>) this;
+    }
+
+    public ElfGnuVersionRequirementsSection<NATIVE_WORD> asGnuVersionRequirementsSection() {
+        return (ElfGnuVersionRequirementsSection<NATIVE_WORD>) this;
     }
 }
