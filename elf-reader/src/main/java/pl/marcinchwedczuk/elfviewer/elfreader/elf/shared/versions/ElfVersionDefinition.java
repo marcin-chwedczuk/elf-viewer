@@ -14,7 +14,7 @@ public class ElfVersionDefinition<
     private final short flags;
 
     @ElfApi("vd_ndx")
-    private final short versionIndex;
+    private final ElfSymbolVersion versionIndex;
 
     @ElfApi("vd_cnt")
     private final short numberOfAuxiliaryEntries;
@@ -32,7 +32,7 @@ public class ElfVersionDefinition<
 
     public ElfVersionDefinition(ElfVersionDefinitionRevision version,
                                 short flags,
-                                short versionIndex,
+                                ElfSymbolVersion versionIndex,
                                 short numberOfAuxiliaryEntries,
                                 int nameHash,
                                 int offsetAuxiliary,
@@ -65,7 +65,7 @@ public class ElfVersionDefinition<
     /**
      * Version index numeric value referencing the SHT_GNU_versym section.
      */
-    public short versionIndex() {
+    public ElfSymbolVersion versionIndex() {
         return versionIndex;
     }
 

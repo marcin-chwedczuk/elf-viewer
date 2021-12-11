@@ -39,6 +39,8 @@ public interface ElfVisitor<
     void exit(ElfGnuVersionSection<NATIVE_WORD> section);
     void enter(ElfGnuVersionRequirementsSection<NATIVE_WORD> section);
     void exit(ElfGnuVersionRequirementsSection<NATIVE_WORD> section);
+    void enter(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section);
+    void exit(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section);
     void exitSections();
 
     void enterSegments();

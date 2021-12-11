@@ -157,6 +157,16 @@ public class BaseElfVisitor<
     }
 
     @Override
+    public void enter(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
+    public void exit(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
     public void exitSections() {
 
     }

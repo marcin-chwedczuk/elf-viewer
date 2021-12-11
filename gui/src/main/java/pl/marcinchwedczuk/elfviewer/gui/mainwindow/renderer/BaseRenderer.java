@@ -84,7 +84,7 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
     }
 
     protected static Function<String[], Object> indexAccessor(final int index) {
-        return (String[] arr) -> arr[index];
+        return (String[] arr) -> index < arr.length ? arr[index] : "";
     }
 
     protected static String hex(byte b) {

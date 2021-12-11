@@ -47,7 +47,7 @@ public class ElfGnuVersionDefinitionsSection<
 
             ElfVersionDefinitionRevision version = ElfVersionDefinitionRevision.fromValue(sf.readUnsignedShort());
             short flags = sf.readUnsignedShort();
-            short versionIndex = sf.readUnsignedShort();
+            ElfSymbolVersion versionIndex = ElfSymbolVersion.fromValue(sf.readUnsignedShort());
             short numberAE = sf.readUnsignedShort();
             int nameHash = sf.readUnsignedInt();
             int offsetAux = sf.readUnsignedInt();

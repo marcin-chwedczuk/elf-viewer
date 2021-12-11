@@ -486,8 +486,8 @@ public class ElfReader_64Bits_Test {
                 .isEqualTo(ElfVersionDefinitionRevision.CURRENT);
         assertThat((int)def3.flags())
                 .isEqualTo(0);
-        assertThat((int)def3.versionIndex())
-                .isEqualTo(4);
+        assertThat(def3.versionIndex())
+                .isEqualTo(ElfSymbolVersion.fromValue((short)4));
         assertThat((int)def3.numberOfAuxiliaryEntries())
                 .isEqualTo(2);
 

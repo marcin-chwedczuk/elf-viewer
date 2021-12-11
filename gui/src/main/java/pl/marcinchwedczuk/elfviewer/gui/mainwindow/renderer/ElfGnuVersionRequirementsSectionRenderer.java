@@ -55,7 +55,6 @@ public class ElfGnuVersionRequirementsSectionRenderer<NATIVE_WORD extends Number
                 entry.fileName(),
                 dec(entry.offsetAuxiliaryEntries()),
                 dec(entry.offsetNextEntry()),
-                ""
         });
 
         // Aux entries

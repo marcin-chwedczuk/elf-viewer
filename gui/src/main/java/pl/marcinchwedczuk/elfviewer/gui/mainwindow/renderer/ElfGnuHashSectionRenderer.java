@@ -93,7 +93,6 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
             if (!added) break;
 
             result.add(new GnuHashTableEntryDto(bloomCol, bucketCol, hashCol, symbolCol));
-            bloomIndex++;
         }
 
         return result;
