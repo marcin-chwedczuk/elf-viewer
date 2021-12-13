@@ -5,6 +5,7 @@ import javafx.scene.control.TreeItem;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
@@ -288,11 +289,24 @@ public class ElfExplorerTreeViewBuilder {
             addChild(new TreeItem<>(new DisplayAction(
                     "Symbol Versions (Defined)",
                     tv -> new ElfGnuVersionDefinitionsSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
-
         }
 
         @Override
         public void exit(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section) {
+            genericSectionExit();
+        }
+
+        @Override
+        public void enter(ElfHashSection<NATIVE_WORD> section) {
+            genericSectionEnter(section);
+            addChild(new TreeItem<>(new DisplayAction(
+                    "Hash Table",
+                    tv -> new ElfHashSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
+
+        }
+
+        @Override
+        public void exit(ElfHashSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 

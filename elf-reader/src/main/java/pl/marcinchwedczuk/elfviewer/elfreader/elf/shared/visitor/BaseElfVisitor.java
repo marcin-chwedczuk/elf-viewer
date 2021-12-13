@@ -167,6 +167,16 @@ public class BaseElfVisitor<
     }
 
     @Override
+    public void enter(ElfHashSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
+    public void exit(ElfHashSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
     public void exitSections() {
 
     }

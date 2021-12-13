@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
@@ -58,5 +59,11 @@ public class ElfHashSection<
                 buckets,
                 chains,
                 symbolTable);
+    }
+
+    @Override
+    public void accept(ElfVisitor<NATIVE_WORD> visitor) {
+        visitor.enter(this);
+        visitor.exit(this);
     }
 }

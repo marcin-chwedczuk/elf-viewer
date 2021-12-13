@@ -28,6 +28,26 @@ public class ElfHashTable<
         this.associatedSymbolTable = associatedSymbolTable;
     }
 
+    public int nbucket() {
+        return nbucket;
+    }
+
+    public int nchain() {
+        return nchain;
+    }
+
+    public SymbolTableIndex[] bucket() {
+        return bucket;
+    }
+
+    public SymbolTableIndex[] chain() {
+        return chain;
+    }
+
+    public ElfSymbolTable<NATIVE_WORD> associatedSymbolTable() {
+        return associatedSymbolTable;
+    }
+
     public Optional<ElfSymbol<NATIVE_WORD>> findSymbol(String symbolName) {
         int hash = elfHash(symbolName);
         int bucketNo = Math.toIntExact(Long.remainderUnsigned(hash, nbucket));
