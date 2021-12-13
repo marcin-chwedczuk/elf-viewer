@@ -63,6 +63,8 @@ public class ElfSectionFactory<
                 return new ElfGnuVersionRequirementsSection<>(nativeWord, structuredFileFactory, elfFile, header);
             } else if (header.type().is(GNU_VERDEF)) {
                 return new ElfGnuVersionDefinitionsSection<>(nativeWord, structuredFileFactory, elfFile, header);
+            } else if (header.type().is(HASH)) {
+                return new ElfHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
             return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header);

@@ -96,6 +96,10 @@ public class ElfSection<
         return (ElfGnuVersionSection<NATIVE_WORD>) this;
     }
 
+    public ElfHashSection<NATIVE_WORD> asHashSection() {
+        return (ElfHashSection<NATIVE_WORD>) this;
+    }
+
     public ElfGnuVersionRequirementsSection<NATIVE_WORD> asGnuVersionRequirementsSection() {
         return (ElfGnuVersionRequirementsSection<NATIVE_WORD>) this;
     }

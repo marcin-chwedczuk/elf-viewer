@@ -32,6 +32,7 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXE
 public class ElfReader_64Bits_Test {
     private final AbstractFile helloWorld64;
     private final AbstractFile libc64;
+    private final AbstractFile ld64;
 
     public ElfReader_64Bits_Test() throws IOException {
         helloWorld64 = new InMemoryFile(this.getClass()
@@ -40,6 +41,10 @@ public class ElfReader_64Bits_Test {
 
         libc64 = new InMemoryFile(this.getClass()
                 .getResourceAsStream("libc-2.17.so")
+                .readAllBytes());
+
+        ld64 = new InMemoryFile(this.getClass()
+                .getResourceAsStream("ld-2.17.so")
                 .readAllBytes());
     }
 
@@ -514,5 +519,34 @@ public class ElfReader_64Bits_Test {
                 .isEqualTo("GLIBC_2.2.6");
         assertThat(parentEntry.offsetNext())
                 .isEqualTo(0);
+    }
+
+    @Test
+    void elf64_hash_table() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(ld64);
+
+        ElfHashSection<Long> hashSection = elfFile
+                .sectionOfType(ElfSectionType.HASH)
+                .get()
+                .asHashSection();
+
+        ElfHashTable<Long> hashTable = hashSection.hashTable();
+
+        assertThat(hashTable.findSymbol("_dl_argv"))
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value.name())
+                            .isEqualTo("_dl_argv");
+                });
+
+        assertThat(hashTable.findSymbol("free"))
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value.name())
+                            .isEqualTo("free");
+                });
+
+        assertThat(hashTable.findSymbol("not-existing-function"))
+                .isEmpty();
     }
 }
