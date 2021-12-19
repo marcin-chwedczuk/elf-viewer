@@ -549,4 +549,17 @@ public class ElfReader_64Bits_Test {
         assertThat(hashTable.findSymbol("not-existing-function"))
                 .isEmpty();
     }
+
+    @Test
+    void elf64_gnu_warning() {
+        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(libc64);
+
+        ElfGnuWarningSection<Long> warningSection = elfFile
+                .sectionWithName(".gnu.warning.gets")
+                .get()
+                .asGnuWarningSection();
+
+        assertThat(warningSection.warning())
+                .isEqualTo("the `gets' function is dangerous and should not be used.");
+    }
 }

@@ -107,4 +107,8 @@ public class ElfSection<
     public ElfGnuVersionDefinitionsSection<NATIVE_WORD> asGnuVersionDefinitionsSection() {
         return (ElfGnuVersionDefinitionsSection<NATIVE_WORD>) this;
     }
+
+    public ElfGnuWarningSection<NATIVE_WORD> asGnuWarningSection() {
+        return (ElfGnuWarningSection<NATIVE_WORD>) this;
+    }
 }

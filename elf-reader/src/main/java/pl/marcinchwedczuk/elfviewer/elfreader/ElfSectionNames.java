@@ -258,6 +258,8 @@ public class ElfSectionNames {
      */
     public static final String TEXT = ".text";
 
+    public static final String GNU_WARNING_PREFIX = ".gnu.warning";
+
     public static final String GNU_HASH = ".gnu.hash";
 
     /**

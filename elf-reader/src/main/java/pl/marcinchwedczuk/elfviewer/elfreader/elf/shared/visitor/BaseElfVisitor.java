@@ -177,6 +177,16 @@ public class BaseElfVisitor<
     }
 
     @Override
+    public void enter(ElfGnuWarningSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
+    public void exit(ElfGnuWarningSection<NATIVE_WORD> section) {
+
+    }
+
+    @Override
     public void exitSections() {
 
     }

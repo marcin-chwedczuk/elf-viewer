@@ -302,11 +302,24 @@ public class ElfExplorerTreeViewBuilder {
             addChild(new TreeItem<>(new DisplayAction(
                     "Hash Table",
                     tv -> new ElfHashSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
-
         }
 
         @Override
         public void exit(ElfHashSection<NATIVE_WORD> section) {
+            genericSectionExit();
+        }
+
+        @Override
+        public void enter(ElfGnuWarningSection<NATIVE_WORD> section) {
+            genericSectionEnter(section);
+            addChild(new TreeItem<>(new DisplayAction(
+                    "Warning",
+                    tv -> new ElfGnuWarningSectionRenderer<>(nativeWord, section).renderDataOn(tv))));
+
+        }
+
+        @Override
+        public void exit(ElfGnuWarningSection<NATIVE_WORD> section) {
             genericSectionExit();
         }
 

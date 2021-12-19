@@ -5,6 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
@@ -40,31 +41,36 @@ public class ElfSectionFactory<
     private ElfSection<NATIVE_WORD> createSection(ElfFile<NATIVE_WORD> elfFile,
                                                   ElfSectionHeader<NATIVE_WORD> header) {
         try {
-            if (header.type().is(PROGBITS)
+            ElfSectionType type = header.type();
+
+            if (type.is(PROGBITS)
                     && header.hasName(ElfSectionNames.INTERP)) {
                 return new ElfInterpreterSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(STRING_TABLE)) {
+            } else if (type.is(STRING_TABLE)) {
                 return new ElfStringTableSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
+            } else if (type.isOneOf(SYMBOL_TABLE, DYNAMIC_SYMBOLS)) {
                 return new ElfSymbolTableSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(DYNAMIC)) {
+            } else if (type.is(DYNAMIC)) {
                 return new ElfDynamicSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(REL)) {
+            } else if (type.is(REL)) {
                 return new ElfRelocationSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(RELA)) {
+            } else if (type.is(RELA)) {
                 return new ElfRelocationAddendSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(NOTE)) {
+            } else if (type.is(NOTE)) {
                 return new ElfNotesSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(GNU_HASH)) {
+            } else if (type.is(GNU_HASH)) {
                 return new ElfGnuHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(GNU_VERSYM)) {
+            } else if (type.is(GNU_VERSYM)) {
                 return new ElfGnuVersionSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(GNU_VERNEED)) {
+            } else if (type.is(GNU_VERNEED)) {
                 return new ElfGnuVersionRequirementsSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(GNU_VERDEF)) {
+            } else if (type.is(GNU_VERDEF)) {
                 return new ElfGnuVersionDefinitionsSection<>(nativeWord, structuredFileFactory, elfFile, header);
-            } else if (header.type().is(HASH)) {
+            } else if (type.is(HASH)) {
                 return new ElfHashSection<>(nativeWord, structuredFileFactory, elfFile, header);
+            } else if (type.is(PROGBITS)
+                    && header.hasNameStartingWith(ElfSectionNames.GNU_WARNING_PREFIX)) {
+                return new ElfGnuWarningSection<>(nativeWord, structuredFileFactory, elfFile, header);
             }
 
             return new ElfSection<>(nativeWord, structuredFileFactory, elfFile, header);

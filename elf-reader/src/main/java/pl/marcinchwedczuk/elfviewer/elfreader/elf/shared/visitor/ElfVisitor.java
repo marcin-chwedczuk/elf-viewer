@@ -43,6 +43,8 @@ public interface ElfVisitor<
     void exit(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section);
     void enter(ElfHashSection<NATIVE_WORD> section);
     void exit(ElfHashSection<NATIVE_WORD> section);
+    void enter(ElfGnuWarningSection<NATIVE_WORD> section);
+    void exit(ElfGnuWarningSection<NATIVE_WORD> section);
     void exitSections();
 
     void enterSegments();
