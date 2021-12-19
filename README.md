@@ -2,12 +2,14 @@
 
 ![Main Window](./docs/screen1.png)
 
-!!! PROJECT UNDER CONSTRUCTION !!!
+!!! PROJECT IS USABLE, BUT STILL UNDER CONSTRUCTION !!!
 
 Current status:
-* Supporting Intel 32-bit ELFs - DONE
-* 64-bit ELFs: Partially
-* TODO: Intel 64, ARM & ARM64
+* Covers about 80% of all ELF structures. What is left are mostly GNU specific extensions.
+* GUI still needs a bit of polishing. For example currently there is no search capability.
+
+Tested od Intel 32 and 64 bit ELFs.
+TODO: Test on ARM 32 and 64 bit ELFs.
 
 Right now I am playing with the API and I try to figure out the most
 intuitive and Javaish API for dealing with ELFs.
