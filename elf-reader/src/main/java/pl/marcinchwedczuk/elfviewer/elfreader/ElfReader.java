@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.IntegerNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
@@ -205,8 +204,8 @@ public class ElfReader {
     }
 
     private static ElfProgramHeader<Long> readElf64ProgramHeader(StructuredFile64 headerFile) {
-        Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
-        Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
+        ElfSegmentType type = ElfSegmentType.fromValue(headerFile.readUnsignedInt());
+        ElfSegmentFlags flags = new ElfSegmentFlags(headerFile.readUnsignedInt());
         Elf64Offset fileOffset = headerFile.readOffset();
         Elf64Address virtualAddress = headerFile.readAddress();
         Elf64Address physicalAddress = headerFile.readAddress();
@@ -276,13 +275,13 @@ public class ElfReader {
     }
 
     private static ElfProgramHeader<Integer> readElf32ProgramHeader(StructuredFile32 headerFile) {
-        Elf32SegmentType type = Elf32SegmentType.fromValue(headerFile.readUnsignedInt());
+        ElfSegmentType type = ElfSegmentType.fromValue(headerFile.readUnsignedInt());
         Elf32Offset fileOffset = headerFile.readOffset();
         Elf32Address virtualAddress = headerFile.readAddress();
         Elf32Address physicalAddress = headerFile.readAddress();
         int fileSize = headerFile.readUnsignedInt();
         int memorySize = headerFile.readUnsignedInt();
-        Elf32SegmentFlags flags = new Elf32SegmentFlags(headerFile.readUnsignedInt());
+        ElfSegmentFlags flags = new ElfSegmentFlags(headerFile.readUnsignedInt());
         int alignment = headerFile.readUnsignedInt();
 
         return new ElfProgramHeader<>(

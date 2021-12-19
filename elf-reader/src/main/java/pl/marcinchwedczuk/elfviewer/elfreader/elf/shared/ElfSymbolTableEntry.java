@@ -1,7 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
-
 public class ElfSymbolTableEntry<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {

@@ -9,7 +9,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHead
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Memoized;
@@ -149,7 +148,7 @@ public class ElfFile<
         return maybeSymbolTableSection;
     }
 
-    public List<ElfProgramHeader<NATIVE_WORD>> getProgramHeadersOfType(Elf32SegmentType segmentType) {
+    public List<ElfProgramHeader<NATIVE_WORD>> getProgramHeadersOfType(ElfSegmentType segmentType) {
         List<ElfProgramHeader<NATIVE_WORD>> programHeaders = this.programHeaders.stream()
                 .filter(ph -> ph.type().equals(segmentType))
                 .collect(toList());
@@ -182,7 +181,7 @@ public class ElfFile<
     }
 
 
-    public List<ElfSegment<NATIVE_WORD>> segmentsOfType(Elf32SegmentType type) {
+    public List<ElfSegment<NATIVE_WORD>> segmentsOfType(ElfSegmentType type) {
         return segments().stream()
                 .filter(s -> s.programHeader().type().is(type))
                 .collect(toList());

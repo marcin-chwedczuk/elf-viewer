@@ -1,8 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Objects;

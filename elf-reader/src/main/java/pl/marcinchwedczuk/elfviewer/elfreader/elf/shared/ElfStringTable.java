@@ -1,7 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableEntry;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
@@ -11,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.STRING_TABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.STRING_TABLE;
 
 /**
  * String table sections hold null-terminated character sequences,

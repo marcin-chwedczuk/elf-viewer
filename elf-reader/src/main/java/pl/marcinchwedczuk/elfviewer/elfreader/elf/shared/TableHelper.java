@@ -1,6 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
-
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import static java.util.Objects.requireNonNull;
 

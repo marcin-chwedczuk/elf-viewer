@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
@@ -8,17 +7,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfStringTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.GNU_VERSION;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERDEF;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERSYM;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.GNU_VERDEF;
 
 public class ElfGnuVersionDefinitionsSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

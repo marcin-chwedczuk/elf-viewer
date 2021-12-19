@@ -1,7 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
-
 import java.util.Optional;
 
 public class ElfHashTable<

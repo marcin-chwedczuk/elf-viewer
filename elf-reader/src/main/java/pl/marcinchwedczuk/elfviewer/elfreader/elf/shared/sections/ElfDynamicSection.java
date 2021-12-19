@@ -3,14 +3,13 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.List;
 import java.util.Optional;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC;
 
 public class ElfDynamicSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
@@ -34,10 +33,10 @@ public class ElfDynamicSection<
    }
 
     public Optional<String> getDynamicLibraryName(ElfDynamicTag<NATIVE_WORD> neededTag) {
-        Args.checkDynamicTagType(neededTag, Elf32DynamicTagType.NEEDED);
+        Args.checkDynamicTagType(neededTag, ElfDynamicTagType.NEEDED);
 
         Optional<ElfDynamicTag<NATIVE_WORD>> maybeStrTab = dynamicTags().stream()
-                .filter(t -> t.type().is(Elf32DynamicTagType.STRTAB))
+                .filter(t -> t.type().is(ElfDynamicTagType.STRTAB))
                 .findFirst();
 
         return maybeStrTab

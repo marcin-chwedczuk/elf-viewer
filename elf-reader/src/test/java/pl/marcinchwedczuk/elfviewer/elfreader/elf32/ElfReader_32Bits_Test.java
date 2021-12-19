@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.INIT;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolBinding.GLOBAL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.FUNCTION;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolVisibility.DEFAULT;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.INIT;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolBinding.GLOBAL;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.FUNCTION;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolVisibility.DEFAULT;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.ALLOCATE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.EXECUTABLE;
 
 class ElfReader_32Bits_Test {
     private final AbstractFile helloWorld32;
@@ -252,7 +252,7 @@ class ElfReader_32Bits_Test {
         ElfProgramHeader<Integer> textSegment = segments.get(2).programHeader();
 
         assertThat(textSegment.type())
-                .isEqualTo(Elf32SegmentType.LOAD);
+                .isEqualTo(ElfSegmentType.LOAD);
         assertThat(textSegment.fileOffset())
                 .isEqualTo(new ElfOffsetAny<>(0x000000));
         assertThat(textSegment.virtualAddress())
@@ -264,9 +264,9 @@ class ElfReader_32Bits_Test {
         assertThat(textSegment.memorySize())
                 .isEqualTo(0x005c8);
         assertThat(textSegment.flags())
-                .isEqualTo(new Elf32SegmentFlags(
-                        Elf32SegmentFlags.Readable,
-                        Elf32SegmentFlags.Executable));
+                .isEqualTo(new ElfSegmentFlags(
+                        ElfSegmentFlags.Readable,
+                        ElfSegmentFlags.Executable));
         assertThat(textSegment.alignment())
                 .isEqualTo(0x1000);
     }

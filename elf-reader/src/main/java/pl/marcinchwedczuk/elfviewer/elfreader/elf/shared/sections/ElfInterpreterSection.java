@@ -9,7 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
 
 public class ElfInterpreterSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

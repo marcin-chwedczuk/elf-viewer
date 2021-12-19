@@ -2,8 +2,8 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -39,7 +39,7 @@ public class Args {
             throw new IllegalArgumentException("Expected value between 0 and 0xFF but got: " + value + ".");
     }
 
-    public static void checkDynamicTagType(ElfDynamicTag<?> tag, Elf32DynamicTagType type) {
+    public static void checkDynamicTagType(ElfDynamicTag<?> tag, ElfDynamicTagType type) {
         if (tag.type().isNot(type))
             throw new IllegalArgumentException(String.format(
                     "Tag should have type %s but had type %s.", type, tag.type()));

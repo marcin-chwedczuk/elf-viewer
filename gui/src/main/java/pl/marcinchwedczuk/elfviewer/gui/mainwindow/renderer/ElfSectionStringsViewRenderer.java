@@ -7,7 +7,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import java.util.List;
 
 import static java.util.function.Function.identity;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.STRINGS;
 
 public class ElfSectionStringsViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<String, NATIVE_WORD>

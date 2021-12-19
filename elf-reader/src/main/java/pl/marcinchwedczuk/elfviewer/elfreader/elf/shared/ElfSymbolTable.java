@@ -1,10 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.TableHelper;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -15,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.SECTION;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.SYMBOL_TABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.SECTION;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC_SYMBOLS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.SYMBOL_TABLE;
 
 public class ElfSymbolTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
@@ -79,7 +75,7 @@ public class ElfSymbolTable<
         byte other = sf.readByte();
         SectionHeaderIndex symbolIndex = new SectionHeaderIndex(sf.readUnsignedShort());
 
-        String name = isSectionSymbol(nameIndex, Elf32SymbolType.fromSymbolInfo(info))
+        String name = isSectionSymbol(nameIndex, ElfSymbolType.fromSymbolInfo(info))
                 // TODO: Add boundary check, validate logic with readelf source code
                 ? elfFile.sectionHeaders().get(symbolIndex.intValue()).name()
                 : symbolNames.getStringAtIndex(nameIndex);
@@ -102,7 +98,7 @@ public class ElfSymbolTable<
         ElfAddress<NATIVE_WORD> value = sf.readAddress();
         NATIVE_WORD size = nativeWord.readNativeWordFrom(sf);
 
-        String name = isSectionSymbol(nameIndex, Elf32SymbolType.fromSymbolInfo(info))
+        String name = isSectionSymbol(nameIndex, ElfSymbolType.fromSymbolInfo(info))
                 // TODO: Add boundary check, validate logic with readelf source code
                 ? elfFile.sectionHeaders().get(symbolIndex.intValue()).name()
                 : symbolNames.getStringAtIndex(nameIndex);
@@ -129,7 +125,7 @@ public class ElfSymbolTable<
         return Optional.empty();
     }
 
-    private boolean isSectionSymbol(StringTableIndex nameIndex, Elf32SymbolType type) {
+    private boolean isSectionSymbol(StringTableIndex nameIndex, ElfSymbolType type) {
         return (nameIndex.intValue() == 0) && type.is(SECTION);
     }
 

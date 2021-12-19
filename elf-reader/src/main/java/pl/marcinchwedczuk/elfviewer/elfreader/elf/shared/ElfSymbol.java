@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 public class ElfSymbol<
@@ -83,20 +82,20 @@ public class ElfSymbol<
         return info;
     }
 
-    public Elf32SymbolBinding binding() {
-        return Elf32SymbolBinding.fromSymbolInfo(info);
+    public ElfSymbolBinding binding() {
+        return ElfSymbolBinding.fromSymbolInfo(info);
     }
 
-    public Elf32SymbolType symbolType() {
-        return Elf32SymbolType.fromSymbolInfo(info);
+    public ElfSymbolType symbolType() {
+        return ElfSymbolType.fromSymbolInfo(info);
     }
 
     public byte other() {
         return other;
     }
 
-    public Elf32SymbolVisibility visibility() {
-        return Elf32SymbolVisibility.fromSymbolOther(other);
+    public ElfSymbolVisibility visibility() {
+        return ElfSymbolVisibility.fromSymbolOther(other);
     }
 
     /**

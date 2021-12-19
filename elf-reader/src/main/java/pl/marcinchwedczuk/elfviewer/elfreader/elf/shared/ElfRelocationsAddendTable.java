@@ -1,7 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.TableHelper;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -11,8 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.RELA;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.RELA;
 
 public class ElfRelocationsAddendTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

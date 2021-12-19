@@ -15,7 +15,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.AsciiStrings;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.NOTE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.NOTE;
 
 public class ElfNotesSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

@@ -1,7 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.Optional;

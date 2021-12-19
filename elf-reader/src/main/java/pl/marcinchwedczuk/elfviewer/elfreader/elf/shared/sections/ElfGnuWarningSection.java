@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
@@ -10,8 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.GNU_WARNING_PREFIX;
-import static pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames.INTERP;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
 
 public class ElfGnuWarningSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

@@ -9,8 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.REL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.RELA;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.RELA;
 
 public class ElfRelocationAddendSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

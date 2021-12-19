@@ -5,7 +5,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfGnuHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbol;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuHashSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.GnuHashTableEntryDto;
 
 import java.util.ArrayList;

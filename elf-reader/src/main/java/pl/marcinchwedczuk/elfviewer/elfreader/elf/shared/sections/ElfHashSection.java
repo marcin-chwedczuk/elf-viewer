@@ -6,15 +6,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.SymbolTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SymbolTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.*;
 
 public class ElfHashSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

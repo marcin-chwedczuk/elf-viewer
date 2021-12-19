@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.STRINGS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.STRINGS;
 
 public class ElfSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

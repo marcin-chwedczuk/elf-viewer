@@ -1,9 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 /**
@@ -18,7 +15,7 @@ public class ElfProgramHeader<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > {
     @ElfApi("p_type")
-    private final Elf32SegmentType type;
+    private final ElfSegmentType type;
 
     @ElfApi("p_offset")
     private final ElfOffset<NATIVE_WORD> fileOffset;
@@ -36,18 +33,18 @@ public class ElfProgramHeader<
     private final NATIVE_WORD memorySize;
 
     @ElfApi("p_flags")
-    private final Elf32SegmentFlags flags;
+    private final ElfSegmentFlags flags;
 
     @ElfApi("p_align")
     private final NATIVE_WORD alignment;
 
-    public ElfProgramHeader(Elf32SegmentType type,
+    public ElfProgramHeader(ElfSegmentType type,
                             ElfOffset<NATIVE_WORD> fileOffset,
                             ElfAddress<NATIVE_WORD> virtualAddress,
                             ElfAddress<NATIVE_WORD> physicalAddress,
                             NATIVE_WORD fileSize,
                             NATIVE_WORD memorySize,
-                            Elf32SegmentFlags flags,
+                            ElfSegmentFlags flags,
                             NATIVE_WORD alignment) {
         this.type = type;
         this.fileOffset = fileOffset;
@@ -64,7 +61,7 @@ public class ElfProgramHeader<
      * segment this array element describes or how to interpret
      * the array element's information.
      */
-    public Elf32SegmentType type() {
+    public ElfSegmentType type() {
         return type;
     }
 
@@ -113,7 +110,7 @@ public class ElfProgramHeader<
      * @return This member holds a bit mask of flags relevant to the
      * segment e.g. eXecutable, or Writable.
      */
-    public Elf32SegmentFlags flags() {
+    public ElfSegmentFlags flags() {
         return flags;
     }
 

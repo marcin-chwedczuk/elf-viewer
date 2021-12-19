@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.IntPartialEnum;
@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
-    private static final Map<Integer, Elf32SegmentType> byValue = mkByValueMap();
-    private static final Map<String, Elf32SegmentType> byName = mkByNameMap();
+public class ElfSegmentType extends IntPartialEnum<ElfSegmentType> {
+    private static final Map<Integer, ElfSegmentType> byValue = mkByValueMap();
+    private static final Map<String, ElfSegmentType> byName = mkByNameMap();
 
     /**
      * The array element is unused and the other
@@ -17,7 +17,7 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * program header have ignored entries.
      */
     @ElfApi("PT_NULL")
-    public static final Elf32SegmentType NULL = new Elf32SegmentType(0, "NULL");
+    public static final ElfSegmentType NULL = new ElfSegmentType(0, "NULL");
 
     /**
      * The array element specifies a loadable segment,
@@ -33,14 +33,14 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * on the p_vaddr member.
      */
     @ElfApi("PT_LOAD")
-    public static final Elf32SegmentType LOAD = new Elf32SegmentType(1, "LOAD");
+    public static final ElfSegmentType LOAD = new ElfSegmentType(1, "LOAD");
 
     /**
      * The array element specifies dynamic linking
      * information.
      */
     @ElfApi("PT_DYNAMIC")
-    public static final Elf32SegmentType DYNAMIC = new Elf32SegmentType(2, "DYNAMIC");
+    public static final ElfSegmentType DYNAMIC = new ElfSegmentType(2, "DYNAMIC");
 
     /**
      * The array element specifies the location and
@@ -52,14 +52,14 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * must precede any loadable segment entry.
      */
     @ElfApi("PT_INTERP")
-    public static final Elf32SegmentType INTERPRETER = new Elf32SegmentType(3, "INTERPRETER");
+    public static final ElfSegmentType INTERPRETER = new ElfSegmentType(3, "INTERPRETER");
 
     /**
      * The array element specifies the location of
      * notes (ElfN_Nhdr).
      */
     @ElfApi("PT_NOTE")
-    public static final Elf32SegmentType NOTE = new Elf32SegmentType(4, "NOTE");
+    public static final ElfSegmentType NOTE = new ElfSegmentType(4, "NOTE");
 
     /**
      * This segment type is reserved but has
@@ -68,7 +68,7 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * ABI.
      */
     @ElfApi("PT_SHLIB")
-    public static final Elf32SegmentType SHLIB = new Elf32SegmentType(5, "SHLIB");
+    public static final ElfSegmentType SHLIB = new ElfSegmentType(5, "SHLIB");
 
     /**
      * The array element, if present, specifies the
@@ -82,16 +82,16 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * entry.
      */
     @ElfApi("PT_PHDR")
-    public static final Elf32SegmentType PROGRAM_HEADER = new Elf32SegmentType(6, "PROGRAM_HEADER");
+    public static final ElfSegmentType PROGRAM_HEADER = new ElfSegmentType(6, "PROGRAM_HEADER");
 
     @ElfApi("PT_TLS")
-    public static final Elf32SegmentType THREAD_LOCAL_STORAGE = new Elf32SegmentType(7, "THREAD_LOCAL_STORAGE");
+    public static final ElfSegmentType THREAD_LOCAL_STORAGE = new ElfSegmentType(7, "THREAD_LOCAL_STORAGE");
 
     @ElfApi("PT_NUM")
-    public static final Elf32SegmentType NUM_DEFINED_TYPES = new Elf32SegmentType(8, "NUM_DEFINED_TYPES");
+    public static final ElfSegmentType NUM_DEFINED_TYPES = new ElfSegmentType(8, "NUM_DEFINED_TYPES");
 
     @ElfApi("PT_GNU_EH_FRAME")
-    public static final Elf32SegmentType GNU_EH_FRAME = new Elf32SegmentType(0x6474e550, "GNU_EH_FRAME");
+    public static final ElfSegmentType GNU_EH_FRAME = new ElfSegmentType(0x6474e550, "GNU_EH_FRAME");
 
     /**
      * GNU extension which is used by the Linux kernel
@@ -99,16 +99,16 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
      * set in the p_flags member.
      */
     @ElfApi("PT_GNU_STACK")
-    public static final Elf32SegmentType GNU_STACK = new Elf32SegmentType(0x6474e551, "GNU_STACK");
+    public static final ElfSegmentType GNU_STACK = new ElfSegmentType(0x6474e551, "GNU_STACK");
 
     @ElfApi("PT_GNU_RELRO")
-    public static final Elf32SegmentType GNU_RELO = new Elf32SegmentType(0x6474e552, "GNU_RELO");
+    public static final ElfSegmentType GNU_RELO = new ElfSegmentType(0x6474e552, "GNU_RELO");
 
     @ElfApi("PT_SUNWBSS")
-    public static final Elf32SegmentType SUNW_BSS = new Elf32SegmentType(0x6ffffffa, "SUNW_BSS");
+    public static final ElfSegmentType SUNW_BSS = new ElfSegmentType(0x6ffffffa, "SUNW_BSS");
 
     @ElfApi("PT_SUNWSTACK")
-    public static final Elf32SegmentType SUNW_STACK = new Elf32SegmentType(0x6ffffffb, "SUNW_STACK");
+    public static final ElfSegmentType SUNW_STACK = new ElfSegmentType(0x6ffffffb, "SUNW_STACK");
 
     @ElfApi("PT_LOOS")
     public static final int LO_OS_SPECIFIC = 0x60000000;
@@ -125,23 +125,23 @@ public class Elf32SegmentType extends IntPartialEnum<Elf32SegmentType> {
     @ElfApi("PT_HISUNW")
     public static final int HI_SUNW = 0x6fffffff;
 
-    private Elf32SegmentType(int value) {
+    private ElfSegmentType(int value) {
         super(value);
     }
 
-    private Elf32SegmentType(int value, String name) {
+    private ElfSegmentType(int value, String name) {
         super(value, name, byValue, byName);
     }
 
-    public static Elf32SegmentType fromValue(int value) {
-        return IntPartialEnum.fromValueOrCreate(value, byValue, Elf32SegmentType::new);
+    public static ElfSegmentType fromValue(int value) {
+        return IntPartialEnum.fromValueOrCreate(value, byValue, ElfSegmentType::new);
     }
 
-    public static Elf32SegmentType fromName(String name) {
+    public static ElfSegmentType fromName(String name) {
         return IntPartialEnum.fromName(name, byName);
     }
 
-    public static Collection<Elf32SegmentType> knownValues() {
+    public static Collection<ElfSegmentType> knownValues() {
         return IntPartialEnum.knownValues(byValue);
     }
 

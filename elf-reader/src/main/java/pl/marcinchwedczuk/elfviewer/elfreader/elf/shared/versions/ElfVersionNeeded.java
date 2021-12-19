@@ -1,6 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.util.List;

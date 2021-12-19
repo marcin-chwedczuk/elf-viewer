@@ -1,7 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
@@ -10,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NULL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NULL;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC;
 
 public class ElfDynamicTags<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
@@ -48,8 +47,8 @@ public class ElfDynamicTags<
         for (int i = 0; i < tableHelper.tableSize(); i++) {
             NATIVE_WORD tagValue = nativeWord.readNativeWordFrom(sf);
             // TODO: TagType is 32bit, value is 64bit -> Change TagType to 64 bit
-            Elf32DynamicTagType tag =
-                    Elf32DynamicTagType.fromValue(Math.toIntExact(tagValue.longValue()));
+            ElfDynamicTagType tag =
+                    ElfDynamicTagType.fromValue(Math.toIntExact(tagValue.longValue()));
 
             // NULL tag marks end of the dynamic section
             if (tag.is(NULL)) break;

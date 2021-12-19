@@ -4,15 +4,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.*;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.*;
 
 public class ElfSectionFactory<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

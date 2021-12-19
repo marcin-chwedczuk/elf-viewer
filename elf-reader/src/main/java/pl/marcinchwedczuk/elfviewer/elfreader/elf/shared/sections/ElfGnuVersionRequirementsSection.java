@@ -7,14 +7,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeed
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededRevision;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.StringTableIndex;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_VERNEED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.GNU_VERNEED;
 
 /**
  * This section describes the version information used by

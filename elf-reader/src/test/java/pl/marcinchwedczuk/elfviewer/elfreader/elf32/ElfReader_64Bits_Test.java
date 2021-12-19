@@ -21,14 +21,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.INIT;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolBinding.GLOBAL;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolType.FUNCTION;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32SymbolVisibility.DEFAULT;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBITS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.INIT;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolBinding.GLOBAL;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.FUNCTION;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolVisibility.DEFAULT;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.ALLOCATE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.EXECUTABLE;
 
 public class ElfReader_64Bits_Test {
     private final AbstractFile helloWorld64;
@@ -262,7 +262,7 @@ public class ElfReader_64Bits_Test {
         ElfProgramHeader<Long> textSegment = segments.get(3).programHeader();
 
         assertThat(textSegment.type())
-                .isEqualTo(Elf32SegmentType.LOAD);
+                .isEqualTo(ElfSegmentType.LOAD);
 
         assertThat(textSegment.fileOffset())
                 .isEqualTo(new ElfOffsetAny<>(0x0000000000001000L));
@@ -277,9 +277,9 @@ public class ElfReader_64Bits_Test {
                 .isEqualTo(0x00000000000001dd);
 
         assertThat(textSegment.flags())
-                .isEqualTo(new Elf32SegmentFlags(
-                        Elf32SegmentFlags.Readable,
-                        Elf32SegmentFlags.Executable));
+                .isEqualTo(new ElfSegmentFlags(
+                        ElfSegmentFlags.Readable,
+                        ElfSegmentFlags.Executable));
 
         assertThat(textSegment.alignment())
                 .isEqualTo(0x1000);

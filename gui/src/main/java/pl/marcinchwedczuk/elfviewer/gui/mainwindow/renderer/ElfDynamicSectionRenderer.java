@@ -9,8 +9,8 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.DynamicTagDto;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.NEEDED;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType.VERNEEDNUM;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.VERNEEDNUM;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>

@@ -1,8 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32DynamicTagType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
@@ -15,19 +12,19 @@ public class ElfDynamicTag<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >  {
     @ElfApi("d_tag")
-    private final Elf32DynamicTagType type;
+    private final ElfDynamicTagType type;
 
     @ElfApi("d_val")
     // @ElfApi("d_ptr")
     private final NATIVE_WORD value;
 
-    public ElfDynamicTag(Elf32DynamicTagType type,
+    public ElfDynamicTag(ElfDynamicTagType type,
                          NATIVE_WORD value) {
         this.type = requireNonNull(type);
         this.value = value;
     }
 
-    public Elf32DynamicTagType type() { return type; }
+    public ElfDynamicTagType type() { return type; }
     public NATIVE_WORD value() { return value; }
     public ElfAddress<NATIVE_WORD> address() { return new ElfAddressAny<NATIVE_WORD>((NATIVE_WORD) value); }
 

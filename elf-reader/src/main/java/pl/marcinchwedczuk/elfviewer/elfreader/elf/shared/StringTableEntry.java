@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 public class StringTableEntry {
     public final StringTableIndex index;

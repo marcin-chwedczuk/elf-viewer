@@ -8,8 +8,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.SYMBOL_TABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC_SYMBOLS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.SYMBOL_TABLE;
 
 public class ElfSymbolTableSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

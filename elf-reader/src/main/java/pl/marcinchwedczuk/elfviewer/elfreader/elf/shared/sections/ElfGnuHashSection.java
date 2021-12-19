@@ -9,8 +9,8 @@ import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
 
 import java.util.List;
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.DYNAMIC_SYMBOLS;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.GNU_HASH;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC_SYMBOLS;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.GNU_HASH;
 
 public class ElfGnuHashSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
