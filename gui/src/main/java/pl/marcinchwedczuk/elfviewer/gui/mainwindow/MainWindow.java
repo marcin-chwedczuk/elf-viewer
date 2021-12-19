@@ -11,8 +11,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 
 import java.io.File;

@@ -5,7 +5,6 @@ import javafx.scene.control.TreeItem;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHashTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
@@ -40,12 +39,17 @@ public class ElfExplorerTreeViewBuilder {
                 tv -> clearTable()));
         parents.add(rootItem);
 
-        elfFile.accept(new BuildMenuVisitor(elfFile.nativeWordMetadata()));
+        buildTreeMenu(elfFile);
 
         if (parents.size() != 1)
             throw new AssertionError();
 
         return parents.elementAt(0);
+    }
+
+    private <T extends Number & Comparable<T>>
+    void buildTreeMenu(ElfFile<T> elfFile) {
+        elfFile.accept(new BuildMenuVisitor<>(elfFile.nativeWordMetadata()));
     }
 
     private void addChild(TreeItem<DisplayAction> child) {

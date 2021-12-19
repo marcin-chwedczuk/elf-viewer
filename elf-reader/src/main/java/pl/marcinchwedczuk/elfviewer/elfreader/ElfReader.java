@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
@@ -9,6 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
@@ -21,6 +22,14 @@ import java.util.Optional;
 
 public class ElfReader {
     private ElfReader() { }
+
+    public static ElfFile<Integer> readElf32(AbstractFile file) {
+        return readElf(file).asElf32();
+    }
+
+    public static ElfFile<Long> readElf64(AbstractFile file) {
+        return readElf(file).asElf64();
+    }
 
     public static ElfFile<?> readElf(AbstractFile file) {
         byte[] identificationBytes = file.read(0, ElfIdentificationIndexes.EI_NIDENT);

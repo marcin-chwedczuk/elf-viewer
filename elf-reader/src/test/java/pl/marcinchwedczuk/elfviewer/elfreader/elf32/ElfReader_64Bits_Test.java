@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
 import org.junit.jupiter.api.Test;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
@@ -50,7 +51,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     public void elf64_header() {
-        ElfHeader<Long> header = ((ElfFile<Long>) ElfReader.readElf(helloWorld64)).header();
+        ElfHeader<Long> header = ElfReader.readElf64(helloWorld64).header();
         ElfIdentification identification = header.identification();
 
         assertThat(identification.magicString())
@@ -128,7 +129,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     public void elf64_section_header() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
         Optional<ElfSection<Long>> maybeTextSection = elfFile.sectionWithName(ElfSectionNames.TEXT);
 
         assertThat(maybeTextSection)
@@ -169,7 +170,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_symbol_table() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeSymtabSection =
                 elfFile.sectionWithName(ElfSectionNames.SYMTAB);
@@ -218,7 +219,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_relocation_table() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeRelSection =
                 elfFile.sectionWithName(ElfSectionNames.RELA(".dyn"));
@@ -252,7 +253,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_segment_header() {
-        List<ElfSegment<Long>> segments = ((ElfFile<Long>) ElfReader.readElf(helloWorld64))
+        List<ElfSegment<Long>> segments = ElfReader.readElf64(helloWorld64)
                 .segments();
 
         assertThat(segments.size())
@@ -286,7 +287,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_notes_abi_tag() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_ABI_TAG);
         assertThat(maybeNotesSection)
@@ -305,7 +306,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_notes_build_id() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeNotesSection = elfFile.sectionWithName(ElfSectionNames.NOTE_GNU_BUILD_ID);
         assertThat(maybeNotesSection)
@@ -342,7 +343,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_dynamic_section() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeDynamic =
                 elfFile.sectionOfType(ElfSectionType.DYNAMIC);
@@ -375,7 +376,7 @@ public class ElfReader_64Bits_Test {
     void elf32_gnu_hash_section() {
         // TODO: https://flapenguin.me/elf-dt-gnu-hash
         // TODO: https://binutils.sourceware.narkive.com/6VzWCiUN/gnu-hash-section-format
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeGnuHash =
                 elfFile.sectionOfType(ElfSectionType.GNU_HASH);
@@ -399,7 +400,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void efl64_read_comment_section_contents() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         Optional<ElfSection<Long>> maybeComment = elfFile.sectionWithName(ElfSectionNames.COMMENT);
 
@@ -416,7 +417,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_read_symbol_versions() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         ElfGnuVersionSection<Long> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION)
                 .map(ElfSection::asGnuVersionSection)
@@ -437,7 +438,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_read_symbol_requirements() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(helloWorld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(helloWorld64);
 
         ElfGnuVersionRequirementsSection<Long> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION_R)
                 .map(ElfSection::asGnuVersionRequirementsSection)
@@ -476,7 +477,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_read_symbol_definitions() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(libc64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(libc64);
 
         ElfGnuVersionDefinitionsSection<Long> section = elfFile
                 .sectionWithName(ElfSectionNames.GNU_VERSION_D)
@@ -523,7 +524,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_hash_table() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(ld64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(ld64);
 
         ElfHashSection<Long> hashSection = elfFile
                 .sectionOfType(ElfSectionType.HASH)
@@ -552,7 +553,7 @@ public class ElfReader_64Bits_Test {
 
     @Test
     void elf64_gnu_warning() {
-        ElfFile<Long> elfFile = (ElfFile<Long>) ElfReader.readElf(libc64);
+        ElfFile<Long> elfFile = ElfReader.readElf64(libc64);
 
         ElfGnuWarningSection<Long> warningSection = elfFile
                 .sectionWithName(".gnu.warning.gets")

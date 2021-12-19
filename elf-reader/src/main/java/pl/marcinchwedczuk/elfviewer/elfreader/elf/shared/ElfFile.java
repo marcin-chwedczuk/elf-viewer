@@ -2,6 +2,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWordType;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
@@ -61,6 +62,19 @@ public class ElfFile<
         this.programHeaders = new ArrayList<>(programHeaders);
         this.segmentsMemoized = new Memoized<>(
                 () -> segmentFactory.createSegments(this));
+    }
+
+    @SuppressWarnings("unchecked")
+    public ElfFile<Integer> asElf32() {
+        if (nativeWordMetadata().type() != NativeWordType.NATIVE_32)
+            throw new ElfReaderException("Provided Elf file is not a 32-bit Elf.");
+        return (ElfFile<Integer>) (ElfFile<?>) this;
+    }
+    @SuppressWarnings("unchecked")
+    public ElfFile<Long> asElf64() {
+        if (nativeWordMetadata().type() != NativeWordType.NATIVE_64)
+            throw new ElfReaderException("Provided Elf file is not a 64-bit Elf.");
+        return (ElfFile<Long>) (ElfFile<?>) this;
     }
 
     public final NativeWord<NATIVE_WORD> nativeWordMetadata() { return nativeWord; }
