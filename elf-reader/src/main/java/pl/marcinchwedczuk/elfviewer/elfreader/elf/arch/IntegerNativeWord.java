@@ -18,7 +18,7 @@ public class IntegerNativeWord extends NativeWord<Integer> {
 
     @Override
     public ElfAddress<Integer> zeroAddress() {
-        return new ElfAddressAny<>(0);
+        return new ElfAddress<>(0);
     }
 
     @Override

@@ -12,7 +12,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHead
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
@@ -92,7 +92,7 @@ public class ElfReader_64Bits_Test {
 
         // program start address in memory
         assertThat(header.entry())
-                .isEqualTo(new ElfAddressAny<>(0x1050L));
+                .isEqualTo(new ElfAddress<>(0x1050L));
 
         // offset into ELF file
         assertThat(header.programHeaderTableOffset())
@@ -159,7 +159,7 @@ public class ElfReader_64Bits_Test {
                 .isEqualTo(0);
 
         assertThat(textSection.virtualAddress())
-                .isEqualTo(new ElfAddressAny<>(0x1050L));
+                .isEqualTo(new ElfAddress<>(0x1050L));
 
         assertThat(textSection.fileOffset())
                 .isEqualTo(new ElfOffsetAny<>(0x1050L));
@@ -207,7 +207,7 @@ public class ElfReader_64Bits_Test {
                     assertThat(main.size())
                             .isEqualTo(34);
                     assertThat(main.value())
-                            .isEqualTo(new ElfAddressAny<>(0x0000000000001135L));
+                            .isEqualTo(new ElfAddress<>(0x0000000000001135L));
 
                     // Check section header index, it should point to .text section
                     assertThat(main.index())
@@ -239,7 +239,7 @@ public class ElfReader_64Bits_Test {
 
         ElfRelocationAddend<Long> relocation = relocations.get(0);
         assertThat(relocation.offset())
-                .isEqualTo(new ElfAddressAny<>(0x000000003de8L));
+                .isEqualTo(new ElfAddress<>(0x000000003de8L));
 
         assertThat(relocation.info())
                 .isEqualTo(0x000000000008);
@@ -267,9 +267,9 @@ public class ElfReader_64Bits_Test {
         assertThat(textSegment.fileOffset())
                 .isEqualTo(new ElfOffsetAny<>(0x0000000000001000L));
         assertThat(textSegment.virtualAddress())
-                .isEqualTo(new ElfAddressAny<>(0x0000000000001000L));
+                .isEqualTo(new ElfAddress<>(0x0000000000001000L));
         assertThat(textSegment.physicalAddress())
-                .isEqualTo(new ElfAddressAny<>(0x0000000000001000L));
+                .isEqualTo(new ElfAddress<>(0x0000000000001000L));
 
         assertThat(textSegment.fileSize())
                 .isEqualTo(0x00000000000001dd);

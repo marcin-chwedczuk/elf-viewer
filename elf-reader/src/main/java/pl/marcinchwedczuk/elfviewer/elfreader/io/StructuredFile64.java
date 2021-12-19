@@ -4,7 +4,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffsetAny;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 
 public class StructuredFile64 extends StructuredFile<Long> {
@@ -40,6 +39,6 @@ public class StructuredFile64 extends StructuredFile<Long> {
     public ElfAddress<Long> readAddress() {
         byte[] addressBytes = readNext(8);
         long address = endianness.toUnsignedLong(addressBytes);
-        return new ElfAddressAny<>(address);
+        return new ElfAddress<>(address);
     }
 }

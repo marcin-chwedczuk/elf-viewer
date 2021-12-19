@@ -25,7 +25,7 @@ public class ElfDynamicTag<
 
     public ElfDynamicTagType type() { return type; }
     public NATIVE_WORD value() { return value; }
-    public ElfAddress<NATIVE_WORD> address() { return new ElfAddressAny<NATIVE_WORD>((NATIVE_WORD) value); }
+    public ElfAddress<NATIVE_WORD> address() { return new ElfAddress<>(value); }
 
     @Override
     public boolean equals(Object o) {

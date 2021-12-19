@@ -36,6 +36,6 @@ public class StructuredFile32 extends StructuredFile<Integer> {
     public ElfAddress<Integer> readAddress() {
         byte[] addressBytes = readNext(4);
         int address = endianness.toUnsignedInt(addressBytes);
-        return new ElfAddressAny<>(address);
+        return new ElfAddress<>(address);
     }
 }

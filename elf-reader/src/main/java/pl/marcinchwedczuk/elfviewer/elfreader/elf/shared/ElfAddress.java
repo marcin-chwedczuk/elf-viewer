@@ -5,7 +5,8 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 // @ElfApi("Elf64_Addr")
-public abstract class ElfAddress<
+// @ElfApi("Elf32_Addr")
+public class ElfAddress<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >
 {
@@ -16,8 +17,6 @@ public abstract class ElfAddress<
     }
 
     public NATIVE_WORD value() { return address; }
-
-    protected abstract ElfAddress<NATIVE_WORD> mkAddress(NATIVE_WORD value);
 
     public boolean isNull() {
         return (address.longValue() == 0);
@@ -44,7 +43,7 @@ public abstract class ElfAddress<
     public ElfAddress<NATIVE_WORD> plus(long bytesCount) {
         long result = address.longValue() + bytesCount;
         // TODO: Check overflow
-        return mkAddress((address instanceof Integer)
+        return new ElfAddress<>((address instanceof Integer)
                 // TODO: Think how to remove type check, maybe use static method?
                 ? (NATIVE_WORD)(Integer)Math.toIntExact(result)
                 : (NATIVE_WORD)(Long)result);
@@ -71,5 +70,8 @@ public abstract class ElfAddress<
     }
 
     @Override
-    public abstract String toString();
+    public String toString() {
+        // TODO: Fix
+        return String.format("%016x", value().longValue());
+    }
 }
