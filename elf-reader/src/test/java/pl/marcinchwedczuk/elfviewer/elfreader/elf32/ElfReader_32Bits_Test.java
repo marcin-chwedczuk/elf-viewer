@@ -92,11 +92,11 @@ class ElfReader_32Bits_Test {
 
         // offset into ELF file
         assertThat(header.programHeaderTableOffset())
-                .isEqualTo(new ElfOffsetAny<>(52));
+                .isEqualTo(new ElfOffset<>(52));
 
         // offset into ELF file
         assertThat(header.sectionHeaderTableOffset())
-                .isEqualTo(new ElfOffsetAny<>(6116));
+                .isEqualTo(new ElfOffset<>(6116));
 
         // flags
         assertThat(header.flags())
@@ -158,7 +158,7 @@ class ElfReader_32Bits_Test {
                 .isEqualTo(new ElfAddress<>(0x08048310));
 
         assertThat(textSection.fileOffset())
-                .isEqualTo(new ElfOffsetAny<>(0x00000310));
+                .isEqualTo(new ElfOffset<>(0x00000310));
 
         assertThat(textSection.size())
                 .isEqualTo(0x00000192);
@@ -254,7 +254,7 @@ class ElfReader_32Bits_Test {
         assertThat(textSegment.type())
                 .isEqualTo(ElfSegmentType.LOAD);
         assertThat(textSegment.fileOffset())
-                .isEqualTo(new ElfOffsetAny<>(0x000000));
+                .isEqualTo(new ElfOffset<>(0x000000));
         assertThat(textSegment.virtualAddress())
                 .isEqualTo(new ElfAddress<>(0x08048000));
         assertThat(textSegment.physicalAddress())

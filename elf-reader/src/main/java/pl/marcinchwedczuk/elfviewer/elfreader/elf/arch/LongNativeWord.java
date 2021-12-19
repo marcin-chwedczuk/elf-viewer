@@ -13,7 +13,7 @@ public class LongNativeWord extends NativeWord<Long> {
 
     @Override
     public ElfOffset<Long> zeroOffset() {
-        return new ElfOffsetAny<>(0L);
+        return new ElfOffset<>(0L);
     }
 
     @Override

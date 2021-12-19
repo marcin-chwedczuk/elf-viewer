@@ -13,7 +13,7 @@ public class IntegerNativeWord extends NativeWord<Integer> {
 
     @Override
     public ElfOffset<Integer> zeroOffset() {
-        return new ElfOffsetAny<>(0);
+        return new ElfOffset<>(0);
     }
 
     @Override

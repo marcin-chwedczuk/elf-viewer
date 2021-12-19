@@ -22,14 +22,14 @@ public class StructuredFile32 extends StructuredFile<Integer> {
 
     @Override
     protected ElfOffset<Integer> mkOffset(long offset) {
-        return new ElfOffsetAny<>(Math.toIntExact(offset));
+        return new ElfOffset<>(Math.toIntExact(offset));
     }
 
     @Override
     public ElfOffset<Integer> readOffset() {
         byte[] addressBytes = readNext(4);
         int address = endianness.toUnsignedInt(addressBytes);
-        return new ElfOffsetAny<>(address);
+        return new ElfOffset<>(address);
     }
 
     @Override

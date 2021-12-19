@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class ElfOffset<
+public class ElfOffset<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >
 {
@@ -15,8 +15,6 @@ public abstract class ElfOffset<
     }
 
     public NATIVE_WORD value() { return fileOffset; }
-
-    protected abstract ElfOffset<NATIVE_WORD> mkFileOffset(NATIVE_WORD value);
 
     public boolean isNull() {
         return (fileOffset.longValue() == 0);
@@ -43,7 +41,7 @@ public abstract class ElfOffset<
     public ElfOffset<NATIVE_WORD> plus(long bytesCount) {
         long result = fileOffset.longValue() + bytesCount;
         // TODO: Check overflow
-        return mkFileOffset((fileOffset instanceof Integer)
+        return new ElfOffset<>((fileOffset instanceof Integer)
                 // TODO: Think how to remove type check, maybe use static method?
                 ? (NATIVE_WORD)(Integer)Math.toIntExact(result)
                 : (NATIVE_WORD)(Long)result);
@@ -69,5 +67,7 @@ public abstract class ElfOffset<
     }
 
     @Override
-    public abstract String toString();
+    public String toString() {
+        return String.format("0x%016x", value().longValue());
+    }
 }
