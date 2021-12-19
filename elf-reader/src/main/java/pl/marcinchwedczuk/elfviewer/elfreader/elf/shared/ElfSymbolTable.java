@@ -60,10 +60,10 @@ public class ElfSymbolTable<
 
         // Order of fields in 32 and 64 bit version is different due to alignment constraints
         switch (nativeWord.type()) {
-            case INT_32_BITS:
+            case NATIVE_32:
                 return readSymbol32(sf);
 
-            case INT_64_BITS:
+            case NATIVE_64:
                 return readSymbol64(sf);
 
             default:

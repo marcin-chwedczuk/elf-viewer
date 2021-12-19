@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class IntegerNativeWord extends NativeWord<Integer> {
     @Override
     public NativeWordType type() {
-        return NativeWordType.INT_32_BITS;
+        return NativeWordType.NATIVE_32;
     }
 
     @Override

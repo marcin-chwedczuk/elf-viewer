@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
@@ -9,6 +10,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
@@ -27,15 +29,18 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.ElfSectionType.PROGBI
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.ALLOCATE;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf32.SectionAttributes.EXECUTABLE;
 
-class ElfReader_32Bits_GenericApi_Test {
+class ElfReader_32Bits_Test {
     private final AbstractFile helloWorld32;
+    private final AbstractFile libc32;
 
-    public ElfReader_32Bits_GenericApi_Test() throws IOException {
-        byte[] binaryBytes = this.getClass()
+    public ElfReader_32Bits_Test() throws IOException {
+        helloWorld32 = new InMemoryFile(this.getClass()
                 .getResourceAsStream("hello-world-32")
-                .readAllBytes();
+                .readAllBytes());
 
-        helloWorld32 = new InMemoryFile(binaryBytes);
+        libc32 = new InMemoryFile(this.getClass()
+                .getResourceAsStream("libc-2.33.so")
+                .readAllBytes());
     }
 
     @Test
@@ -392,5 +397,153 @@ class ElfReader_32Bits_GenericApi_Test {
         assertThat(comments)
                 .hasSize(1)
                 .contains("GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.12) 5.4.0 20160609");
+    }
+
+    @Test
+    void elf32_read_symbol_versions() {
+        // TODO: Add as32BitElf() as64BitElf()
+        ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(helloWorld32);
+
+        ElfGnuVersionSection<Integer> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION)
+                .map(ElfSection::asGnuVersionSection)
+                .get();
+
+        List<ElfSymbolVersion> versions = gnuVersion.symbolVersions();
+        assertThat(versions)
+                .isEqualTo(List.of(
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.fromValue((short) 2),
+                        ElfSymbolVersion.LOCAL,
+                        ElfSymbolVersion.fromValue((short) 2),
+                        ElfSymbolVersion.GLOBAL
+                ));
+    }
+
+    @Test
+    void elf32_read_symbol_requirements() {
+        ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(helloWorld32);
+
+        ElfGnuVersionRequirementsSection<Integer> gnuVersion = elfFile.sectionWithName(ElfSectionNames.GNU_VERSION_R)
+                .map(ElfSection::asGnuVersionRequirementsSection)
+                .get();
+
+        List<ElfVersionNeeded<Integer>> versions = gnuVersion.requirements();
+        assertThat(versions).hasSize(1);
+
+        ElfVersionNeeded<Integer> neededEntry = versions.get(0);
+        assertThat(neededEntry.version())
+                .isEqualTo(ElfVersionNeededRevision.CURRENT);
+        assertThat((int) neededEntry.numberOfAuxiliaryEntries())
+                .isEqualTo(1);
+        assertThat(neededEntry.fileName())
+                .isEqualTo("libc.so.6");
+        assertThat(neededEntry.offsetAuxiliaryEntries())
+                .isEqualTo(16);
+        assertThat(neededEntry.offsetNextEntry())
+                .isEqualTo(0);
+
+        List<ElfVersionNeededAuxiliary<Integer>> auxiliaryEntries = neededEntry.auxiliaryEntries();
+        assertThat(auxiliaryEntries).hasSize(1);
+
+        ElfVersionNeededAuxiliary<Integer> auxiliaryEntry = auxiliaryEntries.get(0);
+        assertThat(auxiliaryEntry.hash())
+                .isEqualTo(ElfHashTable.elfHash("GLIBC_2.0"));
+        assertThat((int) auxiliaryEntry.flags())
+                .isEqualTo(0);
+        assertThat(auxiliaryEntry.other())
+                .isEqualTo(ElfSymbolVersion.fromValue((short) 2));
+        assertThat(auxiliaryEntry.name())
+                .isEqualTo("GLIBC_2.0");
+        assertThat(auxiliaryEntry.offsetNext())
+                .isEqualTo(0);
+    }
+
+    @Test
+    void elf32_read_symbol_definitions() {
+        ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(libc32);
+
+        ElfGnuVersionDefinitionsSection<Integer> section = elfFile
+                .sectionWithName(ElfSectionNames.GNU_VERSION_D)
+                .map(ElfSection::asGnuVersionDefinitionsSection)
+                .get();
+
+        List<ElfVersionDefinition<Integer>> definitions = section.definitions();
+        assertThat(definitions).hasSize(44);
+
+        ElfVersionDefinition<Integer> def3 = definitions.get(2);
+        assertThat(def3.version())
+                .isEqualTo(ElfVersionDefinitionRevision.CURRENT);
+        assertThat((int)def3.flags())
+                .isEqualTo(0);
+        assertThat(def3.versionIndex())
+                .isEqualTo(ElfSymbolVersion.fromValue((short)3));
+        assertThat((int)def3.numberOfAuxiliaryEntries())
+                .isEqualTo(2);
+
+        // First aux entry contains definition name
+        assertThat(def3.nameHash())
+                .isEqualTo(ElfHashTable.elfHash("GLIBC_2.1"));
+
+        assertThat(def3.offsetAuxiliary())
+                .isEqualTo(20);
+        assertThat(def3.offsetNext())
+                .isEqualTo(36);
+
+        List<ElfVersionDefinitionAuxiliary<Integer>> auxEntries = def3.auxiliaryEntries();
+        assertThat(auxEntries).hasSize(2);
+
+        ElfVersionDefinitionAuxiliary<Integer> nameAuxEntry = auxEntries.get(0);
+        assertThat(nameAuxEntry.name())
+                .isEqualTo("GLIBC_2.1");
+        assertThat(nameAuxEntry.offsetNext())
+                .isEqualTo(8);
+
+        ElfVersionDefinitionAuxiliary<Integer> parentEntry = auxEntries.get(1);
+        assertThat(parentEntry.name())
+                .isEqualTo("GLIBC_2.0");
+        assertThat(parentEntry.offsetNext())
+                .isEqualTo(0);
+    }
+
+    @Test
+    void elf32_hash_table() {
+        ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(libc32);
+
+        ElfHashSection<Integer> hashSection = elfFile
+                .sectionOfType(ElfSectionType.HASH)
+                .get()
+                .asHashSection();
+
+        ElfHashTable<Integer> hashTable = hashSection.hashTable();
+
+        assertThat(hashTable.findSymbol("_dl_argv"))
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value.name())
+                            .isEqualTo("_dl_argv");
+                });
+
+        assertThat(hashTable.findSymbol("free"))
+                .isPresent()
+                .hasValueSatisfying(value -> {
+                    assertThat(value.name())
+                            .isEqualTo("free");
+                });
+
+        assertThat(hashTable.findSymbol("not-existing-function"))
+                .isEmpty();
+    }
+
+    @Test
+    void elf32_gnu_warning() {
+        ElfFile<Integer> elfFile = (ElfFile<Integer>) ElfReader.readElf(libc32);
+
+        ElfGnuWarningSection<Integer> warningSection = elfFile
+                .sectionWithName(".gnu.warning.gets")
+                .get()
+                .asGnuWarningSection();
+
+        assertThat(warningSection.warning())
+                .isEqualTo("the `gets' function is dangerous and should not be used.");
     }
 }

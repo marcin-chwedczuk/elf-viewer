@@ -8,13 +8,12 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public class LongNativeWord extends NativeWord<Long> {
     @Override
     public NativeWordType type() {
-        return NativeWordType.INT_64_BITS;
+        return NativeWordType.NATIVE_64;
     }
 
     @Override
