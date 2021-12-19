@@ -9,7 +9,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFact
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
@@ -89,9 +88,9 @@ public class ElfReader {
         // TODO: Overflow check
         ElfVersion version = ElfVersion.fromValue((byte)elfHeaderFile.readUnsignedInt());
 
-        Elf64Address entry = elfHeaderFile.readAddress64();
-        Elf64Offset programHeaderTableOffset = elfHeaderFile.readOffset64();
-        Elf64Offset sectionHeaderTableOffset = elfHeaderFile.readOffset64();
+        ElfAddress<Long> entry = elfHeaderFile.readAddress64();
+        ElfOffset<Long> programHeaderTableOffset = elfHeaderFile.readOffset64();
+        ElfOffset<Long> sectionHeaderTableOffset = elfHeaderFile.readOffset64();
 
         int flags = elfHeaderFile.readUnsignedInt();
         short elfHeaderSize = elfHeaderFile.readUnsignedShort();
@@ -159,8 +158,8 @@ public class ElfReader {
         StringTableIndex sectionNameIndex = new StringTableIndex(headerFile.readUnsignedInt());
         ElfSectionType type = ElfSectionType.fromValue(headerFile.readUnsignedInt());
         SectionAttributes flags = new SectionAttributes(headerFile.readUnsignedLong());
-        Elf64Address inMemoryAddress = headerFile.readAddress();
-        Elf64Offset offsetInFile = headerFile.readOffset();
+        ElfAddress<Long> inMemoryAddress = headerFile.readAddress();
+        ElfOffset<Long> offsetInFile = headerFile.readOffset();
         long sectionSize = headerFile.readUnsignedLong();
         int link = headerFile.readUnsignedInt();
         int info = headerFile.readUnsignedInt();
@@ -206,9 +205,9 @@ public class ElfReader {
     private static ElfProgramHeader<Long> readElf64ProgramHeader(StructuredFile64 headerFile) {
         ElfSegmentType type = ElfSegmentType.fromValue(headerFile.readUnsignedInt());
         ElfSegmentFlags flags = new ElfSegmentFlags(headerFile.readUnsignedInt());
-        Elf64Offset fileOffset = headerFile.readOffset();
-        Elf64Address virtualAddress = headerFile.readAddress();
-        Elf64Address physicalAddress = headerFile.readAddress();
+        ElfOffset<Long> fileOffset = headerFile.readOffset();
+        ElfAddress<Long> virtualAddress = headerFile.readAddress();
+        ElfAddress<Long> physicalAddress = headerFile.readAddress();
         long fileSize = headerFile.readUnsignedLong();
         long memorySize = headerFile.readUnsignedLong();
         long alignment = headerFile.readUnsignedLong();

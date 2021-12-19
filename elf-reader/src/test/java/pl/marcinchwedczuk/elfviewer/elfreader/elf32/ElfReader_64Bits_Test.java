@@ -12,7 +12,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHead
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.ElfAddressAny;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 

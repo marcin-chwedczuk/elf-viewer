@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
+// @ElfApi("Elf64_Addr")
 public abstract class ElfAddress<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         >

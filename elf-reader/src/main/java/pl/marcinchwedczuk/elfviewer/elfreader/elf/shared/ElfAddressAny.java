@@ -1,7 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf64;
-
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
+package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
 public class ElfAddressAny<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

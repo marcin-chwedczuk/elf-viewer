@@ -1,9 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffsetAny;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 
 public class StructuredFile64 extends StructuredFile<Long> {
@@ -25,25 +26,20 @@ public class StructuredFile64 extends StructuredFile<Long> {
 
     @Override
     protected ElfOffset<Long> mkOffset(long offset) {
-        return new Elf64Offset(Math.toIntExact(offset));
+        return new ElfOffsetAny<>(offset);
     }
 
     @Override
-    public Elf64Offset readOffset() {
+    public ElfOffset<Long> readOffset() {
         byte[] addressBytes = readNext(8);
         long address = endianness.toUnsignedLong(addressBytes);
-        return new Elf64Offset(address);
+        return new ElfOffsetAny<>(address);
     }
 
     @Override
-    public Elf64Address readAddress() {
+    public ElfAddress<Long> readAddress() {
         byte[] addressBytes = readNext(8);
         long address = endianness.toUnsignedLong(addressBytes);
-        return new Elf64Address(address);
-    }
-
-    @Override
-    public Elf64Offset currentPositionInFile() {
-        return (Elf64Offset) super.currentPositionInFile();
+        return new ElfAddressAny<>(address);
     }
 }

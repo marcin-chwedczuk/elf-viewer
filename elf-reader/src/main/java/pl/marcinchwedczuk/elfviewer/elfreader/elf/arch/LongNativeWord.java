@@ -1,11 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocationAddend;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.stream.LongStream;
@@ -18,12 +14,12 @@ public class LongNativeWord extends NativeWord<Long> {
 
     @Override
     public ElfOffset<Long> zeroOffset() {
-        return Elf64Offset.ZERO;
+        return new ElfOffsetAny<>(0L);
     }
 
     @Override
     public ElfAddress<Long> zeroAddress() {
-        return new Elf64Address(0);
+        return new ElfAddressAny<>(0L);
     }
 
     @Override

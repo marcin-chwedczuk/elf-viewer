@@ -1,10 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf64.Elf64Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffsetAny;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddressAny;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteList;
 
@@ -50,10 +50,10 @@ public abstract class StructuredFile<
         return bytes;
     }
 
-    public Elf64Address readAddress64() {
+    public ElfAddress<Long> readAddress64() {
         byte[] addressBytes = readNext(8);
         long address = endianness.toUnsignedLong(addressBytes);
-        return new Elf64Address(address);
+        return new ElfAddressAny<>(address);
     }
 
     public short readUnsignedShort() {
@@ -62,10 +62,10 @@ public abstract class StructuredFile<
         return half;
     }
 
-    public Elf64Offset readOffset64() {
+    public ElfOffset<Long> readOffset64() {
         byte[] addressBytes = readNext(8);
         long address = endianness.toUnsignedLong(addressBytes);
-        return new Elf64Offset(address);
+        return new ElfOffsetAny<>(address);
     }
 
     public int readUnsignedInt() {
