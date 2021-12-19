@@ -2,8 +2,6 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 
 public class StructureFieldDto {
     private final String fieldName;

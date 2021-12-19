@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
@@ -32,7 +31,7 @@ public class ElfNoteGnuABITag extends ElfNoteGnu {
         StructuredFile32 sf = new StructuredFile32(
                 new InMemoryFile(descriptor()),
                 new LittleEndian(),
-                Elf32Offset.ZERO);
+                0L);
 
         if (descriptorLength() != 16 || sf.readUnsignedInt() != 0) {
             throw new IllegalStateException("Invalid OS signature or descriptor.");

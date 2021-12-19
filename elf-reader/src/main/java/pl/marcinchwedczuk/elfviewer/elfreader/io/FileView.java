@@ -1,8 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
 
 import static java.util.Objects.requireNonNull;
 

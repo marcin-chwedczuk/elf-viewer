@@ -8,7 +8,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSectionFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegmentFactory;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.BigEndian;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.LittleEndian;
@@ -275,9 +274,9 @@ public class ElfReader {
 
     private static ElfProgramHeader<Integer> readElf32ProgramHeader(StructuredFile32 headerFile) {
         ElfSegmentType type = ElfSegmentType.fromValue(headerFile.readUnsignedInt());
-        Elf32Offset fileOffset = headerFile.readOffset();
-        Elf32Address virtualAddress = headerFile.readAddress();
-        Elf32Address physicalAddress = headerFile.readAddress();
+        ElfOffset<Integer> fileOffset = headerFile.readOffset();
+        ElfAddress<Integer> virtualAddress = headerFile.readAddress();
+        ElfAddress<Integer> physicalAddress = headerFile.readAddress();
         int fileSize = headerFile.readUnsignedInt();
         int memorySize = headerFile.readUnsignedInt();
         ElfSegmentFlags flags = new ElfSegmentFlags(headerFile.readUnsignedInt());
@@ -372,8 +371,8 @@ public class ElfReader {
         StringTableIndex sectionNameIndex = new StringTableIndex(headerFile.readUnsignedInt());
         ElfSectionType type = ElfSectionType.fromValue(headerFile.readUnsignedInt());
         SectionAttributes flags = new SectionAttributes(headerFile.readUnsignedInt());
-        Elf32Address inMemoryAddress = headerFile.readAddress();
-        Elf32Offset offsetInFile = headerFile.readOffset();
+        ElfAddress<Integer> inMemoryAddress = headerFile.readAddress();
+        ElfOffset<Integer> offsetInFile = headerFile.readOffset();
         int sectionSize = headerFile.readUnsignedInt();
         int link = headerFile.readUnsignedInt();
         int info = headerFile.readUnsignedInt();
@@ -384,7 +383,7 @@ public class ElfReader {
                 .map(st -> st.getStringAtIndex(sectionNameIndex))
                 .orElse("(not-resolved)");
 
-        return new ElfSectionHeader<Integer>(
+        return new ElfSectionHeader<>(
                 sectionNameIndex,
                 sectionName,
                 type,

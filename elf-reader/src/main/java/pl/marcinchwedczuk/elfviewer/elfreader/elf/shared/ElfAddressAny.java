@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
+// @ElfApi("Elf32_Addr")
 public class ElfAddressAny<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > extends ElfAddress<NATIVE_WORD> {

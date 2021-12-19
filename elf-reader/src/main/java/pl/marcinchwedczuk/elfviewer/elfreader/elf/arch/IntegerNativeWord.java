@@ -1,11 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocationAddend;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Offset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.stream.IntStream;
@@ -18,12 +13,12 @@ public class IntegerNativeWord extends NativeWord<Integer> {
 
     @Override
     public ElfOffset<Integer> zeroOffset() {
-        return Elf32Offset.ZERO;
+        return new ElfOffsetAny<>(0);
     }
 
     @Override
     public ElfAddress<Integer> zeroAddress() {
-        return new Elf32Address(0);
+        return new ElfAddressAny<>(0);
     }
 
     @Override

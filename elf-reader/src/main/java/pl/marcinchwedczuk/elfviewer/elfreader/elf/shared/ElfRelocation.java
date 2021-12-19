@@ -1,6 +1,5 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf32.Elf32Address;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
