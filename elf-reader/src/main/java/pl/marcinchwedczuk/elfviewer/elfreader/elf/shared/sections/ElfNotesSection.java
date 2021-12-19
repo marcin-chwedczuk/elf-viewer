@@ -10,6 +10,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.Args;
+import pl.marcinchwedczuk.elfviewer.elfreader.utils.AsciiStrings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,9 @@ public class ElfNotesSection<
             int descLen = sf.readUnsignedInt();
             int type = sf.readUnsignedInt();
 
-            String name = sf.readFixedSizeStringWithAlignment(nameLen, 4);
+            byte[] nameBytes = sf.readFixedSizeByteArrayWithAlignment(nameLen, 4);
+            String name = AsciiStrings.toCSourceCodeString(nameBytes);
+
             byte[] descriptor = sf.readFixedSizeByteArrayWithAlignment(descLen, 4);
 
             // TODO: Extract factory

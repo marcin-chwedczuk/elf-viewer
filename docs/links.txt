@@ -6,3 +6,7 @@ https://docs.oracle.com/cd/E53394_01/html/E54813/chapter6-18048.html#OSLLGchapte
 https://blogs.oracle.com/solaris/post/gnu-hash-elf-sections
 
 https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter6-43405.html#scrolltoc
+
+.gnu.build.attributes:
+- https://sourceware.org/legacy-ml/gnu-gabi/2016-q4/msg00000.html
+- https://fedoraproject.org/wiki/Toolchain/Watermark
