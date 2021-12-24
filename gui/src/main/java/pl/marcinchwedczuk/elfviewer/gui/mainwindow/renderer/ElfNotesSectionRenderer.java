@@ -5,16 +5,14 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<NoteDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfNotesSection<NATIVE_WORD> notesSection;
 
@@ -25,27 +23,27 @@ public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NAT
     }
 
     @Override
-    protected List<TableColumn<NoteDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("namesz", NoteDto::getNameLength, ALIGN_RIGHT),
-                mkColumn("name", NoteDto::getName),
-                mkColumn("descsz", NoteDto::getDescriptorLength, ALIGN_RIGHT),
-                mkColumn("desc", NoteDto::getDescriptor),
-                mkColumn("type", NoteDto::getType),
-                mkColumn("(type)", NoteDto::getParsedType),
-                mkColumn("(comment)", NoteDto::getComment)
+                mkColumn("namesz", indexAccessor(0), ALIGN_RIGHT),
+                mkColumn("name", indexAccessor(1)),
+                mkColumn("descsz", indexAccessor(2), ALIGN_RIGHT),
+                mkColumn("desc", indexAccessor(3)),
+                mkColumn("type", indexAccessor(4)),
+                mkColumn("(type)", indexAccessor(5)),
+                mkColumn("(comment)", indexAccessor(6))
         );
     }
 
     @Override
-    protected List<? extends NoteDto> defineRows() {
+    protected List<String[]> defineRows() {
         return notesSection.notes().stream()
-                .map(note -> toNoteDto(note))
+                .map(note -> toNoteRow(note))
                 .collect(toList());
     }
 
-    private NoteDto toNoteDto(ElfNote note) {
-        return new NoteDto(
+    private String[] toNoteRow(ElfNote note) {
+        return mkStrings(
                 dec(note.nameLength()),
                 note.name(),
                 dec(note.descriptorLength()),

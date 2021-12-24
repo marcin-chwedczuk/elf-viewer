@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfRelocationAddendSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<RelocationAddendDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfRelocationAddendSection<NATIVE_WORD> relocationSection;
 
@@ -24,21 +24,21 @@ public class ElfRelocationAddendSectionRenderer<NATIVE_WORD extends Number & Com
     }
 
     @Override
-    protected List<TableColumn<RelocationAddendDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         // TODO: Intel relocations
         return List.of(
-                mkColumn("r_offset", RelocationAddendDto::getOffset, ALIGN_RIGHT),
-                mkColumn("r_info", RelocationAddendDto::getInfo, ALIGN_RIGHT),
-                mkColumn("R_TYPE", RelocationAddendDto::getType, ALIGN_RIGHT),
-                mkColumn("R_SYM", RelocationAddendDto::getSymbol, ALIGN_RIGHT),
-                mkColumn("r_addend", RelocationAddendDto::getAddend, ALIGN_RIGHT)
+                mkColumn("r_offset", indexAccessor(0), ALIGN_RIGHT),
+                mkColumn("r_info", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("R_TYPE", indexAccessor(2), ALIGN_RIGHT),
+                mkColumn("R_SYM", indexAccessor(3), ALIGN_RIGHT),
+                mkColumn("r_addend", indexAccessor(4), ALIGN_RIGHT)
         );
     }
 
     @Override
-    protected List<? extends RelocationAddendDto> defineRows() {
+    protected List<String[]> defineRows() {
         return relocationSection.relocations().stream()
-                .map(rel -> new RelocationAddendDto(
+                .map(rel -> mkStrings(
                         rel.offset().toString(),
                         hex(rel.info()),
                         hex(rel.type()),

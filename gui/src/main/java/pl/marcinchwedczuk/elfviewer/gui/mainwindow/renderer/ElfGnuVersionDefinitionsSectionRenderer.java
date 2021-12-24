@@ -41,7 +41,7 @@ public class ElfGnuVersionDefinitionsSectionRenderer<NATIVE_WORD extends Number 
     }
 
     @Override
-    protected List<? extends String[]> defineRows() {
+    protected List<String[]> defineRows() {
         return section.definitions().stream()
                 .flatMap(entry -> generateRows(entry))
                 .collect(toList());

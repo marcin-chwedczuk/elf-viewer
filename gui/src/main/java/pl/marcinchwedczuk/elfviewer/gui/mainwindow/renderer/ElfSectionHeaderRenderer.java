@@ -10,7 +10,7 @@ import java.util.List;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfSectionHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfSectionHeader<NATIVE_WORD> header;
 
@@ -21,40 +21,40 @@ public class ElfSectionHeaderRenderer<NATIVE_WORD extends Number & Comparable<NA
     }
 
     @Override
-    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Field\nName", StructureFieldDto::getFieldName),
-                mkColumn("Value\nRaw", StructureFieldDto::getRawValue, ALIGN_RIGHT),
-                mkColumn("Value\nParsed", StructureFieldDto::getParsedValue),
-                mkColumn("Comment", StructureFieldDto::getComment)
+                mkColumn("Field\nName", indexAccessor(0)),
+                mkColumn("Value\nRaw", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("Value\nParsed", indexAccessor(2)),
+                mkColumn("Comment", indexAccessor(3))
         );
     }
 
     @Override
-    protected List<? extends StructureFieldDto> defineRows() {
+    protected List<String[]> defineRows() {
         return List.of(
-                new StructureFieldDto("sh_name",
+                mkStrings("sh_name",
                         hex(header.nameIndex().intValue()),
                         header.name(),
                         ""),
 
-                new StructureFieldDto("sh_type",
+                mkStrings("sh_type",
                         hex(header.type().value()),
                         header.type().apiName(),
                         ""),
 
-                new StructureFieldDto("sh_flags",
+                mkStrings("sh_flags",
                         hex(header.flags().intValue()),
                         header.flags().toString(),
                         ""),
 
-                new StructureFieldDto("sh_addr", header.virtualAddress()),
-                new StructureFieldDto("sh_offset", header.fileOffset()),
-                new StructureFieldDto("sh_size", dec(header.size())),
-                new StructureFieldDto("sh_link", hex(header.link())),
-                new StructureFieldDto("sh_info", hex(header.info())),
-                new StructureFieldDto("sh_addralign", dec(header.addressAlignment())),
-                new StructureFieldDto("sh_entsize", dec(header.containedEntrySize()))
+                mkStrings("sh_addr", header.virtualAddress().toString()),
+                mkStrings("sh_offset", header.fileOffset().toString()),
+                mkStrings("sh_size", dec(header.size())),
+                mkStrings("sh_link", hex(header.link())),
+                mkStrings("sh_info", hex(header.info())),
+                mkStrings("sh_addralign", dec(header.addressAlignment())),
+                mkStrings("sh_entsize", dec(header.containedEntrySize()))
         );
     }
 }

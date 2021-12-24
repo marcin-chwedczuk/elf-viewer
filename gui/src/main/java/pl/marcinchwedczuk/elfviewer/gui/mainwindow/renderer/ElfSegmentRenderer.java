@@ -11,7 +11,7 @@ import java.util.List;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfSegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfSegment<NATIVE_WORD> segment;
 
@@ -22,38 +22,38 @@ public class ElfSegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_W
     }
 
     @Override
-    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Field Name", StructureFieldDto::getFieldName),
-                mkColumn("Raw\nValue", StructureFieldDto::getRawValue, ALIGN_RIGHT),
-                mkColumn("Parsed\nValue", StructureFieldDto::getParsedValue),
-                mkColumn("Comment", StructureFieldDto::getComment)
+                mkColumn("Field Name", indexAccessor(0)),
+                mkColumn("Raw\nValue", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("Parsed\nValue", indexAccessor(2)),
+                mkColumn("Comment", indexAccessor(3))
         );
     }
 
     @Override
-    protected List<? extends StructureFieldDto> defineRows() {
+    protected List<String[]> defineRows() {
         ElfProgramHeader<NATIVE_WORD> ph = segment.programHeader();
 
         return List.of(
-                new StructureFieldDto("p_type",
+                mkStrings("p_type",
                         hex(ph.type().value()),
                         ph.type().apiName(),
                         ""),
 
-                new StructureFieldDto("p_offset", ph.fileOffset()),
-                new StructureFieldDto("p_vaddr", ph.virtualAddress()),
-                new StructureFieldDto("p_paddr", ph.physicalAddress()),
+                mkStrings("p_offset", ph.fileOffset().toString()),
+                mkStrings("p_vaddr", ph.virtualAddress().toString()),
+                mkStrings("p_paddr", ph.physicalAddress().toString()),
                 // TODO: To human readable size e.g. 4kB
-                new StructureFieldDto("p_filesz", dec(ph.fileSize())),
-                new StructureFieldDto("p_memsz", dec(ph.memorySize())),
+                mkStrings("p_filesz", dec(ph.fileSize())),
+                mkStrings("p_memsz", dec(ph.memorySize())),
 
-                new StructureFieldDto("p_flags",
+                mkStrings("p_flags",
                         hex(ph.flags().intValue()),
                         ph.flags().toString(),
                         ""),
 
-                new StructureFieldDto("p_align", dec(ph.alignment()))
+                mkStrings("p_align", dec(ph.alignment()))
         );
     }
 }

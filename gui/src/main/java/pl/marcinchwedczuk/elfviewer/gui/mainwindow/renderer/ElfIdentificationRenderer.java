@@ -11,7 +11,7 @@ import java.util.List;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfIdentification identification;
 
@@ -22,53 +22,52 @@ public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<N
     }
 
     @Override
-    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Field Name", StructureFieldDto::getFieldName),
-                mkColumn("Raw\nValue", StructureFieldDto::getRawValue, ALIGN_RIGHT),
-                mkColumn("Parsed\nValue", StructureFieldDto::getParsedValue),
-                mkColumn("Comment", StructureFieldDto::getComment)
+                mkColumn("Field Name", indexAccessor(0)),
+                mkColumn("Raw\nValue", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("Parsed\nValue", indexAccessor(2)),
+                mkColumn("Comment", indexAccessor(3))
         );
     }
 
     @Override
-    protected List<? extends StructureFieldDto> defineRows() {
+    protected List<String[]> defineRows() {
         return List.of(
-                new StructureFieldDto(
+                mkStrings(
                         "EI_MAG0..3",
                         ByteArrays.toHexString(identification.magicBytes(), ":"),
                         identification.printableMagicString(),
                         ""),
 
-                new StructureFieldDto("EI_CLASS",
+                mkStrings("EI_CLASS",
                         hex(identification.elfClass().value()),
                         identification.elfClass().apiName(),
                         ""),
 
-                new StructureFieldDto("EI_DATA",
+                mkStrings("EI_DATA",
                         hex(identification.elfData().value()),
                         identification.elfData().apiName(),
                         ""),
 
-                new StructureFieldDto("EI_VERSION",
+                mkStrings("EI_VERSION",
                         // This field occur twice in ELF header.
                         // In identification bytes it is 1 byte long.
                         hex((byte)identification.elfVersion().value()),
                         identification.elfVersion().apiName(),
                         ""),
 
-                new StructureFieldDto("EI_OSABI",
+                mkStrings("EI_OSABI",
                         hex(identification.osAbi().value()),
                         identification.osAbi().apiName(),
                         ""),
 
-                new StructureFieldDto("EI_ABIVERSION",
+                mkStrings("EI_ABIVERSION",
                         hex(identification.osAbiVersion()),
                         dec(identification.osAbiVersion()),
                         ""),
 
-                new StructureFieldDto("EI_PAD",
-                        ByteArrays.toHexString(identification.paddingBytes(), ":"))
+                mkStrings("EI_PAD", ByteArrays.toHexString(identification.paddingBytes(), ":"))
         );
     }
 }

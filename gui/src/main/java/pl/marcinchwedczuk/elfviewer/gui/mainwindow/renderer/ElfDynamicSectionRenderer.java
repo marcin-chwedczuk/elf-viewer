@@ -14,7 +14,7 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagTyp
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<DynamicTagDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfDynamicSection<NATIVE_WORD> dynamicSection;
 
@@ -25,21 +25,22 @@ public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     }
 
     @Override
-    protected List<TableColumn<DynamicTagDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("d_tag", DynamicTagDto::getType),
-                mkColumn("d_val\nd_ptr", DynamicTagDto::getValue, ALIGN_RIGHT),
-                mkColumn("(comment)", DynamicTagDto::getComment)
+                mkColumn("d_tag", indexAccessor(0)),
+                mkColumn("d_val\nd_ptr", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("(comment)", indexAccessor(2))
         );
     }
 
     @Override
-    protected List<? extends DynamicTagDto> defineRows() {
+    protected List<String[]> defineRows() {
         return dynamicSection.dynamicTags().stream()
-                .map(tag -> new DynamicTagDto(
-                        tag.type().apiName(),
-                        hex(tag.value()),
-                        generateComment(tag)))
+                .map(tag -> new String[] {
+                    tag.type().apiName(),
+                    hex(tag.value()),
+                    generateComment(tag)
+                })
                 .collect(toList());
     }
 

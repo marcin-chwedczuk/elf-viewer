@@ -87,6 +87,10 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         return (String[] arr) -> index < arr.length ? arr[index] : "";
     }
 
+    protected static String[] mkStrings(String... strings) {
+        return strings;
+    }
+
     protected static String hex(byte b) {
         return String.format("0x%02x", (int)b & 0xff);
     }

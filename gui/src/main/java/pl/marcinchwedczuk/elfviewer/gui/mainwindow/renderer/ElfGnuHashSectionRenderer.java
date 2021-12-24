@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<GnuHashTableEntryDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfGnuHashSection<NATIVE_WORD> section;
 
@@ -23,26 +23,27 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     }
 
     @Override
-    protected List<TableColumn<GnuHashTableEntryDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("nbuckets\n---\n(bloom filter)", GnuHashTableEntryDto::getCol1),
-                mkColumn("symndx\n---\n(buckets)", GnuHashTableEntryDto::getCol2),
-                mkColumn("maskwords_bm\n---\n(hash values)", GnuHashTableEntryDto::getCol3),
-                mkColumn("shift2\n---\n(symbol)", GnuHashTableEntryDto::getCol4)
+                mkColumn("nbuckets\n---\n(bloom filter)", indexAccessor(0)),
+                mkColumn("symndx\n---\n(buckets)", indexAccessor(1)),
+                mkColumn("maskwords_bm\n---\n(hash values)", indexAccessor(2)),
+                mkColumn("shift2\n---\n(symbol)", indexAccessor(3))
         );
     }
 
     @Override
-    protected List<? extends GnuHashTableEntryDto> defineRows() {
+    protected List<String[]> defineRows() {
         ElfGnuHashTable<NATIVE_WORD> hashTable = section.gnuHashTable();
 
-        List<GnuHashTableEntryDto> result = new ArrayList<>();
-        result.add(new GnuHashTableEntryDto(
+        List<String[]> result = new ArrayList<>();
+        result.add(new String[] {
                 dec(hashTable.nBuckets()),
                 dec(hashTable.startSymbolIndex()),
                 dec(hashTable.maskWords()),
-                dec(hashTable.shift2())));
-        result.add(new GnuHashTableEntryDto("---", "---", "---", "---"));
+                dec(hashTable.shift2())
+        });
+        result.add(new String[] { "---", "---", "---", "---" });
 
         int bloomIndex = 0, bucketIndex = 0, hashIndex = 0;
         boolean nextBucket = true;
@@ -92,7 +93,7 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
 
             if (!added) break;
 
-            result.add(new GnuHashTableEntryDto(bloomCol, bucketCol, hashCol, symbolCol));
+            result.add(new String[] { bloomCol, bucketCol, hashCol, symbolCol });
         }
 
         return result;

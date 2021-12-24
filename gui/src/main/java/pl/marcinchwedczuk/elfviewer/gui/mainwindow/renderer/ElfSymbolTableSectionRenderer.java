@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<SymbolTableEntryDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfSymbolTableSection<NATIVE_WORD> symbolTableSection;
 
@@ -23,29 +23,29 @@ public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparab
     }
 
     @Override
-    protected List<TableColumn<SymbolTableEntryDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Offset", SymbolTableEntryDto::getOffset, ALIGN_RIGHT),
-                mkColumn("st_name", SymbolTableEntryDto::getNameIndex, ALIGN_RIGHT),
-                mkColumn("(st_name)", SymbolTableEntryDto::getName),
-                mkColumn("st_value", SymbolTableEntryDto::getValue, ALIGN_RIGHT),
-                mkColumn("st_size", SymbolTableEntryDto::getSize, ALIGN_RIGHT),
-                mkColumn("st_info", SymbolTableEntryDto::getInfo, ALIGN_RIGHT),
-                mkColumn("ST_BIND", SymbolTableEntryDto::getBinding),
-                mkColumn("ST_TYPE", SymbolTableEntryDto::getSymbolType),
-                mkColumn("st_other", SymbolTableEntryDto::getOther, ALIGN_RIGHT),
-                mkColumn("ST_VISIBILITY", SymbolTableEntryDto::getVisibility, ALIGN_RIGHT),
-                mkColumn("st_shndx", SymbolTableEntryDto::getIndex, ALIGN_RIGHT),
-                mkColumn("(st_shndx)", SymbolTableEntryDto::getRelatedSectionName)
+                mkColumn("Offset", indexAccessor(0), ALIGN_RIGHT),
+                mkColumn("st_name", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("(st_name)", indexAccessor(2)),
+                mkColumn("st_value", indexAccessor(3), ALIGN_RIGHT),
+                mkColumn("st_size", indexAccessor(4), ALIGN_RIGHT),
+                mkColumn("st_info", indexAccessor(5), ALIGN_RIGHT),
+                mkColumn("ST_BIND", indexAccessor(6)),
+                mkColumn("ST_TYPE", indexAccessor(7)),
+                mkColumn("st_other", indexAccessor(8), ALIGN_RIGHT),
+                mkColumn("ST_VISIBILITY", indexAccessor(9), ALIGN_RIGHT),
+                mkColumn("st_shndx", indexAccessor(10), ALIGN_RIGHT),
+                mkColumn("(st_shndx)", indexAccessor(11))
         );
     }
 
     @Override
-    protected List<? extends SymbolTableEntryDto> defineRows() {
+    protected List<String[]> defineRows() {
         ElfSymbolTable<NATIVE_WORD> elf32SymbolTable = symbolTableSection.symbolTable();
 
         return elf32SymbolTable.symbols().stream()
-                .map(entry -> new SymbolTableEntryDto(
+                .map(entry -> mkStrings(
                         hex(entry.index.intValue()),
                         hex(entry.symbol.nameIndex().intValue()),
                         entry.symbol.name(),

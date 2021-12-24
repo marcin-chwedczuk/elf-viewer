@@ -12,7 +12,7 @@ import java.util.List;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfHashSection<NATIVE_WORD> hashSection;
 
@@ -23,34 +23,34 @@ public class ElfHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATI
     }
 
     @Override
-    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Field Name", StructureFieldDto::getFieldName),
-                mkColumn("Value", StructureFieldDto::getRawValue, ALIGN_RIGHT)
+                mkColumn("Field Name", indexAccessor(0)),
+                mkColumn("Value", indexAccessor(1), ALIGN_RIGHT)
         );
     }
 
     @Override
-    protected List<? extends StructureFieldDto> defineRows() {
+    protected List<String[]> defineRows() {
         ElfHashTable<NATIVE_WORD> hashTable = hashSection.hashTable();
 
-        List<StructureFieldDto> rows = new ArrayList<>();
+        List<String[]> rows = new ArrayList<>();
 
-        rows.add(new StructureFieldDto(
-                "nbucket", hashTable.nbucket()));
-        rows.add(new StructureFieldDto(
-                "nchain", hashTable.nchain()));
+        rows.add(new String[] {
+                "nbucket", dec(hashTable.nbucket()) });
+        rows.add(new String[] {
+                "nchain", dec(hashTable.nchain()) });
 
         for (int i = 0; i < hashTable.bucket().length; i++) {
-            rows.add(new StructureFieldDto(
+            rows.add(new String[] {
                     String.format("nbucket[%d]", i),
-                    dec(hashTable.bucket()[i].intValue())));
+                    dec(hashTable.bucket()[i].intValue()) });
         }
 
         for (int i = 0; i < hashTable.chain().length; i++) {
-            rows.add(new StructureFieldDto(
+            rows.add(new String[] {
                     String.format("nchain[%d]", i),
-                    dec(hashTable.chain()[i].intValue())));
+                    dec(hashTable.chain()[i].intValue()) });
         }
 
         return rows;

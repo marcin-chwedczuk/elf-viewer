@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfStringTableSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StringTableEntryDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfStringTableSection<NATIVE_WORD> section;
 
@@ -22,18 +22,18 @@ public class ElfStringTableSectionRenderer<NATIVE_WORD extends Number & Comparab
     }
 
     @Override
-    protected List<TableColumn<StringTableEntryDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Index", StringTableEntryDto::getFieldName, ALIGN_RIGHT),
-                mkColumn("Value", StringTableEntryDto::getValue),
-                mkColumn("Length", StringTableEntryDto::getValueLength, ALIGN_RIGHT)
+                mkColumn("Index", indexAccessor(0), ALIGN_RIGHT),
+                mkColumn("Value", indexAccessor(1)),
+                mkColumn("Length", indexAccessor(2), ALIGN_RIGHT)
         );
     }
 
     @Override
-    protected List<? extends StringTableEntryDto> defineRows() {
+    protected List<String[]> defineRows() {
         return section.stringTable().getContents().stream()
-                .map(entry -> new StringTableEntryDto(
+                .map(entry -> mkStrings(
                         hex(entry.getIndex().intValue()),
                         entry.getValue()))
                 .collect(toList());

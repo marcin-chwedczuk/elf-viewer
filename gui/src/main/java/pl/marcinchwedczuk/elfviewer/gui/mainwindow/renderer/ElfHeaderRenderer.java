@@ -10,7 +10,7 @@ import java.util.List;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<StructureFieldDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfHeader<NATIVE_WORD> header;
 
@@ -21,50 +21,48 @@ public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WO
     }
 
     @Override
-    protected List<TableColumn<StructureFieldDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("Field Name", StructureFieldDto::getFieldName),
-                mkColumn("Raw\nValue", StructureFieldDto::getRawValue, ALIGN_RIGHT),
-                mkColumn("Parsed\nValue", StructureFieldDto::getParsedValue),
-                mkColumn("Comment", StructureFieldDto::getComment)
+                mkColumn("Field Name", indexAccessor(0)),
+                mkColumn("Raw\nValue", indexAccessor(1), ALIGN_RIGHT),
+                mkColumn("Parsed\nValue", indexAccessor(2)),
+                mkColumn("Comment", indexAccessor(3))
         );
     }
 
     @Override
-    protected List<? extends StructureFieldDto> defineRows() {
+    protected List<String[]> defineRows() {
         return List.of(
-                new StructureFieldDto("e_type",
+                mkStrings("e_type",
                         hex(header.type().value()),
                         header.type().apiName(),
                         ""),
 
-                new StructureFieldDto("e_machine",
+                mkStrings("e_machine",
                         hex(header.machine().value()),
                         header.machine().apiName(),
                         ""),
 
-                new StructureFieldDto("e_version",
+                mkStrings("e_version",
                         hex(header.version().value()),
                         header.version().apiName(),
                         ""),
 
-                new StructureFieldDto("e_entry", header.entry()),
-                new StructureFieldDto("e_phoff", header.programHeaderTableOffset()),
-                new StructureFieldDto("e_shoff", header.sectionHeaderTableOffset()),
+                mkStrings("e_entry", header.entry().toString()),
+                mkStrings("e_phoff", header.programHeaderTableOffset().toString()),
+                mkStrings("e_shoff", header.sectionHeaderTableOffset().toString()),
 
-                new StructureFieldDto("e_flags",
-                        hex(header.flags())),
+                mkStrings("e_flags", hex(header.flags())),
 
-                new StructureFieldDto("e_ehsize", header.headerSize()),
+                mkStrings("e_ehsize", dec(header.headerSize())),
 
-                new StructureFieldDto("e_phentsize", header.programHeaderSize()),
-                new StructureFieldDto("e_phnum", header.numberOfProgramHeaders()),
+                mkStrings("e_phentsize", dec(header.programHeaderSize())),
+                mkStrings("e_phnum", dec(header.numberOfProgramHeaders())),
 
-                new StructureFieldDto("e_shentsize", header.sectionHeaderSize()),
-                new StructureFieldDto("e_shnum", header.numberOfSectionHeaders()),
+                mkStrings("e_shentsize", dec(header.sectionHeaderSize())),
+                mkStrings("e_shnum", dec(header.numberOfSectionHeaders())),
 
-                new StructureFieldDto("e_shstrndx",
-                        hex(header.sectionContainingSectionNames().intValue()))
+                mkStrings("e_shstrndx", hex(header.sectionContainingSectionNames().intValue()))
         );
     }
 }

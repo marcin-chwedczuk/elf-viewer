@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
 public class ElfGnuVersionSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        extends BaseRenderer<IndexValueDto, NATIVE_WORD>
+        extends BaseRenderer<String[], NATIVE_WORD>
 {
     private final ElfGnuVersionSection<NATIVE_WORD> section;
 
@@ -27,20 +27,20 @@ public class ElfGnuVersionSectionRenderer<NATIVE_WORD extends Number & Comparabl
     }
 
     @Override
-    protected List<TableColumn<IndexValueDto, String>> defineColumns() {
+    protected List<TableColumn<String[], String>> defineColumns() {
         return List.of(
-                mkColumn("(index)", IndexValueDto::getIndex, ALIGN_RIGHT),
-                mkColumn("(version)", IndexValueDto::getValue)
+                mkColumn("(index)", indexAccessor(0), ALIGN_RIGHT),
+                mkColumn("(version)", indexAccessor(1))
         );
     }
 
     @Override
-    protected List<? extends IndexValueDto> defineRows() {
+    protected List<String[]> defineRows() {
         return StreamUtils.zipWithIndex(section.symbolVersions())
-                .map(svIndex -> new IndexValueDto(
+                .map(svIndex -> new String[] {
                         dec(svIndex.index),
                         svIndex.value.apiName()
-                ))
+                })
                 .collect(Collectors.toList());
     }
 }
