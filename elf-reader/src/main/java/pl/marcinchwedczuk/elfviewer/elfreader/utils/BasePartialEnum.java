@@ -3,6 +3,7 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 import pl.marcinchwedczuk.elfviewer.elfreader.meta.ElfApi;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,7 +20,7 @@ public abstract class BasePartialEnum {
         this.name = requireNonNull(name);
     }
 
-    protected abstract AtomicReference<Map<String, String>> name2apiNameMappingContainer();
+    protected abstract AtomicReference<Map<String, String>> name2ApiNameMappingContainer();
 
     public final String name() { return name; }
     public abstract String hexString();
@@ -32,7 +33,7 @@ public abstract class BasePartialEnum {
     }
 
     public String apiName() {
-        AtomicReference<Map<String, String>> name2apiNameContainer = name2apiNameMappingContainer();
+        AtomicReference<Map<String, String>> name2apiNameContainer = name2ApiNameMappingContainer();
         Map<String, String> name2apiName = name2apiNameContainer.get();
 
         if (name2apiName == null) {
@@ -47,7 +48,7 @@ public abstract class BasePartialEnum {
         }
     }
 
-    private HashMap<String, String> createName2ApiNameMapping() {
+    private Map<String, String> createName2ApiNameMapping() {
         HashMap<String, String> tmp = new HashMap<>();
         Class<?> thisClass = this.getClass();
 
@@ -72,6 +73,6 @@ public abstract class BasePartialEnum {
             }
         }
 
-        return tmp;
+        return Collections.unmodifiableMap(tmp);
     }
 }

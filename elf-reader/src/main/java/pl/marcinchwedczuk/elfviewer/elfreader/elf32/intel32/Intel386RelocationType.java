@@ -203,7 +203,7 @@ public class Intel386RelocationType extends BytePartialEnum<Intel386RelocationTy
 
     private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
     @Override
-    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+    protected AtomicReference<Map<String, String>> name2ApiNameMappingContainer() {
         return name2apiNameMappingContainer;
     }
 }

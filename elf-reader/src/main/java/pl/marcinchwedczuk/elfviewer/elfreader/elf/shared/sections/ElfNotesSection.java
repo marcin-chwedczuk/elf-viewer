@@ -1,11 +1,10 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteFactory;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile32;
@@ -31,7 +30,7 @@ public class ElfNotesSection<
     }
 
     public List<ElfNote> notes() {
-        ElfNoteFactory noteFactory = new ElfNoteFactory();
+        ElfNoteFactory noteFactory = new ElfNoteFactory(nativeWord, header());
         List<ElfNote> notes = new ArrayList<>();
 
         long curr = 0L;
@@ -52,8 +51,10 @@ public class ElfNotesSection<
 
             byte[] descriptor = sf.readFixedSizeByteArrayWithAlignment(descLen, 4);
 
-            notes.add(
-                    noteFactory.mkNote(nameLen, name, descLen, descriptor, type));
+            notes.add(noteFactory.mkNote(
+                    nameLen, nameBytes, name,
+                    descLen, descriptor,
+                    type));
 
             curr = sf.currentPositionInFile().value().longValue();
         }

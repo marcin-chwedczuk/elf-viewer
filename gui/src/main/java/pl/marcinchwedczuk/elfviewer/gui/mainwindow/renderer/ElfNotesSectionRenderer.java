@@ -2,15 +2,13 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.NoteDto;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
@@ -68,6 +66,11 @@ public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NAT
         } else if (note instanceof ElfNoteGnuBuildId) {
             return String.format(
                     "Build ID: %s", ((ElfNoteGnuBuildId)note).buildId());
+        } else if (note instanceof ElfNoteGnuBuildAttribute) {
+            ElfNoteGnuBuildAttribute buildAttribute = (ElfNoteGnuBuildAttribute) note;
+            return String.format("%s: %s",
+                    buildAttribute.buildAttributeName(),
+                    buildAttribute.buildAttributeValue());
         } else {
             return "";
         }

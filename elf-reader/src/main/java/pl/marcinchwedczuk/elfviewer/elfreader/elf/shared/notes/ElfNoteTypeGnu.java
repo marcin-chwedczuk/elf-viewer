@@ -63,6 +63,13 @@ public class ElfNoteTypeGnu extends IntPartialEnum<ElfNoteTypeGnu> {
     @ElfApi("GNU_PROPERTY_TYPE_0")
     public static final ElfNoteTypeGnu GNU_PROPERTY_TYPE_0 = new ElfNoteTypeGnu(5, "GNU_PROPERTY_TYPE_0");
 
+    @ElfApi("NT_GNU_BUILD_ATTRIBUTE_OPEN")
+    public static final ElfNoteTypeGnu GNU_BUILD_ATTRIBUTE_OPEN = new ElfNoteTypeGnu(0x100, "GNU_BUILD_ATTRIBUTE_OPEN");
+
+    @ElfApi("NT_GNU_BUILD_ATTRIBUTE_FUNC")
+    public static final ElfNoteTypeGnu GNU_BUILD_ATTRIBUTE_FUNC = new ElfNoteTypeGnu(0x101, "GNU_BUILD_ATTRIBUTE_FUNC");
+
+
     protected ElfNoteTypeGnu(int value) {
         super(value);
     }
@@ -85,7 +92,7 @@ public class ElfNoteTypeGnu extends IntPartialEnum<ElfNoteTypeGnu> {
 
     private static AtomicReference<Map<String, String>> name2apiNameMappingContainer = new AtomicReference<>(null);
     @Override
-    protected AtomicReference<Map<String, String>> name2apiNameMappingContainer() {
+    protected AtomicReference<Map<String, String>> name2ApiNameMappingContainer() {
         return name2apiNameMappingContainer;
     }
 }

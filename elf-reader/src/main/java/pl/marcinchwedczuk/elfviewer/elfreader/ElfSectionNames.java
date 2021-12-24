@@ -282,4 +282,10 @@ public class ElfSectionNames {
      * SHT_GNU_versym.  The attribute type used is SHF_ALLOC.
      */
     public static final String GNU_VERSION_R = ".gnu.version_r";
+
+    /**
+     * Section holds notes encoding GNU build attributes in their names.
+     * See: https://fedoraproject.org/wiki/Toolchain/Watermark for details.
+     */
+    public static final String GNU_BUILD_ATTRIBUTES = ".gnu.build.attributes";
 }
