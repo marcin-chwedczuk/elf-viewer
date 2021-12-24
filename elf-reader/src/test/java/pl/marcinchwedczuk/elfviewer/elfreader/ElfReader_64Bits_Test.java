@@ -6,6 +6,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildAttribute;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuBuildId;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHeader;
@@ -19,7 +20,9 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.INIT;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
@@ -567,5 +570,37 @@ public class ElfReader_64Bits_Test {
 
         assertThat(warningSection.warning())
                 .isEqualTo("the `gets' function is dangerous and should not be used.");
+    }
+
+    @Test
+    void elf64_gnu_build_attributes() {
+        ElfFile<Long> elfFile = ElfReader.readElf64(arm64libc);
+
+        ElfNotesSection<Long> notesSection = elfFile
+                .sectionWithName(ElfSectionNames.GNU_BUILD_ATTRIBUTES)
+                .get()
+                .asNotesSection();
+
+        List<ElfNoteGnuBuildAttribute> buildAttributes = notesSection.notes().stream()
+                .map(ElfNoteGnuBuildAttribute.class::cast)
+                .collect(toList());
+
+        // annobin version - String value
+        assertThat(buildAttributes.get(1).buildAttributeName())
+                .isEqualTo("build tool version");
+        assertThat(buildAttributes.get(1).buildAttributeValue())
+                .isEqualTo("annobin gcc 11.0.0 20210210");
+
+        // FORTIFY - Numeric value
+        assertThat(buildAttributes.get(6).buildAttributeName())
+                .isEqualTo("FORTIFY");
+        assertThat(buildAttributes.get(6).buildAttributeValue())
+                .isEqualTo((Object)0xfeL);
+
+        // GLIBCXX_ASSERTIONS - Boolean True Value
+        assertThat(buildAttributes.get(7).buildAttributeName())
+                .isEqualTo("GLIBCXX_ASSERTIONS");
+        assertThat(buildAttributes.get(7).buildAttributeValue())
+                .isEqualTo(Boolean.TRUE);
     }
 }

@@ -92,6 +92,7 @@ public class ElfNoteGnuBuildAttribute extends ElfNoteGnu {
             case '$': {
                 StringBuilder value = new StringBuilder();
                 for (int curr = valueStart; curr < nameBytes.length; curr++) {
+                    if (nameBytes[curr] == 0) break;
                     value.append((char)nameBytes[curr]);
                 }
                 return value.toString();

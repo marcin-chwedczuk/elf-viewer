@@ -111,4 +111,8 @@ public class ElfSection<
     public ElfGnuWarningSection<NATIVE_WORD> asGnuWarningSection() {
         return (ElfGnuWarningSection<NATIVE_WORD>) this;
     }
+
+    public ElfNotesSection<NATIVE_WORD> asNotesSection() {
+        return (ElfNotesSection<NATIVE_WORD>) this;
+    }
 }
