@@ -4,6 +4,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNote;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteFactory;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnu;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
@@ -20,13 +21,17 @@ import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.N
 public class ElfNotesSection<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
         > extends ElfSection<NATIVE_WORD> {
-    public ElfNotesSection(NativeWord<NATIVE_WORD> nativeWord, StructuredFileFactory<NATIVE_WORD> structuredFileFactory, ElfFile<NATIVE_WORD> elfFile, ElfSectionHeader<NATIVE_WORD> header) {
+    public ElfNotesSection(NativeWord<NATIVE_WORD> nativeWord,
+                           StructuredFileFactory<NATIVE_WORD> structuredFileFactory,
+                           ElfFile<NATIVE_WORD> elfFile,
+                           ElfSectionHeader<NATIVE_WORD> header) {
         super(nativeWord, structuredFileFactory, elfFile, header);
 
         Args.checkSectionType(header, NOTE);
     }
 
     public List<ElfNote> notes() {
+        ElfNoteFactory noteFactory = new ElfNoteFactory();
         List<ElfNote> notes = new ArrayList<>();
 
         long curr = 0L;
@@ -47,18 +52,8 @@ public class ElfNotesSection<
 
             byte[] descriptor = sf.readFixedSizeByteArrayWithAlignment(descLen, 4);
 
-            // TODO: Extract factory
-            if ("GNU".equals(name)) {
-                notes.add(ElfNoteGnu.createGnuNote(
-                        nameLen, name,
-                        descLen, descriptor,
-                        type));
-            } else {
-                notes.add(new ElfNote(
-                        nameLen, name,
-                        descLen, descriptor,
-                        type));
-            }
+            notes.add(
+                    noteFactory.mkNote(nameLen, name, descLen, descriptor, type));
 
             curr = sf.currentPositionInFile().value().longValue();
         }
