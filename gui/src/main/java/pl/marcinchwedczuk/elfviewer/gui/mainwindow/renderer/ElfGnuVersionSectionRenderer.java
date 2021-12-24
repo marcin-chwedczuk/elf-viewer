@@ -3,13 +3,8 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfInvalidSection;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.IndexValueDto;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StructureFieldDto;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.utils.StreamUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.stream.Collectors;
 

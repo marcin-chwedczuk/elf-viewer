@@ -3,7 +3,6 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfStringTableSection;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.StringTableEntryDto;
 
 import java.util.List;
 
