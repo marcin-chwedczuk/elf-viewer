@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
 import pl.marcinchwedczuk.elfviewer.elfreader.endianness.Endianness;
 
 public class StructuredFile32 extends StructuredFile<Integer> {

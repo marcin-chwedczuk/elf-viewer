@@ -7,7 +7,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeed
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededRevision;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.visitor.ElfVisitor;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.StringTableIndex;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 

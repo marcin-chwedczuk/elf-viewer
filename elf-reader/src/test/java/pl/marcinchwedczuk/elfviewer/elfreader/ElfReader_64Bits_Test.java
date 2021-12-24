@@ -1,8 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader;
 
 import org.junit.jupiter.api.Test;
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
-import pl.marcinchwedczuk.elfviewer.elfreader.ElfSectionNames;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteGnuABITag;
@@ -13,23 +11,21 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfProgramHead
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments.ElfSegment;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.*;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf32.intel32.Intel386RelocationType;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.AbstractFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.InMemoryFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.INIT;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolBinding.GLOBAL;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.FUNCTION;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolVisibility.DEFAULT;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.PROGBITS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.ALLOCATE;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.SectionAttributes.EXECUTABLE;
 

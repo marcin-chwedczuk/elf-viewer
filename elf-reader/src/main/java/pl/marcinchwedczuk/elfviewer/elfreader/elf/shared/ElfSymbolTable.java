@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.SECTION;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.DYNAMIC_SYMBOLS;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.SYMBOL_TABLE;
+import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolType.SECTION;
 
 public class ElfSymbolTable<
         NATIVE_WORD extends Number & Comparable<NATIVE_WORD>

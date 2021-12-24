@@ -1,8 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.segments;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSection;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,7 +19,6 @@
         <extra-jvm-options-when-running-tests>
             <!-- Needed to make module code accessible outside module e.g. in unit tests. -->
             --add-opens pl.marcinchwedczuk.elfviewer.elfreader/pl.marcinchwedczuk.elfviewer.elfreader=ALL-UNNAMED
-            --add-opens pl.marcinchwedczuk.elfviewer.elfreader/pl.marcinchwedczuk.elfviewer.elfreader.elf32=ALL-UNNAMED
             --add-opens pl.marcinchwedczuk.elfviewer.elfreader/pl.marcinchwedczuk.elfviewer.elfreader.elf=ALL-UNNAMED
             --add-opens pl.marcinchwedczuk.elfviewer.elfreader/pl.marcinchwedczuk.elfviewer.elfreader.utils=ALL-UNNAMED
             --add-opens pl.marcinchwedczuk.elfviewer.elfreader/pl.marcinchwedczuk.elfviewer.elfreader.io=ALL-UNNAMED

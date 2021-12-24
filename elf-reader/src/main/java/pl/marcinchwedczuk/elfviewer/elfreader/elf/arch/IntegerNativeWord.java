@@ -1,6 +1,9 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.arch;
 
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.*;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfAddress;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfOffset;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocation;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfRelocationAddend;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFile;
 
 import java.util.stream.IntStream;

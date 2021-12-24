@@ -3,8 +3,6 @@ package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 import java.util.*;
 import java.util.function.Function;
 
-import static java.util.Objects.requireNonNull;
-
 public abstract class ShortPartialEnum<T extends ShortPartialEnum<T>> extends BasePartialEnum {
     private final short value;
 

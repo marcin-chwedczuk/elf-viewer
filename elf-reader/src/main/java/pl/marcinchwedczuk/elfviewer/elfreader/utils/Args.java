@@ -1,8 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.utils;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionHeader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType;
 
 import java.util.Arrays;

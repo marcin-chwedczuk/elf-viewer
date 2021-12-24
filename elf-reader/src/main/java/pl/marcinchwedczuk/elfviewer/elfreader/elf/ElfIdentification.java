@@ -2,7 +2,6 @@ package pl.marcinchwedczuk.elfviewer.elfreader.elf;
 
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.AsciiStrings;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentificationIndexes.*;

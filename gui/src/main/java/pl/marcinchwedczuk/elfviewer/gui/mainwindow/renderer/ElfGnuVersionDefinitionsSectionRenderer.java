@@ -3,11 +3,8 @@ package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionDefinitionsSection;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionRequirementsSection;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionDefinition;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionDefinitionAuxiliary;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeeded;
-import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionNeededAuxiliary;
 
 import java.util.ArrayList;
 import java.util.List;

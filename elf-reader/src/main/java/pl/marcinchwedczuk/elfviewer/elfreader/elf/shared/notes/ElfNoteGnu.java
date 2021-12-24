@@ -1,9 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes;
 
 
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteTypeGnu.GNU_ABI_TAG;
-import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.ElfNoteTypeGnu.GNU_BUILD_ID;
-
 public class ElfNoteGnu extends ElfNote {
 
 

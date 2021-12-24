@@ -1,7 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.scene.control.TableView;
-import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.Renderer;
 
 import java.util.function.Consumer;
 

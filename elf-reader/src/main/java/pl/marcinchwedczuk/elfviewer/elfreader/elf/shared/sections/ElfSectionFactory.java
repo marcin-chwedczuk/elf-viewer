@@ -10,7 +10,6 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.StructuredFileFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSectionType.*;
 
 public class ElfSectionFactory<

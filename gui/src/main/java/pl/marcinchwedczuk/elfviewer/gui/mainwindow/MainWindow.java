@@ -18,7 +18,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
     public static MainWindow showOn(Stage window) {
