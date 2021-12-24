@@ -1,4 +1,4 @@
-package pl.marcinchwedczuk.elfviewer.elfreader.elf32;
+package pl.marcinchwedczuk.elfviewer.elfreader;
 
 import org.junit.jupiter.api.Test;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
@@ -34,6 +34,7 @@ public class ElfReader_64Bits_Test {
     private final AbstractFile helloWorld64;
     private final AbstractFile libc64;
     private final AbstractFile ld64;
+    private final AbstractFile arm64libc;
 
     public ElfReader_64Bits_Test() throws IOException {
         helloWorld64 = new InMemoryFile(this.getClass()
@@ -46,6 +47,10 @@ public class ElfReader_64Bits_Test {
 
         ld64 = new InMemoryFile(this.getClass()
                 .getResourceAsStream("ld-2.17.so")
+                .readAllBytes());
+
+        arm64libc = new InMemoryFile(this.getClass()
+                .getResourceAsStream("arm64-libc-2.33.so")
                 .readAllBytes());
     }
 

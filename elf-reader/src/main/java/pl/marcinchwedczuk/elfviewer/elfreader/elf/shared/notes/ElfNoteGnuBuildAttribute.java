@@ -132,6 +132,7 @@ public class ElfNoteGnuBuildAttribute extends ElfNoteGnu {
                 // Unknown value type
                 return null;
         }
-
     }
+
+    // TODO: Memory range
 }
