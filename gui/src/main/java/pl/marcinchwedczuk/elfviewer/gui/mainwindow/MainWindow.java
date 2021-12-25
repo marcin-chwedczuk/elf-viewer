@@ -179,7 +179,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void clearSearchText() {
-
+        searchText.clear();
     }
 
     public static FileChooser newOpenFileChooser() {
