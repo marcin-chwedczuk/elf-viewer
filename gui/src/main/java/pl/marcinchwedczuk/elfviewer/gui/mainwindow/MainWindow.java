@@ -1,14 +1,15 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -103,6 +104,9 @@ public class MainWindow implements Initializable {
                     }
                 });
 
+        // Allow selecting cells
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableView.getSelectionModel().setCellSelectionEnabled(true);
         tableView.setPlaceholder(new Label("Select data to display"));
 
         recentlyOpenFiles = new RecentlyOpenFiles(recentlyOpen, this::loadElfFile);
@@ -133,6 +137,29 @@ public class MainWindow implements Initializable {
                     .build();
         treeView.setRoot(rootItem);
         rootItem.setExpanded(true);
+    }
+
+    @FXML
+    private void tableViewKeyPressed(KeyEvent event) {
+        // Copy to clipboard
+        KeyCodeCombination copyShortcut = new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN);
+        if (copyShortcut.match(event)) {
+            event.consume();
+
+            StringBuilder clipboardText = new StringBuilder();
+
+            // Cells are in by row order, here we depend on this JavaFX behaviour
+            ObservableList<TablePosition> cells = tableView.getSelectionModel().getSelectedCells();
+            int lastRow = -1;
+            for (int i = 0; i < cells.size(); i++) {
+                TablePosition position = cells.get(i);
+
+                Object data = position.getTableColumn().getCellData(position.getRow());
+
+                System.out.println(String.format(
+                        "row %d, col %d - %s", position.getRow(), position.getColumn(), data));
+            }
+        }
     }
 
     @FXML

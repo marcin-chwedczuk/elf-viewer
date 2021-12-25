@@ -36,7 +36,7 @@
                                 <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <TableView fx:id="tableView" style="-fx-font-family: monospaced;" GridPane.rowIndex="1" />
+                                <TableView fx:id="tableView" onKeyPressed="#tableViewKeyPressed" style="-fx-font-family: monospaced;" GridPane.rowIndex="1" />
                                 <HBox alignment="CENTER" GridPane.halignment="CENTER">
                                     <children>
                                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
