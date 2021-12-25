@@ -141,24 +141,21 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void tableViewKeyPressed(KeyEvent event) {
-        // Copy to clipboard
         KeyCodeCombination copyShortcut = new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN);
         if (copyShortcut.match(event)) {
             event.consume();
 
-            StringBuilder clipboardText = new StringBuilder();
+            ClipboardDataBuilder cdb = new ClipboardDataBuilder();
 
             // Cells are in by row order, here we depend on this JavaFX behaviour
             ObservableList<TablePosition> cells = tableView.getSelectionModel().getSelectedCells();
-            int lastRow = -1;
             for (int i = 0; i < cells.size(); i++) {
                 TablePosition position = cells.get(i);
-
                 Object data = position.getTableColumn().getCellData(position.getRow());
-
-                System.out.println(String.format(
-                        "row %d, col %d - %s", position.getRow(), position.getColumn(), data));
+                cdb.addCellData(position.getRow(), position.getColumn(), data);
             }
+
+            cdb.copyToClipboard();
         }
     }
 
