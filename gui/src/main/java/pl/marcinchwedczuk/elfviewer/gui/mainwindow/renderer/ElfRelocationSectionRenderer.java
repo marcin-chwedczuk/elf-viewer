@@ -17,9 +17,8 @@ public class ElfRelocationSectionRenderer<NATIVE_WORD extends Number & Comparabl
     private final ElfRelocationSection<NATIVE_WORD> relocationSection;
 
     public ElfRelocationSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                        StringProperty searchPhase,
                                         ElfRelocationSection<NATIVE_WORD> relocationSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.relocationSection = relocationSection;
     }
 

@@ -18,9 +18,8 @@ public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfSymbolTableSection<NATIVE_WORD> symbolTableSection;
 
     public ElfSymbolTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                         StringProperty searchPhase,
                                          ElfSymbolTableSection<NATIVE_WORD> symbolTableSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.symbolTableSection = symbolTableSection;
     }
 

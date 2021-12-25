@@ -17,9 +17,8 @@ public class ElfStringTableSectionRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfStringTableSection<NATIVE_WORD> section;
 
     public ElfStringTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                         StringProperty searchPhase,
                                          ElfStringTableSection<NATIVE_WORD> section) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.section = section;
     }
 

@@ -17,9 +17,8 @@ public class ElfSectionStringsViewRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfSection<NATIVE_WORD> section;
 
     public ElfSectionStringsViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                         StringProperty searchPhase,
                                          ElfSection<NATIVE_WORD> section) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         if (!section.header().flags().hasFlag(STRINGS))
             throw new IllegalArgumentException("Section contents does not consist from strings.");
 

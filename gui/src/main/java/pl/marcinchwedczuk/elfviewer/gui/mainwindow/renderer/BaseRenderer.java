@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -10,6 +11,7 @@ import javafx.scene.control.Tooltip;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.LambdaValueFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -19,13 +21,14 @@ import java.util.regex.Pattern;
 public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         implements Renderer {
     private final NativeWord<NATIVE_WORD> nativeWordMetadata;
-    private final StringProperty filter;
 
-    protected BaseRenderer(NativeWord<NATIVE_WORD> nativeWordMetadata,
-                           StringProperty searchPhrase) {
+    private final StringProperty filterPhase = new SimpleStringProperty();
+
+    protected BaseRenderer(NativeWord<NATIVE_WORD> nativeWordMetadata) {
         this.nativeWordMetadata = nativeWordMetadata;
-        this.filter = searchPhrase;
     }
+
+    public StringProperty filterPhaseProperty() { return filterPhase; }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -39,13 +42,13 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         // there should be wrapper
         FilteredList<R> filteredList = new FilteredList<>(
                 FXCollections.observableArrayList(defineRows()),
-                createFilter(filter.getValue()));
+                createFilter(filterPhase.getValue()));
 
-        // TODO: Make sure to clear search field listeners when changing view
-        filter.addListener((observable, oldValue, newValue) ->
-                filteredList.setPredicate(createFilter(filter.get())));
+        filterPhase.addListener((observable, oldValue, newValue) ->
+                filteredList.setPredicate(createFilter(filterPhase.get())));
 
-        tableView.itemsProperty().set((FilteredList<Object>) (FilteredList<?>) filteredList);
+        tableView.itemsProperty()
+                .set((FilteredList<Object>) (FilteredList<?>) filteredList);
     }
 
     protected abstract List<TableColumn<R, String>> defineColumns();
@@ -112,26 +115,43 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
     }
 
     protected static Predicate<String[]> mkStringsFilter(String phrase) {
-        // TODO: Support multiple keywords 'foo bar'
-        // TODO: Support detaching search phrase listener
+        return mkMatcher(phrase);
+    }
 
-        Pattern p = (phrase != null && !phrase.isEmpty())
-                ? Pattern.compile(Pattern.quote(phrase), Pattern.CASE_INSENSITIVE)
-                : null;
+    private static Predicate<String[]> mkMatcher(String pattern) {
+        if (pattern == null || pattern.isBlank())
+            return (strings) -> true;
+
+        String[] parts = pattern.split("\\s+");
+        if (parts.length == 0)
+            return (strings) -> true;
+
+        Pattern[] subPatterns = Arrays.stream(parts)
+                .map(Pattern::quote)
+                .map(q -> Pattern.compile(q, Pattern.CASE_INSENSITIVE))
+                .toArray(Pattern[]::new);
 
         return (strings) -> {
-            if (p == null)
-                return true;
-
+            // strings represents a row, we match when the row contains all parts of the pattern
             if (strings == null || strings.length == 0)
                 return false;
 
-            for (int i = 0; i < strings.length; i++) {
-                if (strings[i] != null && p.matcher(strings[i]).find())
-                    return true;
+            // TODO: Not very efficient - can we make it faster?
+            for (int i = 0; i < subPatterns.length; i++) {
+                Pattern p = subPatterns[i];
+
+                boolean hasMatch = false;
+                for (int j = 0; j < strings.length; j++) {
+                    if (p.matcher(strings[j]).find()) {
+                        hasMatch = true;
+                        break;
+                    }
+                }
+
+                if (!hasMatch) return false;
             }
 
-            return false;
+            return true;
         };
     }
 

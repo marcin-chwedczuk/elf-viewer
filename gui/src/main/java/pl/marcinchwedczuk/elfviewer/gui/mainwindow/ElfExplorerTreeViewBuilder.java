@@ -16,17 +16,20 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.*;
 import java.io.File;
 import java.util.Stack;
 
-public class ElfExplorerTreeViewBuilder {
+public class ElfExplorerTreeViewBuilder<
+        NATIVE_WORD extends Number & Comparable<NATIVE_WORD>
+        >
+{
     private final File elfPath;
-    private final ElfFile<?> elfFile;
+    private final ElfFile<NATIVE_WORD> elfFile;
     private final TableView<Object> tableView;
 
-    private final Stack<TreeItem<DisplayAction>> parents = new Stack<>();
+    private final Stack<TreeItem<RenderDataAction<NATIVE_WORD>>> parents = new Stack<>();
 
     private final StringProperty searchPhrase;
 
     public ElfExplorerTreeViewBuilder(File elfPath,
-                                      ElfFile<?> elfFile,
+                                      ElfFile<NATIVE_WORD> elfFile,
                                       TableView<Object> tableView,
                                       StringProperty searchPhrase) {
         this.elfPath = elfPath;
@@ -35,13 +38,17 @@ public class ElfExplorerTreeViewBuilder {
         this.searchPhrase = searchPhrase;
     }
 
-    public TreeItem<DisplayAction> build() {
+    private NativeWord<NATIVE_WORD> nativeWord() {
+        return elfFile.nativeWordMetadata();
+    }
+
+    public TreeItem<RenderDataAction<NATIVE_WORD>> build() {
         parents.clear();
 
         String fileName = elfPath.getName();
-        TreeItem<DisplayAction> rootItem = new TreeItem<>(new DisplayAction(
+        TreeItem<RenderDataAction<NATIVE_WORD>> rootItem = new TreeItem<>(new RenderDataAction<>(
                 fileName,
-                tv -> clearTable()));
+                new NothingRenderer<>(nativeWord())));
         parents.add(rootItem);
 
         buildTreeMenu(elfFile);
@@ -52,16 +59,15 @@ public class ElfExplorerTreeViewBuilder {
         return parents.elementAt(0);
     }
 
-    private <T extends Number & Comparable<T>>
-    void buildTreeMenu(ElfFile<T> elfFile) {
-        elfFile.accept(new BuildMenuVisitor<>(elfFile.nativeWordMetadata()));
+    void buildTreeMenu(ElfFile<NATIVE_WORD> elfFile) {
+        elfFile.accept(new BuildMenuVisitor(elfFile.nativeWordMetadata()));
     }
 
-    private void addChild(TreeItem<DisplayAction> child) {
+    private void addChild(TreeItem<RenderDataAction<NATIVE_WORD>> child) {
         this.parents.peek().getChildren().add(child);
     }
 
-    private void enterNode(TreeItem<DisplayAction> child) {
+    private void enterNode(TreeItem<RenderDataAction<NATIVE_WORD>> child) {
         this.parents.peek().getChildren().add(child);
         this.parents.push(child);
     }
@@ -75,7 +81,7 @@ public class ElfExplorerTreeViewBuilder {
         tableView.getColumns().clear();
     }
 
-    class BuildMenuVisitor<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>> implements ElfVisitor<NATIVE_WORD> {
+    class BuildMenuVisitor implements ElfVisitor<NATIVE_WORD> {
         private final NativeWord<NATIVE_WORD> nativeWord;
 
         BuildMenuVisitor(NativeWord<NATIVE_WORD> nativeWord) {
@@ -84,9 +90,9 @@ public class ElfExplorerTreeViewBuilder {
 
         @Override
         public void enter(ElfIdentification identification) {
-            enterNode(new TreeItem<>(new DisplayAction(
+            enterNode(new TreeItem<>(new RenderDataAction<NATIVE_WORD>(
                     "Identification Bytes",
-                    tv -> new ElfIdentificationRenderer<>(nativeWord, searchPhrase, identification).renderDataOn(tv))));
+                    new ElfIdentificationRenderer<>(nativeWord, identification))));
         }
 
         @Override
@@ -96,10 +102,9 @@ public class ElfExplorerTreeViewBuilder {
 
         @Override
         public void enter(ElfHeader<NATIVE_WORD> header) {
-            enterNode(new TreeItem<>(new DisplayAction(
+            enterNode(new TreeItem<>(new RenderDataAction<>(
                     "ELF Header",
-                    tv -> new ElfHeaderRenderer<>(nativeWord, searchPhrase, header).renderDataOn(tv)
-            )));
+                    new ElfHeaderRenderer<>(nativeWord, header))));
         }
 
         @Override
@@ -109,7 +114,9 @@ public class ElfExplorerTreeViewBuilder {
 
         @Override
         public void enterSections() {
-            enterNode(new TreeItem<>(new DisplayAction("Sections")));
+            enterNode(new TreeItem<>(new RenderDataAction<>(
+                    "Sections",
+                    new NothingRenderer<>(nativeWord))));
         }
 
         private void genericSectionEnter(ElfSection<NATIVE_WORD> section) {
@@ -117,21 +124,21 @@ public class ElfExplorerTreeViewBuilder {
                     ? "(empty)"
                     : section.name();
 
-            enterNode(new TreeItem<>(new DisplayAction(
+            enterNode(new TreeItem<>(new RenderDataAction<>(
                     displayName,
-                    tv -> new ElfSectionHeaderRenderer<>(nativeWord, searchPhrase, section.header()).renderDataOn(tv))));
+                    new ElfSectionHeaderRenderer<>(nativeWord, section.header()))));
 
             /* Various heuristics */
             if (section.containsStrings()) {
-                addChild(new TreeItem<>(new DisplayAction(
+                addChild(new TreeItem<>(new RenderDataAction<>(
                         "(Null Terminated Strings)",
-                        tv -> new ElfSectionStringsViewRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                        new ElfSectionStringsViewRenderer<>(nativeWord, section))));
             }
 
             if (section.header().size().longValue() > 0) {
-                addChild(new TreeItem<>(new DisplayAction(
+                addChild(new TreeItem<>(new RenderDataAction<>(
                         "(Contents)",
-                        tv -> new FileViewRenderer<>(nativeWord, searchPhrase, section.contents()).renderDataOn(tv))));
+                        new FileViewRenderer<>(nativeWord, section.contents()))));
             }
         }
 
@@ -152,9 +159,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfDynamicSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction<>(
                     "Dynamic Tags",
-                    tv -> new ElfDynamicSectionRenderer<NATIVE_WORD>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfDynamicSectionRenderer<NATIVE_WORD>(nativeWord, section))));
         }
 
         @Override
@@ -165,9 +172,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfInterpreterSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction<>(
                     "Interpreter",
-                    tv -> new ElfInterpreterSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfInterpreterSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -178,9 +185,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfNotesSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction<>(
                     "Notes",
-                    tv -> new ElfNotesSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tableView))));
+                    new ElfNotesSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -191,9 +198,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfRelocationSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction<>(
                     "Relocations",
-                    tv -> new ElfRelocationSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfRelocationSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -204,9 +211,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfRelocationAddendSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction<>(
                     "Relocations (Addend)",
-                    tv -> new ElfRelocationAddendSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfRelocationAddendSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -217,9 +224,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfStringTableSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "String Table",
-                    tv -> new ElfStringTableSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfStringTableSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -230,9 +237,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfSymbolTableSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Symbol Table",
-                    tv -> new ElfSymbolTableSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfSymbolTableSectionRenderer<>(nativeWord, section))));
         }
         @Override
         public void exit(ElfSymbolTableSection<NATIVE_WORD> section) {
@@ -242,9 +249,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfGnuHashSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Gnu Hash Table",
-                    tv -> new ElfGnuHashSectionRenderer(elfFile.nativeWordMetadata(), searchPhrase, section).renderDataOn(tv))));
+                    new ElfGnuHashSectionRenderer(elfFile.nativeWordMetadata(), section))));
         }
 
         @Override
@@ -255,9 +262,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfInvalidSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "(Parsing Errors)",
-                    tv -> new ElfInvalidSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfInvalidSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -268,9 +275,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfGnuVersionSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Symbol Versions",
-                    tv -> new ElfGnuVersionSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfGnuVersionSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -282,9 +289,9 @@ public class ElfExplorerTreeViewBuilder {
         public void enter(ElfGnuVersionRequirementsSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
 
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Symbol Versions (Required)",
-                    tv -> new ElfGnuVersionRequirementsSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfGnuVersionRequirementsSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -295,9 +302,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfGnuVersionDefinitionsSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Symbol Versions (Defined)",
-                    tv -> new ElfGnuVersionDefinitionsSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfGnuVersionDefinitionsSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -308,9 +315,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfHashSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Hash Table",
-                    tv -> new ElfHashSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfHashSectionRenderer<>(nativeWord, section))));
         }
 
         @Override
@@ -321,9 +328,9 @@ public class ElfExplorerTreeViewBuilder {
         @Override
         public void enter(ElfGnuWarningSection<NATIVE_WORD> section) {
             genericSectionEnter(section);
-            addChild(new TreeItem<>(new DisplayAction(
+            addChild(new TreeItem<>(new RenderDataAction(
                     "Warning",
-                    tv -> new ElfGnuWarningSectionRenderer<>(nativeWord, searchPhrase, section).renderDataOn(tv))));
+                    new ElfGnuWarningSectionRenderer<>(nativeWord, section))));
 
         }
 
@@ -339,7 +346,9 @@ public class ElfExplorerTreeViewBuilder {
 
         @Override
         public void enterSegments() {
-            enterNode(new TreeItem<>(new DisplayAction("Segments")));
+            enterNode(new TreeItem<>(new RenderDataAction<>(
+                    "Segments",
+                    new NothingRenderer<>(nativeWord))));
         }
 
         @Override
@@ -349,14 +358,14 @@ public class ElfExplorerTreeViewBuilder {
                     programHeader.virtualAddress().toString() + " - " +
                     programHeader.endVirtualAddress() + ")";
 
-            enterNode(new TreeItem<>(new DisplayAction(
+            enterNode(new TreeItem<>(new RenderDataAction(
                     segmentName,
-                    tv -> new ElfSegmentRenderer<>(nativeWord, searchPhrase, segment).renderDataOn(tv))));
+                    new ElfSegmentRenderer<>(nativeWord, segment))));
 
             if (segment.programHeader().fileSize().longValue() > 0) {
-                addChild(new TreeItem<>(new DisplayAction(
+                addChild(new TreeItem<>(new RenderDataAction(
                         "(Contents)",
-                        tv -> new FileViewRenderer<>(nativeWord, searchPhrase, segment.contents()).renderDataOn(tv))));
+                        new FileViewRenderer<>(nativeWord, segment.contents()))));
             }
 
             for (ElfSection<NATIVE_WORD> section : segment.containedSections()) {

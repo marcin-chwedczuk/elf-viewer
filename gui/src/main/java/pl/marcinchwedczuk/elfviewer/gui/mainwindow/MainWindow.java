@@ -14,8 +14,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
+import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,8 +58,8 @@ public class MainWindow implements Initializable {
     private TextField searchText;
 
     @FXML
-    private TreeView<DisplayAction> treeView;
-    private TreeItem<DisplayAction> rootItem;
+    private TreeView<RenderDataAction<?>> treeView;
+    private TreeItem<RenderDataAction<?>> rootItem;
 
     @FXML
     private TableView<Object> tableView;
@@ -75,9 +77,10 @@ public class MainWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         openFileChooser = newOpenFileChooser();
 
-        rootItem = new TreeItem<>(new DisplayAction("No ELF file loaded"));
+        rootItem = new TreeItem<>(new RenderDataAction<>(
+                "No ELF file loaded",
+                new NothingRenderer<>(new LongNativeWord())));
         rootItem.setExpanded(true);
-
         treeView.setRoot(rootItem);
 
         // Selection mode
@@ -85,8 +88,16 @@ public class MainWindow implements Initializable {
         treeView.getSelectionModel()
                 .selectedItemProperty()
                 .addListener((observable, oldTreeItem, newTreeItem) -> {
+                    if (oldTreeItem != null) {
+                        oldTreeItem.getValue().unmountView();
+                    }
+
+                    // Clear filter while changing views
+                    searchText.clear();
+
                     if (newTreeItem != null) {
-                        newTreeItem.getValue().displayOn(tableView);
+                        newTreeItem.getValue()
+                                .mountView(tableView, searchText.textProperty());
                     } else {
                         clearTable();
                     }
@@ -96,17 +107,6 @@ public class MainWindow implements Initializable {
 
         recentlyOpenFiles = new RecentlyOpenFiles(recentlyOpen, this::loadElfFile);
         recentlyOpenFiles.initialize();
-
-        searchText.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                applySearchFilter(newValue);
-            }
-        });
-    }
-
-    private void applySearchFilter(String searchPhrase) {
-
     }
 
     private void clearTable() {
@@ -123,13 +123,14 @@ public class MainWindow implements Initializable {
         recentlyOpenFiles.onFileOpen(f);
     }
 
+    @SuppressWarnings("unchecked")
     private void recreateTreeView() {
-        rootItem = new ElfExplorerTreeViewBuilder(
-                    currentElfPath,
-                    currentElfFile,
-                    tableView,
-                    searchText.textProperty())
-                .build();
+        rootItem = (TreeItem<RenderDataAction<?>>)(TreeItem<?>) new ElfExplorerTreeViewBuilder<>(
+                currentElfPath,
+                currentElfFile,
+                tableView,
+                searchText.textProperty())
+                    .build();
         treeView.setRoot(rootItem);
         rootItem.setExpanded(true);
     }

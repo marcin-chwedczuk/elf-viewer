@@ -20,9 +20,8 @@ public class ElfGnuVersionRequirementsSectionRenderer<NATIVE_WORD extends Number
 
     public ElfGnuVersionRequirementsSectionRenderer(
             NativeWord<NATIVE_WORD> nativeWord,
-            StringProperty searchPhase,
             ElfGnuVersionRequirementsSection<NATIVE_WORD> section) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.section = section;
     }
 

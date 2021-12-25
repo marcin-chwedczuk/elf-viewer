@@ -16,9 +16,8 @@ public class ElfGnuWarningSectionRenderer<NATIVE_WORD extends Number & Comparabl
     private final ElfGnuWarningSection warningSection;
 
     public ElfGnuWarningSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                        StringProperty searchPhase,
                                         ElfGnuWarningSection warningSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.warningSection = warningSection;
     }
 

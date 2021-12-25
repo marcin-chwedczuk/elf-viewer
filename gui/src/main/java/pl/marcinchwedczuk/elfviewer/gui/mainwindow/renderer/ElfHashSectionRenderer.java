@@ -18,9 +18,8 @@ public class ElfHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATI
     private final ElfHashSection<NATIVE_WORD> hashSection;
 
     public ElfHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                  StringProperty searchPhase,
                                   ElfHashSection<NATIVE_WORD> hashSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.hashSection = hashSection;
     }
 

@@ -18,9 +18,8 @@ public class ElfGnuVersionSectionRenderer<NATIVE_WORD extends Number & Comparabl
     private final ElfGnuVersionSection<NATIVE_WORD> section;
 
     public ElfGnuVersionSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                        StringProperty searchPhase,
                                         ElfGnuVersionSection<NATIVE_WORD> section) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.section = section;
     }
 

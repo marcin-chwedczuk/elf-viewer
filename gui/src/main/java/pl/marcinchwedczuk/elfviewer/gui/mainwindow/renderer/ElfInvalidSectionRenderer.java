@@ -16,9 +16,8 @@ public class ElfInvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfInvalidSection<NATIVE_WORD> invalidSection;
 
     public ElfInvalidSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                     StringProperty searchPhase,
                                      ElfInvalidSection<NATIVE_WORD> invalidSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.invalidSection = invalidSection;
     }
 

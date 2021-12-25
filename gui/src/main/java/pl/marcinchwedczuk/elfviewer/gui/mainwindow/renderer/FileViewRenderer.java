@@ -18,9 +18,8 @@ public class FileViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WOR
     private final FileView fileView;
 
     public FileViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                            StringProperty searchPhase,
                             FileView fileView) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.fileView = fileView;
     }
 

@@ -18,9 +18,8 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfGnuHashSection<NATIVE_WORD> section;
 
     public ElfGnuHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                     StringProperty searchPhase,
                                      ElfGnuHashSection<NATIVE_WORD> section) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.section = section;
     }
 

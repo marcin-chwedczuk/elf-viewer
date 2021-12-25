@@ -19,9 +19,8 @@ public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NAT
     private final ElfNotesSection<NATIVE_WORD> notesSection;
 
     public ElfNotesSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                   StringProperty searchPhase,
                                    ElfNotesSection<NATIVE_WORD> notesSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.notesSection = notesSection;
     }
 

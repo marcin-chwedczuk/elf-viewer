@@ -17,9 +17,8 @@ public class ElfSegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_W
     private final ElfSegment<NATIVE_WORD> segment;
 
     public ElfSegmentRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                              StringProperty searchPhase,
                               ElfSegment<NATIVE_WORD> segment) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.segment = segment;
     }
 

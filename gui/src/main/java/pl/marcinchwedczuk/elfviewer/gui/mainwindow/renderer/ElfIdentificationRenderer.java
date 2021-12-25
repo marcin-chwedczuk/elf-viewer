@@ -17,9 +17,8 @@ public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfIdentification identification;
 
     public ElfIdentificationRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                     StringProperty searchPhase,
                                      ElfIdentification identification) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.identification = identification;
     }
 

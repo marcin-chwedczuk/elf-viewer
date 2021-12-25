@@ -17,9 +17,8 @@ public class ElfRelocationAddendSectionRenderer<NATIVE_WORD extends Number & Com
     private final ElfRelocationAddendSection<NATIVE_WORD> relocationSection;
 
     public ElfRelocationAddendSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                              StringProperty searchPhase,
                                               ElfRelocationAddendSection<NATIVE_WORD> relocationSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.relocationSection = relocationSection;
     }
 

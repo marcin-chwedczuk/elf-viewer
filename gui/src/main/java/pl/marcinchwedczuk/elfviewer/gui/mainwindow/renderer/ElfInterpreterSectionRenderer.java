@@ -16,9 +16,8 @@ public class ElfInterpreterSectionRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfInterpreterSection interpreterSection;
 
     public ElfInterpreterSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                         StringProperty searchPhase,
                                          ElfInterpreterSection interpreterSection) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.interpreterSection = interpreterSection;
     }
 

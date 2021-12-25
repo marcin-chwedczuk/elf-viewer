@@ -16,9 +16,8 @@ public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WO
     private final ElfHeader<NATIVE_WORD> header;
 
     public ElfHeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                             StringProperty searchPhase,
                              ElfHeader<NATIVE_WORD> header) {
-        super(nativeWord, searchPhase);
+        super(nativeWord);
         this.header = header;
     }
 

@@ -20,9 +20,8 @@ public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfDynamicSection<NATIVE_WORD> dynamicSection;
 
     public ElfDynamicSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
-                                     StringProperty searchPhrase,
                                      ElfDynamicSection<NATIVE_WORD> dynamicSection) {
-        super(nativeWord, searchPhrase);
+        super(nativeWord);
         this.dynamicSection = dynamicSection;
     }
 
