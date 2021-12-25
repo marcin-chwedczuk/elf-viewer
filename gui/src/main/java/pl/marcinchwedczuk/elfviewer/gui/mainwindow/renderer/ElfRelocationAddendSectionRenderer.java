@@ -1,10 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfRelocationAddendSection;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
@@ -15,8 +17,9 @@ public class ElfRelocationAddendSectionRenderer<NATIVE_WORD extends Number & Com
     private final ElfRelocationAddendSection<NATIVE_WORD> relocationSection;
 
     public ElfRelocationAddendSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                              StringProperty searchPhase,
                                               ElfRelocationAddendSection<NATIVE_WORD> relocationSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.relocationSection = relocationSection;
     }
 
@@ -42,5 +45,10 @@ public class ElfRelocationAddendSectionRenderer<NATIVE_WORD extends Number & Com
                         hex(rel.symbol()),
                         hex(rel.addend())))
                 .collect(toList());
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

@@ -1,10 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfInterpreterSection;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.function.Function.identity;
 
@@ -14,8 +16,9 @@ public class ElfInterpreterSectionRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfInterpreterSection interpreterSection;
 
     public ElfInterpreterSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         StringProperty searchPhase,
                                          ElfInterpreterSection interpreterSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.interpreterSection = interpreterSection;
     }
 
@@ -27,9 +30,16 @@ public class ElfInterpreterSectionRenderer<NATIVE_WORD extends Number & Comparab
     }
 
     @Override
-    protected List<? extends String> defineRows() {
+    protected List<String> defineRows() {
         return List.of(
                 interpreterSection.interpreterPath()
         );
+    }
+
+    @Override
+    protected Predicate<String> createFilter(String searchPhrase) {
+        // TODO: Remove duplication, move to base class
+        String lowerCasePhrase = searchPhrase == null ? "" : searchPhrase.toLowerCase();
+        return row -> row != null && row.toLowerCase().contains(lowerCasePhrase);
     }
 }

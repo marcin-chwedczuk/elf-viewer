@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionDefinitionsSection;
@@ -8,6 +9,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.versions.ElfVersionDefi
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -18,8 +20,9 @@ public class ElfGnuVersionDefinitionsSectionRenderer<NATIVE_WORD extends Number 
 
     public ElfGnuVersionDefinitionsSectionRenderer(
             NativeWord<NATIVE_WORD> nativeWord,
+            StringProperty searchPhase,
             ElfGnuVersionDefinitionsSection<NATIVE_WORD> section) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.section = section;
     }
 
@@ -70,5 +73,10 @@ public class ElfGnuVersionDefinitionsSectionRenderer<NATIVE_WORD extends Number 
         }
 
         return rows.stream();
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

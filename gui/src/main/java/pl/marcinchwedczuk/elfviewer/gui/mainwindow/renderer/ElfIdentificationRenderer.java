@@ -1,11 +1,13 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.ElfIdentification;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
@@ -15,8 +17,9 @@ public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfIdentification identification;
 
     public ElfIdentificationRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     StringProperty searchPhase,
                                      ElfIdentification identification) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.identification = identification;
     }
 
@@ -68,5 +71,10 @@ public class ElfIdentificationRenderer<NATIVE_WORD extends Number & Comparable<N
 
                 mkStrings("EI_PAD", ByteArrays.toHexString(identification.paddingBytes(), ":"))
         );
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

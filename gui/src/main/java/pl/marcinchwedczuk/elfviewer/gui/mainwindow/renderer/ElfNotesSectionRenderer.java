@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.notes.*;
@@ -7,6 +8,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfNotesSectio
 import pl.marcinchwedczuk.elfviewer.elfreader.utils.ByteArrays;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
@@ -17,8 +19,9 @@ public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NAT
     private final ElfNotesSection<NATIVE_WORD> notesSection;
 
     public ElfNotesSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                   StringProperty searchPhase,
                                    ElfNotesSection<NATIVE_WORD> notesSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.notesSection = notesSection;
     }
 
@@ -72,5 +75,10 @@ public class ElfNotesSectionRenderer<NATIVE_WORD extends Number & Comparable<NAT
         } else {
             return "";
         }
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

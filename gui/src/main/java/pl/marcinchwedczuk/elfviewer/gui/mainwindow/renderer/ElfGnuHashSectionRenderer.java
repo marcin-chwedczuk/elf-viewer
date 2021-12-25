@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfGnuHashTable;
@@ -9,6 +10,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuHashSect
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<String[], NATIVE_WORD>
@@ -16,8 +18,9 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfGnuHashSection<NATIVE_WORD> section;
 
     public ElfGnuHashSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     StringProperty searchPhase,
                                      ElfGnuHashSection<NATIVE_WORD> section) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.section = section;
     }
 
@@ -96,5 +99,10 @@ public class ElfGnuHashSectionRenderer<NATIVE_WORD extends Number & Comparable<N
         }
 
         return result;
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

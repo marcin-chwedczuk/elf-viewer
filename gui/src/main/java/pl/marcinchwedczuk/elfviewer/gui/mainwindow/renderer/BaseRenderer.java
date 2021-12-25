@@ -1,5 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -10,36 +13,53 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.LambdaValueFactory;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
-        implements Renderer
-{
+        implements Renderer {
     private final NativeWord<NATIVE_WORD> nativeWordMetadata;
+    private final StringProperty filter;
 
-    protected BaseRenderer(NativeWord<NATIVE_WORD> nativeWordMetadata) {
+    protected BaseRenderer(NativeWord<NATIVE_WORD> nativeWordMetadata,
+                           StringProperty searchPhrase) {
         this.nativeWordMetadata = nativeWordMetadata;
+        this.filter = searchPhrase;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void renderDataOn(TableView<Object> tableView) {
         resetTable(tableView);
 
         ((TableView<R>) tableView).getColumns()
                 .addAll(defineColumns());
 
-        tableView.getItems()
-                .addAll(defineRows());
+        // TODO: Not efficient, subclasses should return observable array list or
+        // there should be wrapper
+        FilteredList<R> filteredList = new FilteredList<>(
+                FXCollections.observableArrayList(defineRows()),
+                createFilter(filter.getValue()));
+
+        // TODO: Make sure to clear search field listeners when changing view
+        filter.addListener((observable, oldValue, newValue) ->
+                filteredList.setPredicate(createFilter(filter.get())));
+
+        tableView.itemsProperty().set((FilteredList<Object>) (FilteredList<?>) filteredList);
     }
 
     protected abstract List<TableColumn<R, String>> defineColumns();
-    protected abstract List<? extends R> defineRows();
+
+    protected abstract List<R> defineRows();
+
+    protected abstract Predicate<R> createFilter(String searchPhrase);
 
     private void resetTable(TableView<?> tableView) {
-        tableView.getItems().clear();
+        tableView.itemsProperty().set(FXCollections.emptyObservableList());
         tableView.getColumns().clear();
     }
 
-    private static void setColumnDefaults(TableColumn<?,?> column) {
+    private static void setColumnDefaults(TableColumn<?, ?> column) {
         column.setSortable(false);
         column.setEditable(false);
         column.setResizable(true);
@@ -91,12 +111,36 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         return strings;
     }
 
+    protected static Predicate<String[]> mkStringsFilter(String phrase) {
+        // TODO: Support multiple keywords 'foo bar'
+        // TODO: Support detaching search phrase listener
+
+        Pattern p = (phrase != null && !phrase.isEmpty())
+                ? Pattern.compile(Pattern.quote(phrase), Pattern.CASE_INSENSITIVE)
+                : null;
+
+        return (strings) -> {
+            if (p == null)
+                return true;
+
+            if (strings == null || strings.length == 0)
+                return false;
+
+            for (int i = 0; i < strings.length; i++) {
+                if (strings[i] != null && p.matcher(strings[i]).find())
+                    return true;
+            }
+
+            return false;
+        };
+    }
+
     protected static String hex(byte b) {
-        return String.format("0x%02x", (int)b & 0xff);
+        return String.format("0x%02x", (int) b & 0xff);
     }
 
     protected static String hex(short b) {
-        return String.format("0x%04x", (int)b & 0xffff);
+        return String.format("0x%04x", (int) b & 0xffff);
     }
 
     protected String hex(NATIVE_WORD value) {

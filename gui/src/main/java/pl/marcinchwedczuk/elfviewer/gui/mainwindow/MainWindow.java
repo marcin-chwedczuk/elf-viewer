@@ -1,6 +1,8 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -51,6 +53,9 @@ public class MainWindow implements Initializable {
     private Window window;
 
     @FXML
+    private TextField searchText;
+
+    @FXML
     private TreeView<DisplayAction> treeView;
     private TreeItem<DisplayAction> rootItem;
 
@@ -91,6 +96,17 @@ public class MainWindow implements Initializable {
 
         recentlyOpenFiles = new RecentlyOpenFiles(recentlyOpen, this::loadElfFile);
         recentlyOpenFiles.initialize();
+
+        searchText.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                applySearchFilter(newValue);
+            }
+        });
+    }
+
+    private void applySearchFilter(String searchPhrase) {
+
     }
 
     private void clearTable() {
@@ -111,7 +127,8 @@ public class MainWindow implements Initializable {
         rootItem = new ElfExplorerTreeViewBuilder(
                     currentElfPath,
                     currentElfFile,
-                    tableView)
+                    tableView,
+                    searchText.textProperty())
                 .build();
         treeView.setRoot(rootItem);
         rootItem.setExpanded(true);
@@ -132,6 +149,11 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void guiAbout() {
+
+    }
+
+    @FXML
+    private void clearSearchText() {
 
     }
 

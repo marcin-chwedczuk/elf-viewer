@@ -1,11 +1,13 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfGnuVersionSection;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.utils.StreamUtils;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
@@ -16,8 +18,9 @@ public class ElfGnuVersionSectionRenderer<NATIVE_WORD extends Number & Comparabl
     private final ElfGnuVersionSection<NATIVE_WORD> section;
 
     public ElfGnuVersionSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                        StringProperty searchPhase,
                                         ElfGnuVersionSection<NATIVE_WORD> section) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.section = section;
     }
 
@@ -37,5 +40,10 @@ public class ElfGnuVersionSectionRenderer<NATIVE_WORD extends Number & Comparabl
                         svIndex.value.apiName()
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

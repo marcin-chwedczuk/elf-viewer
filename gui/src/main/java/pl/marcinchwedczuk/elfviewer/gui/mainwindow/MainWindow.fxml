@@ -1,48 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow">
-   <center>
-      <SplitPane dividerPositions="0.35888738127544095" prefHeight="553.0" prefWidth="739.0">
-         <items>
-            <TreeView fx:id="treeView" SplitPane.resizableWithParent="false" />
-            <VBox>
-               <children>
-                  <TableView fx:id="tableView" style="-fx-font-family: monospaced;" VBox.vgrow="ALWAYS">
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-                  </TableView>
-               </children>
-            </VBox>
-         </items>
-      </SplitPane>
-   </center>
-   <bottom>
-      <HBox prefHeight="24.0" BorderPane.alignment="CENTER" />
-   </bottom>
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.marcinchwedczuk.elfviewer.gui.mainwindow.MainWindow">
+    <center>
+        <SplitPane dividerPositions="0.35888738127544095" prefHeight="553.0" prefWidth="739.0">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#guiOpen" text="Open...">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-                  <Menu fx:id="recentlyOpen" mnemonicParsing="false" text="Recently open" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem onAction="#guiExit" text="E_xit">
-                  </MenuItem>
+                <TreeView fx:id="treeView" SplitPane.resizableWithParent="false" />
+                <VBox>
+                    <children>
+                        <GridPane VBox.vgrow="ALWAYS">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints vgrow="NEVER" />
+                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <TableView fx:id="tableView" style="-fx-font-family: monospaced;" GridPane.rowIndex="1" />
+                                <HBox alignment="CENTER" GridPane.halignment="CENTER">
+                                    <children>
+                                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                            <image>
+                                                <Image url="@resources/search-icon.png" />
+                                            </image>
+                                        </ImageView>
+                                        <TextField fx:id="searchText" HBox.hgrow="ALWAYS" />
+                              <Button mnemonicParsing="false" onAction="#clearSearchText" text="Clear">
+                                 <HBox.margin>
+                                    <Insets left="4.0" />
+                                 </HBox.margin>
+                              </Button>
+                                    </children>
+                           <GridPane.margin>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </GridPane.margin>
+                                </HBox>
+                            </children>
+                        </GridPane>
+                    </children>
+                </VBox>
             </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#guiAbout" text="About..." />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
+        </SplitPane>
+    </center>
+    <bottom>
+        <HBox prefHeight="24.0" BorderPane.alignment="CENTER" />
+    </bottom>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#guiOpen" text="Open...">
+                            <accelerator>
+                                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                            </accelerator>
+                        </MenuItem>
+                        <Menu fx:id="recentlyOpen" mnemonicParsing="false" text="Recently open" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem onAction="#guiExit" text="E_xit">
+                        </MenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#guiAbout" text="About..." />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
 </BorderPane>

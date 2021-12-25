@@ -1,11 +1,13 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfSymbolTable;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfSymbolTableSection;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
@@ -16,8 +18,9 @@ public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparab
     private final ElfSymbolTableSection<NATIVE_WORD> symbolTableSection;
 
     public ElfSymbolTableSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                         StringProperty searchPhase,
                                          ElfSymbolTableSection<NATIVE_WORD> symbolTableSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.symbolTableSection = symbolTableSection;
     }
 
@@ -60,5 +63,10 @@ public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparab
                                 ? entry.relatedSection.name()
                                 : entry.symbol.index().toString()))
                 .collect(toList());
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

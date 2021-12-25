@@ -1,10 +1,12 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfHeader;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
@@ -14,8 +16,9 @@ public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WO
     private final ElfHeader<NATIVE_WORD> header;
 
     public ElfHeaderRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                             StringProperty searchPhase,
                              ElfHeader<NATIVE_WORD> header) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.header = header;
     }
 
@@ -63,5 +66,10 @@ public class ElfHeaderRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WO
 
                 mkStrings("e_shstrndx", hex(header.sectionContainingSectionNames().intValue()))
         );
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

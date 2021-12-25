@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfInvalidSection;
@@ -7,6 +8,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfInvalidSect
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ElfInvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<String[], NATIVE_WORD>
@@ -14,8 +16,9 @@ public class ElfInvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfInvalidSection<NATIVE_WORD> invalidSection;
 
     public ElfInvalidSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     StringProperty searchPhase,
                                      ElfInvalidSection<NATIVE_WORD> invalidSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.invalidSection = invalidSection;
     }
 
@@ -38,5 +41,10 @@ public class ElfInvalidSectionRenderer<NATIVE_WORD extends Number & Comparable<N
                 mkStrings("Message", invalidSection.error().getMessage()),
                 mkStrings("Stack Trace", stackTrace)
         );
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 }

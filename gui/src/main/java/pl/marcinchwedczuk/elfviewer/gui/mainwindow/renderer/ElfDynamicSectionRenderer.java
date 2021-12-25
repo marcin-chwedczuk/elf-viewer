@@ -1,11 +1,13 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTag;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.sections.ElfDynamicSection;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 import static pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfDynamicTagType.NEEDED;
@@ -18,8 +20,9 @@ public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<N
     private final ElfDynamicSection<NATIVE_WORD> dynamicSection;
 
     public ElfDynamicSectionRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                                     StringProperty searchPhrase,
                                      ElfDynamicSection<NATIVE_WORD> dynamicSection) {
-        super(nativeWord);
+        super(nativeWord, searchPhrase);
         this.dynamicSection = dynamicSection;
     }
 
@@ -41,6 +44,11 @@ public class ElfDynamicSectionRenderer<NATIVE_WORD extends Number & Comparable<N
                     generateComment(tag)
                 })
                 .collect(toList());
+    }
+
+    @Override
+    protected Predicate<String[]> createFilter(String searchPhrase) {
+        return mkStringsFilter(searchPhrase);
     }
 
     private String generateComment(ElfDynamicTag<NATIVE_WORD> tag) {

@@ -1,5 +1,6 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.TableColumn;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.NativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
@@ -7,6 +8,7 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto.HexRowDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttributes.ALIGN_RIGHT;
 
@@ -16,8 +18,9 @@ public class FileViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WOR
     private final FileView fileView;
 
     public FileViewRenderer(NativeWord<NATIVE_WORD> nativeWord,
+                            StringProperty searchPhase,
                             FileView fileView) {
-        super(nativeWord);
+        super(nativeWord, searchPhase);
         this.fileView = fileView;
     }
 
@@ -46,7 +49,7 @@ public class FileViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WOR
     }
 
     @Override
-    protected List<? extends HexRowDto> defineRows() {
+    protected List<HexRowDto> defineRows() {
         List<HexRowDto> rows = new ArrayList<>((int) (fileView.length() / 16) + 1);
 
         // Align start to 16th byte
@@ -65,5 +68,11 @@ public class FileViewRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WOR
         }
 
         return rows;
+    }
+
+    @Override
+    protected Predicate<HexRowDto> createFilter(String searchPhrase) {
+        // TODO: Make it work
+        return (s) -> true;
     }
 }
