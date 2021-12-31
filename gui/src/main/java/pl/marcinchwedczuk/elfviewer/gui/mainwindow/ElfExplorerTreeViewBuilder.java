@@ -48,7 +48,7 @@ public class ElfExplorerTreeViewBuilder<
         String fileName = elfPath.getName();
         TreeItem<RenderDataAction<NATIVE_WORD>> rootItem = new TreeItem<>(new RenderDataAction<>(
                 fileName,
-                new NothingRenderer<>(nativeWord())));
+                new FileRenderer<>(nativeWord(), elfPath)));
         parents.add(rootItem);
 
         buildTreeMenu(elfFile);
