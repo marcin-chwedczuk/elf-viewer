@@ -35,33 +35,32 @@ public class FileRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
 
     @Override
     protected List<String[]> defineRows() {
-        try {
-            Path p = elfFile.toPath();
-            BasicFileAttributes attr = Files.readAttributes(p, BasicFileAttributes.class);
+        Path path = elfFile.toPath();
+        List<String[]> fields = new ArrayList<>();
 
-            List<String[]> fields = new ArrayList<>();
+        try {
+            BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
             fields.addAll(List.of(
-                    mkStrings("name", p.getFileName().toString()),
-                    mkStrings("path", p.toAbsolutePath().toString()),
+                    mkStrings("name", path.getFileName().toString()),
+                    mkStrings("path", path.toAbsolutePath().toString()),
                     mkStrings("size", dec(attr.size())), // TODO: KB MB etc.
-                    mkStrings("creation time", attr.creationTime().toString()),
-                    mkStrings("last modified time", attr.lastModifiedTime().toString()),
-                    mkStrings("last access time", attr.lastAccessTime().toString())
+                    mkStrings("ctime", attr.creationTime().toString()),
+                    mkStrings("mtime", attr.lastModifiedTime().toString()),
+                    mkStrings("atime", attr.lastAccessTime().toString())
             ));
 
-            try {
-                PosixFileAttributes posixAttr = Files.readAttributes(p, PosixFileAttributes.class);
-                fields.addAll(List.of(
-                   mkStrings("owner", posixAttr.owner().toString()),
-                   mkStrings("group", posixAttr.group().toString()),
-                   mkStrings("permissions", PosixFilePermissions.toString(posixAttr.permissions()))
-                ));
-            } catch (Exception e) { }
-
-            return fields;
+            // This may result in an error on e.g. Windows filesystem
+            PosixFileAttributes posixAttr = Files.readAttributes(path, PosixFileAttributes.class);
+            fields.addAll(List.of(
+               mkStrings("owner", posixAttr.owner().toString()),
+               mkStrings("group", posixAttr.group().toString()),
+               mkStrings("perms", PosixFilePermissions.toString(posixAttr.permissions()))
+            ));
         } catch (IOException e) {
-            return List.<String[]>of(mkStrings("(error)", e.toString()));
+            fields.add(mkStrings("(error)", e.getMessage()));
         }
+
+        return fields;
     }
 
     @Override

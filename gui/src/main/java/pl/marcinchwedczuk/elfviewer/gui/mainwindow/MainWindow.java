@@ -1,6 +1,7 @@
 package pl.marcinchwedczuk.elfviewer.gui.mainwindow;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,6 +25,7 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
@@ -115,7 +117,7 @@ public class MainWindow implements Initializable {
     }
 
     private void clearTable() {
-        tableView.getItems().clear();
+        tableView.setItems(FXCollections.emptyObservableList());
         tableView.getColumns().clear();
     }
 
