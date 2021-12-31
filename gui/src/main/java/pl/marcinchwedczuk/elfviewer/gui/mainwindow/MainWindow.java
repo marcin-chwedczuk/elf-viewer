@@ -79,6 +79,13 @@ public class MainWindow implements Initializable {
     private Menu recentlyOpen;
     private RecentlyOpenFiles recentlyOpenFiles;
 
+    // Tree view menu
+    private final ContextMenu contentsNodeMenu = new ContextMenuBuilder()
+            .addItem("Save as...", e -> {
+                UiService.infoDialog("werks!");
+            })
+            .mkContextMenu();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         openFileChooser = newOpenFileChooser();
@@ -104,6 +111,21 @@ public class MainWindow implements Initializable {
                         clearTable();
                     }
                 });
+
+        treeView.setOnContextMenuRequested(event -> {
+            TreeItem<RenderDataAction<?>> selected = treeView.getSelectionModel().getSelectedItem();
+
+            // Hide everything that we may have
+            contentsNodeMenu.hide();
+
+            if (selected != null) {
+                if ("(Contents)".equals(selected.getValue().toString())) {
+                    contentsNodeMenu.show(thisWindow, event.getScreenX(), event.getScreenY());
+                }
+            }
+
+            event.consume(); // Do NOT remove, without this menu will be very sluggish/unstable
+        });
 
         // Allow selecting cells
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
