@@ -16,9 +16,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
+import pl.marcinchwedczuk.elfviewer.gui.UiService;
 import pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 
@@ -81,11 +83,7 @@ public class MainWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         openFileChooser = newOpenFileChooser();
 
-        rootItem = new TreeItem<>(new RenderDataAction<>(
-                "No ELF file loaded",
-                new NothingRenderer<>(new LongNativeWord())));
-        rootItem.setExpanded(true);
-        treeView.setRoot(rootItem);
+        resetTreeView();
 
         // Selection mode
         treeView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -122,12 +120,35 @@ public class MainWindow implements Initializable {
     }
 
     private void loadElfFile(File f) {
-        currentElfFile = ElfReader.readElf(new FileSystemFile(f));
-        currentElfPath = f;
+        if (currentElfFile != null) {
+            try {
+                ((FileSystemFile) currentElfFile.storage()).close();
+            } catch (Exception e) { }
+
+            currentElfFile = null;
+            currentElfPath = null;
+
+            resetTreeView();
+        }
+
+        try {
+            currentElfFile = ElfReader.readElf(new FileSystemFile(f));
+            currentElfPath = f;
+        } catch (ElfReaderException e) {
+            UiService.errorDialog("Cannot open ELF file.", e.getMessage());
+            return;
+        }
 
         recreateTreeView();
-
         recentlyOpenFiles.onFileOpen(f);
+    }
+
+    private void resetTreeView() {
+        rootItem = new TreeItem<>(new RenderDataAction<>(
+                "No ELF file loaded",
+                new NothingRenderer<>(new LongNativeWord())));
+        rootItem.setExpanded(true);
+        treeView.setRoot(rootItem);
     }
 
     @SuppressWarnings("unchecked")

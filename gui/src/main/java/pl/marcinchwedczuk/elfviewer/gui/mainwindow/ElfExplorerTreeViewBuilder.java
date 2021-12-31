@@ -76,11 +76,6 @@ public class ElfExplorerTreeViewBuilder<
         this.parents.pop();
     }
 
-    private void clearTable() {
-        tableView.getItems().clear();
-        tableView.getColumns().clear();
-    }
-
     class BuildMenuVisitor implements ElfVisitor<NATIVE_WORD> {
         private final NativeWord<NATIVE_WORD> nativeWord;
 

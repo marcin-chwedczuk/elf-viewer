@@ -1,18 +1,20 @@
 package pl.marcinchwedczuk.elfviewer.elfreader.io;
 
+import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class FileSystemFile implements AbstractFile, AutoCloseable {
-    private RandomAccessFile file;
+    private final RandomAccessFile file;
 
     public FileSystemFile(File file) {
         try {
             this.file = new RandomAccessFile(file, "r");
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Cannot open file.", e);
+            throw new ElfReaderException(e.getMessage(), e);
         }
     }
 
@@ -23,7 +25,7 @@ public class FileSystemFile implements AbstractFile, AutoCloseable {
 
             return file.readByte();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot read data.", e);
+            throw new ElfReaderException(e.getMessage(), e);
         }
     }
 
@@ -36,7 +38,7 @@ public class FileSystemFile implements AbstractFile, AutoCloseable {
             file.readFully(buf);
             return buf;
         } catch (IOException e) {
-            throw new RuntimeException("Cannot read data.", e);
+            throw new ElfReaderException(e.getMessage(), e);
         }
     }
 
