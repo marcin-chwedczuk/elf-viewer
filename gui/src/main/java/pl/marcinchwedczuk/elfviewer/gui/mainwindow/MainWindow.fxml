@@ -41,11 +41,11 @@
                                     <children>
                                         <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
                                             <image>
-                                                <Image url="@resources/search-icon.png" />
+                                                <Image url="@resources/filter-icon.png" />
                                             </image>
                                         </ImageView>
-                                        <TextField fx:id="searchText" HBox.hgrow="ALWAYS" />
-                              <Button mnemonicParsing="false" onAction="#clearSearchText" text="Clear">
+                                        <TextField fx:id="filterText" HBox.hgrow="ALWAYS" />
+                              <Button mnemonicParsing="false" onAction="#clearFilterText" text="Clear">
                                  <HBox.margin>
                                     <Insets left="4.0" />
                                  </HBox.margin>

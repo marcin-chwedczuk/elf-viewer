@@ -7,10 +7,13 @@ import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.utils.HexUtils;
 import static java.util.Objects.requireNonNull;
 
 public class HexRowDto {
-    private String address;
+    private final String address;
 
-    private long rowOffset;
-    private FileView data;
+    private final long rowOffset;
+    private final FileView data;
+
+    private String hexViewCache = null;
+    private String asciiStringCache = null;
 
     public HexRowDto(
             String address,
@@ -50,10 +53,13 @@ public class HexRowDto {
     public String be() { return b(0xe); }
     public String bf() { return b(0xf); }
 
-    public String asciiView() {
+    public String printableAsciiView() {
+        if (asciiStringCache != null)
+            return asciiStringCache;
+
         StringBuilder sb = new StringBuilder(16);
 
-        for (long i = rowOffset + 0; i <= rowOffset + 0xf; i++) {
+        for (long i = rowOffset + 0x00; i <= rowOffset + 0x0f; i++) {
             if (0 <= i && i < data.length()) {
                 byte b = data.read(i);
                 if (AsciiStrings.isPrintableCharacter(b)) {
@@ -66,6 +72,22 @@ public class HexRowDto {
             }
         }
 
-        return sb.toString();
+        asciiStringCache = sb.toString();
+        return asciiStringCache;
+    }
+
+    public String hexView() {
+        if (hexViewCache != null)
+            return hexViewCache;
+
+        StringBuilder sb = new StringBuilder(16);
+
+        for (int i = 0x00; i <= 0x0f; i++) {
+            sb.append(b(i));
+            // do not insert spaces to allow for continuous search like 'af013f'
+        }
+
+        hexViewCache = sb.toString();
+        return hexViewCache;
     }
 }

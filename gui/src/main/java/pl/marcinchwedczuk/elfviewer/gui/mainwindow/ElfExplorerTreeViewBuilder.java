@@ -138,7 +138,7 @@ public class ElfExplorerTreeViewBuilder<
             if (section.header().size().longValue() > 0) {
                 addChild(new TreeItem<>(new RenderDataAction<>(
                         "(Contents)",
-                        new FileViewRenderer<>(nativeWord, section.contents()))));
+                        new ContentsHexRenderer<>(nativeWord, section.contents()))));
             }
         }
 
@@ -365,7 +365,7 @@ public class ElfExplorerTreeViewBuilder<
             if (segment.programHeader().fileSize().longValue() > 0) {
                 addChild(new TreeItem<>(new RenderDataAction(
                         "(Contents)",
-                        new FileViewRenderer<>(nativeWord, segment.contents()))));
+                        new ContentsHexRenderer<>(nativeWord, segment.contents()))));
             }
 
             for (ElfSection<NATIVE_WORD> section : segment.containedSections()) {

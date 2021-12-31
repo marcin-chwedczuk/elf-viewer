@@ -114,6 +114,11 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         return strings;
     }
 
+    protected static Predicate<String> mkStringFilter(String phrase) {
+        Predicate<String[]> stringsMatcher = mkMatcher(phrase);
+        return (s) -> stringsMatcher.test(new String[] { s });
+    }
+
     protected static Predicate<String[]> mkStringsFilter(String phrase) {
         return mkMatcher(phrase);
     }

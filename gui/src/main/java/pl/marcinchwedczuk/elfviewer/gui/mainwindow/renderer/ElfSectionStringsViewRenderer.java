@@ -39,7 +39,6 @@ public class ElfSectionStringsViewRenderer<NATIVE_WORD extends Number & Comparab
 
     @Override
     protected Predicate<String> createFilter(String searchPhrase) {
-        String lowerCasePhrase = searchPhrase == null ? "" : searchPhrase.toLowerCase();
-        return row -> row != null && row.toLowerCase().contains(lowerCasePhrase);
+        return mkStringFilter(searchPhrase);
     }
 }

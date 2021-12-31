@@ -56,7 +56,7 @@ public class MainWindow implements Initializable {
     private Window window;
 
     @FXML
-    private TextField searchText;
+    private TextField filterText;
 
     @FXML
     private TreeView<RenderDataAction<?>> treeView;
@@ -94,11 +94,11 @@ public class MainWindow implements Initializable {
                     }
 
                     // Clear filter while changing views
-                    searchText.clear();
+                    filterText.clear();
 
                     if (newTreeItem != null) {
                         newTreeItem.getValue()
-                                .mountView(tableView, searchText.textProperty());
+                                .mountView(tableView, filterText.textProperty());
                     } else {
                         clearTable();
                     }
@@ -133,7 +133,7 @@ public class MainWindow implements Initializable {
                 currentElfPath,
                 currentElfFile,
                 tableView,
-                searchText.textProperty())
+                filterText.textProperty())
                     .build();
         treeView.setRoot(rootItem);
         rootItem.setExpanded(true);
@@ -178,8 +178,8 @@ public class MainWindow implements Initializable {
     }
 
     @FXML
-    private void clearSearchText() {
-        searchText.clear();
+    private void clearFilterText() {
+        filterText.clear();
     }
 
     public static FileChooser newOpenFileChooser() {

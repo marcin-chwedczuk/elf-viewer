@@ -37,7 +37,6 @@ public class ElfGnuWarningSectionRenderer<NATIVE_WORD extends Number & Comparabl
 
     @Override
     protected Predicate<String> createFilter(String searchPhrase) {
-        String lowerCasePhrase = searchPhrase == null ? "" : searchPhrase.toLowerCase();
-        return row -> row != null && row.toLowerCase().contains(lowerCasePhrase);
+        return mkStringFilter(searchPhrase);
     }
 }
