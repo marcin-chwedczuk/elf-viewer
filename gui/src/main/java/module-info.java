@@ -11,6 +11,7 @@ module pl.marcinchwedczuk.elfviewer.gui {
 
     // Allow @FXML injection to private fields.
     opens pl.marcinchwedczuk.elfviewer.gui.mainwindow;
-    exports pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
+    opens pl.marcinchwedczuk.elfviewer.gui.aboutdialog;
     opens pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
+    exports pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.dto;
 }

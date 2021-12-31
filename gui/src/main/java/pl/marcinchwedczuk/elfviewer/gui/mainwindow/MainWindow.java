@@ -18,6 +18,7 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
+import pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 
 import java.io.File;
@@ -43,7 +44,7 @@ public class MainWindow implements Initializable {
                 }
             });
 
-            controller.window = window;
+            controller.thisWindow = window;
 
             window.show();
 
@@ -53,7 +54,7 @@ public class MainWindow implements Initializable {
         }
     }
 
-    private Window window;
+    private Window thisWindow;
 
     @FXML
     private TextField filterText;
@@ -161,7 +162,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void guiOpen() {
-        File f = openFileChooser.showOpenDialog(window);
+        File f = openFileChooser.showOpenDialog(thisWindow);
         if (f != null) {
             loadElfFile(f);
         }
@@ -174,7 +175,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void guiAbout() {
-
+        AboutDialog.show(thisWindow);
     }
 
     @FXML

@@ -82,8 +82,10 @@
                 <includes>
                     <include>**/*.fxml</include>
                     <include>**/*.css</include>
-                    <!-- icons -->
+                    <!-- icons & images -->
                     <include>**/*.png</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.jpeg</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
