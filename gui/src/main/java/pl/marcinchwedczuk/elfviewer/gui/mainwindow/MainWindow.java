@@ -20,14 +20,16 @@ import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.shared.ElfFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
+import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.gui.UiService;
 import pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ContentsHexRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainWindow implements Initializable {
@@ -71,6 +73,7 @@ public class MainWindow implements Initializable {
     private TableView<Object> tableView;
 
     private FileChooser openFileChooser;
+    private FileChooser saveBinaryDataFileChooser;
 
     private File currentElfPath;
     private ElfFile<?> currentElfFile;
@@ -82,13 +85,18 @@ public class MainWindow implements Initializable {
     // Tree view menu
     private final ContextMenu contentsNodeMenu = new ContextMenuBuilder()
             .addItem("Save as...", e -> {
-                UiService.infoDialog("werks!");
+                TreeItem<RenderDataAction<?>> selected = treeView.getSelectionModel().getSelectedItem();
+                ContentsHexRenderer<?> renderer = (ContentsHexRenderer<?>) selected.getValue().renderer();
+                FileView fileView = renderer.fileView();
+
+                saveContentsAsFile(fileView);
             })
             .mkContextMenu();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         openFileChooser = newOpenFileChooser();
+        saveBinaryDataFileChooser = newSaveBinaryDataFileChooser();
 
         resetTreeView();
 
@@ -205,6 +213,28 @@ public class MainWindow implements Initializable {
         }
     }
 
+    private void saveContentsAsFile(FileView fileView) {
+        File f = saveBinaryDataFileChooser.showSaveDialog(thisWindow);
+        if (f != null) {
+            try {
+                byte[] buffer = new byte[1024 * 4];
+
+                // TODO: Move to method on FileView
+                try (FileOutputStream outputStream = new FileOutputStream(f)) {
+                    long offset = 0;
+                    int nbytes;
+                    while ((nbytes = fileView.readBuffer(offset, buffer)) > 0) {
+                        outputStream.write(buffer, 0, nbytes);
+                        offset += nbytes;
+                    }
+                }
+
+            } catch (IOException e) {
+                UiService.errorDialog("Cannot save contents to file.", e.getMessage());
+            }
+        }
+    }
+
     @FXML
     private void guiOpen() {
         File f = openFileChooser.showOpenDialog(thisWindow);
@@ -235,6 +265,20 @@ public class MainWindow implements Initializable {
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 
         fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+
+        return fileChooser;
+    }
+
+    public static FileChooser newSaveBinaryDataFileChooser() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle("Save data...");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Binary data", "*.bin"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 

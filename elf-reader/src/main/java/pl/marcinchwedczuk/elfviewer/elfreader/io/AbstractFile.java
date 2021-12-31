@@ -6,6 +6,13 @@ public interface AbstractFile {
     byte read(long offset);
     byte[] read(long offset, int size);
 
+    /**
+     * @param buffer data will be written here.
+     * @return number of bytes read into buffer,
+     *          -1 when end of file is reached.
+     */
+    int readBuffer(long offset, byte[] buffer);
+
     default short readUnsignedShort(Endianness endianness, long offset) {
         byte[] bytes = read(offset, 2);
         return endianness.toUnsignedShort(bytes);

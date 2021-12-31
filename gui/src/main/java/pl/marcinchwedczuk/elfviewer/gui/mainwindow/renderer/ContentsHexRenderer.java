@@ -22,6 +22,8 @@ public class ContentsHexRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_
         this.fileView = fileView;
     }
 
+    public FileView fileView() { return fileView; }
+
     @Override
     protected List<TableColumn<HexRowDto, String>> defineColumns() {
         return List.of(

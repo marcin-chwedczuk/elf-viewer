@@ -43,6 +43,16 @@ public class FileSystemFile implements AbstractFile, AutoCloseable {
     }
 
     @Override
+    public int readBuffer(long offset, byte[] buffer) {
+        try {
+            file.seek(offset);
+            return file.read(buffer, 0, buffer.length);
+        } catch (IOException e) {
+            throw new ElfReaderException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void close() throws Exception {
         file.close();
     }

@@ -38,6 +38,14 @@ public final class FileView implements AbstractFile {
         return file.read(startOffset + offset, size);
     }
 
+    @Override
+    public int readBuffer(long offsetInView, byte[] buffer) {
+        if (offsetInView >= length)
+            return -1;
+        int nbytes = file.readBuffer(startOffset + offsetInView, buffer);
+        return Math.min(nbytes, Math.toIntExact(length - offsetInView));
+    }
+
     private void checkOffset(long offset, int size) {
         if (offset < 0 || offset+size > length)
             throw new IllegalArgumentException(String.format(

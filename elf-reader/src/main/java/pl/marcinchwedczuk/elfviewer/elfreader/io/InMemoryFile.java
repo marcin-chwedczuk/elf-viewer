@@ -30,4 +30,14 @@ public class InMemoryFile implements AbstractFile {
         // TODO: Add checked conversion long -> int
         return Arrays.copyOfRange(bytes, (int)offset, (int)offset + size);
     }
+
+    @Override
+    public int readBuffer(long offset, byte[] buffer) {
+        if (offset >= bytes.length)
+            return (-1);
+
+        int bytesToCopy = Math.toIntExact(bytes.length - offset);
+        System.arraycopy(bytes, (int)offset, buffer, 0, bytesToCopy);
+        return bytesToCopy;
+    }
 }

@@ -20,6 +20,10 @@ public class RenderDataAction<
         this.renderer = renderer;
     }
 
+    public BaseRenderer<?, NATIVE_WORD> renderer() {
+        return renderer;
+    }
+
     @Override
     public String toString() {
         return displayName;
