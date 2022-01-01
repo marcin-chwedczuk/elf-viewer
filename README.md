@@ -1,15 +1,15 @@
 # Elf Viewer
 
-![Main Window](./docs/screen1.png)
+![Main Window](./docs/elf-viewer-main-window.png)
 
-!!! PROJECT IS USABLE, BUT STILL UNDER CONSTRUCTION !!!
+:warning: PROJECT IS USABLE, BUT STILL UNDER CONSTRUCTION :warning:
 
 Current status:
-* Covers about 80% of all ELF structures. What is left are mostly GNU specific extensions.
-* GUI still needs a bit of polishing. For example currently there is no search capability.
+* Covers about 80% of all ELF structures. 
+  What is left are mostly GNU specific extensions and relocations.
+* GUI still needs a bit of polishing.
 
-Tested od Intel 32 and 64 bit ELFs.
-TODO: Test on ARM 32 and 64 bit ELFs.
+Tested on `libc` for x86, x86_64 and arm64 architectures. Solaris is not supported.
 
 Right now I am playing with the API and I try to figure out the most
 intuitive and Javaish API for dealing with ELFs.
