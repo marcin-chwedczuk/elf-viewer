@@ -41,7 +41,7 @@ public class MainWindow implements Initializable {
             Scene scene = new Scene(loader.load());
             MainWindow controller = (MainWindow) loader.getController();
 
-            window.setTitle("Main Window");
+            window.setTitle("Elf Viewer");
             window.setScene(scene);
             window.setResizable(true);
 
@@ -61,7 +61,7 @@ public class MainWindow implements Initializable {
         }
     }
 
-    private Window thisWindow;
+    private Stage thisWindow;
 
     @FXML
     private TextField filterText;
@@ -156,6 +156,7 @@ public class MainWindow implements Initializable {
 
             currentElfFile = null;
             currentElfPath = null;
+            setTitle(null);
 
             resetTreeView();
         }
@@ -163,6 +164,7 @@ public class MainWindow implements Initializable {
         try {
             currentElfFile = ElfReader.readElf(new FileSystemFile(f));
             currentElfPath = f;
+            setTitle(currentElfPath);
         } catch (ElfReaderException e) {
             UiService.errorDialog("Cannot open ELF file.", e.getMessage());
             return;
@@ -170,6 +172,14 @@ public class MainWindow implements Initializable {
 
         recreateTreeView();
         recentlyOpenFiles.onFileOpen(f);
+    }
+
+    private void setTitle(File elfFile) {
+        if (elfFile == null) {
+            thisWindow.setTitle("Elf Viewer");
+        } else {
+            thisWindow.setTitle("Elf Viewer - " + elfFile.getName());
+        }
     }
 
     private void resetTreeView() {
