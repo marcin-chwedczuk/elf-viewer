@@ -15,6 +15,14 @@
     <description>JavaFX Application</description>
 
     <properties>
+        <!-- Values needed to create installers -->
+        <main-class>pl.marcinchwedczuk.elfviewer.gui/pl.marcinchwedczuk.elfviewer.gui.App</main-class>
+        <app.name>elf-viewer</app.name>
+        <app.version>1.0.0</app.version>
+        <windows.upgrade.uuid>60efec00-155e-4452-8336-dd7d3bad0dc8</windows.upgrade.uuid>
+        <windows.vendor>marcinchwedczuk.pl</windows.vendor>
+
+
         <extra-jvm-options-when-running-tests>
             --add-opens javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
             --add-opens javafx.graphics/com.sun.glass.ui=ALL-UNNAMED
@@ -186,4 +194,101 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>mkinstaller</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <build>
+                <resources>
+                    <resource>
+                        <!-- Here we are processing the platform-specific jpackage command files, adding in Maven
+                         properties for configuration. -->
+                        <directory>${project.basedir}/src/packaging</directory>
+                        <filtering>true</filtering>
+                        <targetPath>${project.build.directory}/packaging</targetPath>
+                    </resource>
+                </resources>
+
+                <plugins>
+                    <plugin>
+                        <groupId>org.openjfx</groupId>
+                        <artifactId>javafx-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate-runtime-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jlink</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>io.github.wiverson</groupId>
+                        <artifactId>jtoolprovider-plugin</artifactId>
+                        <executions>
+                            <!-- The command that actually generates the installer. The options for each platform
+                             are found the /src/packaging directory. These files are copied into the target directory by
+                             the Maven resources plugin, which does the filtering to replace the original values with
+                             the actual Maven properties.
+
+                             https://github.com/wiverson/jtoolprovider-plugin/blob/main/java-tool-doc.md
+                             -->
+                            <execution>
+                                <id>jpackage</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>java-tool</goal>
+                                </goals>
+                                <configuration>
+                                    <toolName>jpackage</toolName>
+                                    <removeDirectories>${project.build.directory}/installer-work</removeDirectories>
+                                    <args>@${project.build.directory}/packaging/${platform}-jpackage.txt</args>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- Select the right platform to generate installers -->
+        <profile>
+            <id>unix-active</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>windows-active</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>win</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>mac-active</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>mac</platform>
+            </properties>
+        </profile>
+    </profiles>
 </project>

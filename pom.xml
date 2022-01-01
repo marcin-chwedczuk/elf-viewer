@@ -40,6 +40,7 @@
         <javafx.plugin.version>0.0.6</javafx.plugin.version>
         <sass.plugin.version>3.7.2</sass.plugin.version>
         <maven-build-helper.plugin.version>3.2.0</maven-build-helper.plugin.version>
+        <jtoolprovider.plugin.version>1.0.34</jtoolprovider.plugin.version>
 
         <!-- Other -->
 
@@ -167,6 +168,11 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
                     <version>${maven-build-helper.plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.github.wiverson</groupId>
+                    <artifactId>jtoolprovider-plugin</artifactId>
+                    <version>${jtoolprovider.plugin.version}</version>
                 </plugin>
            </plugins>
         </pluginManagement>
