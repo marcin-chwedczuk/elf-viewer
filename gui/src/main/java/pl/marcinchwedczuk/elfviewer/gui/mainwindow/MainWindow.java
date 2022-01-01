@@ -26,6 +26,7 @@ import pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.BaseRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ContentsHexRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.resources.Icons;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,7 +85,7 @@ public class MainWindow implements Initializable {
 
     // Tree view menu
     private final ContextMenu contentsNodeMenu = new ContextMenuBuilder()
-            .addItem("Save as...", e -> {
+            .addItem(Icons.saveIcon(), "Save as...", e -> {
                 ContentsHexRenderer<?> renderer = (ContentsHexRenderer<?>) currentlySelectedRenderer();
                 saveContentsAsFile(renderer.fileView());
             })
