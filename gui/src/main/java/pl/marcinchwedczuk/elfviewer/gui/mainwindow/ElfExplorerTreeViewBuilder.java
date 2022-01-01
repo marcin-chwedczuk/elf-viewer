@@ -132,7 +132,7 @@ public class ElfExplorerTreeViewBuilder<
 
             if (section.header().size().longValue() > 0) {
                 addChild(new TreeItem<>(new RenderDataAction<>(
-                        "(Contents)",
+                        ContentsHexRenderer.ENTRY_NAME,
                         new ContentsHexRenderer<>(nativeWord, section.contents()))));
             }
         }

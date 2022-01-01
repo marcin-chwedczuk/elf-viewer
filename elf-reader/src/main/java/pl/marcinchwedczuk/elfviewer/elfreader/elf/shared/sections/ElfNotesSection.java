@@ -36,7 +36,7 @@ public class ElfNotesSection<
         long curr = 0L;
         FileView contents = contents();
 
-        while (curr < contents.length()) {
+        while (curr < contents.viewLength()) {
             StructuredFile32 sf = new StructuredFile32(
                     contents,
                     elfFile().endianness(),

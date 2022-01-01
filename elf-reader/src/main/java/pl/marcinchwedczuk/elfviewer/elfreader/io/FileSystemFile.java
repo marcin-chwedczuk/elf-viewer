@@ -43,7 +43,7 @@ public class FileSystemFile implements AbstractFile, AutoCloseable {
     }
 
     @Override
-    public int readBuffer(long offset, byte[] buffer) {
+    public int readIntoBuffer(long offset, byte[] buffer) {
         try {
             file.seek(offset);
             return file.read(buffer, 0, buffer.length);

@@ -11,7 +11,7 @@ public interface AbstractFile {
      * @return number of bytes read into buffer,
      *          -1 when end of file is reached.
      */
-    int readBuffer(long offset, byte[] buffer);
+    int readIntoBuffer(long offset, byte[] buffer);
 
     default short readUnsignedShort(Endianness endianness, long offset) {
         byte[] bytes = read(offset, 2);

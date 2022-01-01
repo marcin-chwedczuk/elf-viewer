@@ -14,6 +14,8 @@ import static pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ColumnAttribu
 public class ContentsHexRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
         extends BaseRenderer<HexRowDto, NATIVE_WORD>
 {
+    public static final String ENTRY_NAME = "(contents)";
+
     private final FileView fileView;
 
     public ContentsHexRenderer(NativeWord<NATIVE_WORD> nativeWord,
@@ -50,19 +52,19 @@ public class ContentsHexRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_
 
     @Override
     protected List<HexRowDto> defineRows() {
-        List<HexRowDto> rows = new ArrayList<>((int) (fileView.length() / 16) + 1);
+        List<HexRowDto> rows = new ArrayList<>((int) (fileView.viewLength() / 16) + 1);
 
         // Align start to 16th byte
-        long start = fileView.startOffset();
+        long start = fileView.viewOffsetToFileOffset(0);
         int startOffset = 0;
         while ((start % 16) != 0) {
             start--;
             startOffset--;
         }
 
-        for (int i = startOffset; i < fileView.length(); i += 16) {
+        for (int i = startOffset; i < fileView.viewLength(); i += 16) {
             rows.add(new HexRowDto(
-                    String.format("%08X",  i + fileView.startOffset()),
+                    String.format("%08X",  fileView.viewOffsetToFileOffset(i)),
                     i,
                     fileView));
         }

@@ -29,7 +29,7 @@ public class HexRowDto {
 
     private String b(int byteOffset) {
         long offset = rowOffset + byteOffset;
-        if (0 <= offset && offset < data.length()) {
+        if (0 <= offset && offset < data.viewLength()) {
             return HexUtils.toHexNoPrefix(data.read(offset));
         }
 
@@ -60,7 +60,7 @@ public class HexRowDto {
         StringBuilder sb = new StringBuilder(16);
 
         for (long i = rowOffset + 0x00; i <= rowOffset + 0x0f; i++) {
-            if (0 <= i && i < data.length()) {
+            if (0 <= i && i < data.viewLength()) {
                 byte b = data.read(i);
                 if (AsciiStrings.isPrintableCharacter(b)) {
                     sb.append((char)b);

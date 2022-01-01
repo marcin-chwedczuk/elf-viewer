@@ -32,12 +32,12 @@ public class InMemoryFile implements AbstractFile {
     }
 
     @Override
-    public int readBuffer(long offset, byte[] buffer) {
+    public int readIntoBuffer(long offset, byte[] buffer) {
         if (offset >= bytes.length)
-            return (-1);
+            return -1;
 
-        int bytesToCopy = Math.toIntExact(bytes.length - offset);
-        System.arraycopy(bytes, (int)offset, buffer, 0, bytesToCopy);
+        int bytesToCopy = Math.min(buffer.length, Math.toIntExact(bytes.length - offset));
+        System.arraycopy(bytes, Math.toIntExact(offset), buffer, 0, bytesToCopy);
         return bytesToCopy;
     }
 }

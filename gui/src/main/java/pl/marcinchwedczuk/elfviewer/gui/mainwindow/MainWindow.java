@@ -23,11 +23,11 @@ import pl.marcinchwedczuk.elfviewer.elfreader.io.FileSystemFile;
 import pl.marcinchwedczuk.elfviewer.elfreader.io.FileView;
 import pl.marcinchwedczuk.elfviewer.gui.UiService;
 import pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog;
+import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.BaseRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.ContentsHexRenderer;
 import pl.marcinchwedczuk.elfviewer.gui.mainwindow.renderer.NothingRenderer;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -85,18 +85,16 @@ public class MainWindow implements Initializable {
     // Tree view menu
     private final ContextMenu contentsNodeMenu = new ContextMenuBuilder()
             .addItem("Save as...", e -> {
-                TreeItem<RenderDataAction<?>> selected = treeView.getSelectionModel().getSelectedItem();
-                ContentsHexRenderer<?> renderer = (ContentsHexRenderer<?>) selected.getValue().renderer();
-                FileView fileView = renderer.fileView();
-
-                saveContentsAsFile(fileView);
+                ContentsHexRenderer<?> renderer = (ContentsHexRenderer<?>) currentlySelectedRenderer();
+                saveContentsAsFile(renderer.fileView());
             })
             .mkContextMenu();
 
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        openFileChooser = newOpenFileChooser();
-        saveBinaryDataFileChooser = newSaveBinaryDataFileChooser();
+        openFileChooser = mkOpenFileChooser();
+        saveBinaryDataFileChooser = mkSaveBinaryDataFileChooser();
 
         resetTreeView();
 
@@ -127,7 +125,7 @@ public class MainWindow implements Initializable {
             contentsNodeMenu.hide();
 
             if (selected != null) {
-                if ("(Contents)".equals(selected.getValue().toString())) {
+                if (ContentsHexRenderer.ENTRY_NAME.equals(selected.getValue().toString())) {
                     contentsNodeMenu.show(thisWindow, event.getScreenX(), event.getScreenY());
                 }
             }
@@ -193,6 +191,14 @@ public class MainWindow implements Initializable {
         rootItem.setExpanded(true);
     }
 
+    private BaseRenderer<?, ?> currentlySelectedRenderer() {
+        TreeItem<RenderDataAction<?>> selected = treeView.getSelectionModel().getSelectedItem();
+        if (selected == null)
+            return null;
+
+        return selected.getValue().renderer();
+    }
+
     @FXML
     private void tableViewKeyPressed(KeyEvent event) {
         KeyCodeCombination copyShortcut = new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN);
@@ -217,19 +223,8 @@ public class MainWindow implements Initializable {
         File f = saveBinaryDataFileChooser.showSaveDialog(thisWindow);
         if (f != null) {
             try {
-                byte[] buffer = new byte[1024 * 4];
-
-                // TODO: Move to method on FileView
-                try (FileOutputStream outputStream = new FileOutputStream(f)) {
-                    long offset = 0;
-                    int nbytes;
-                    while ((nbytes = fileView.readBuffer(offset, buffer)) > 0) {
-                        outputStream.write(buffer, 0, nbytes);
-                        offset += nbytes;
-                    }
-                }
-
-            } catch (IOException e) {
+                fileView.saveToFile(f);
+            } catch (ElfReaderException e) {
                 UiService.errorDialog("Cannot save contents to file.", e.getMessage());
             }
         }
@@ -258,7 +253,7 @@ public class MainWindow implements Initializable {
         filterText.clear();
     }
 
-    public static FileChooser newOpenFileChooser() {
+    public static FileChooser mkOpenFileChooser() {
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setTitle("Select ELF file...");
@@ -271,7 +266,7 @@ public class MainWindow implements Initializable {
         return fileChooser;
     }
 
-    public static FileChooser newSaveBinaryDataFileChooser() {
+    public static FileChooser mkSaveBinaryDataFileChooser() {
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setTitle("Save data...");
