@@ -6,45 +6,53 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="rootElement" hgap="4.0" vgap="4.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.marcinchwedczuk.elfviewer.gui.aboutdialog.AboutDialog">
    <rowConstraints>
-      <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="0.0" vgrow="NEVER" />
+      <RowConstraints minHeight="0.0" vgrow="NEVER" />
+      <RowConstraints minHeight="0.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="0.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" vgrow="NEVER" />
    </rowConstraints>
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
       <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
    </columnConstraints>
    <children>
+      <Button cancelButton="true" defaultButton="true" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#guiClose" text="OK" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" />
       <ImageView fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2147483647">
          <image>
             <Image url="@about-panache.jpg" />
          </image>
       </ImageView>
-      <AnchorPane GridPane.columnIndex="1">
+      <Label text="Elf Viewer" GridPane.columnIndex="1">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <Label text="by Marcin &quot;0xmarcin&quot; Chwedczuk" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label text="MIT License" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
-            <Button cancelButton="true" defaultButton="true" layoutX="163.0" layoutY="314.0" minWidth="100.0" mnemonicParsing="false" onAction="#guiClose" text="OK" />
-            <Label layoutX="3.0" layoutY="14.0" text="Elf Viewer">
-               <font>
-                  <Font name="System Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label layoutX="3.0" layoutY="43.0" text="by Marcin &quot;0xmarcin&quot; Chwedczuk" />
-            <Label layoutX="3.0" layoutY="60.0" text="MIT License" />
-            <Hyperlink layoutX="166.0" layoutY="89.0" onAction="#linkIcons8" text="icons8.com" />
-            <Label layoutX="3.0" layoutY="92.0" text="This program uses icons from:" />
-            <Hyperlink layoutY="134.0" onAction="#linkSourceCode" text="Source Code (GitHub)" />
-            <Hyperlink layoutY="159.0" onAction="#linkBugReport" text="Report Bug (GitHub)" />
+            <Label text="This program uses icons from:" HBox.hgrow="ALWAYS" />
+            <Hyperlink onAction="#linkIcons8" text="icons8.com" HBox.hgrow="ALWAYS" />
          </children>
-         <GridPane.margin>
-            <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
-         </GridPane.margin>
-      </AnchorPane>
+      </HBox>
+      <VBox GridPane.columnIndex="1" GridPane.rowIndex="5">
+         <children>
+            <Hyperlink onAction="#linkSourceCode" text="Source Code (GitHub)" />
+            <Hyperlink onAction="#linkBugReport" text="Report Bug (GitHub)" />
+         </children>
+      </VBox>
    </children>
    <padding>
       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />

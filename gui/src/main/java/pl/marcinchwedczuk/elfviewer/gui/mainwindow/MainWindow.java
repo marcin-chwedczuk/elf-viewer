@@ -14,7 +14,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReader;
 import pl.marcinchwedczuk.elfviewer.elfreader.ElfReaderException;
 import pl.marcinchwedczuk.elfviewer.elfreader.elf.arch.LongNativeWord;
@@ -256,7 +255,7 @@ public class MainWindow implements Initializable {
 
     @FXML
     private void guiAbout() {
-        AboutDialog.show(thisWindow);
+        AboutDialog.showAndWait(thisWindow);
     }
 
     @FXML
