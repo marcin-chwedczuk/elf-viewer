@@ -45,9 +45,8 @@ public class ElfSegmentRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_W
                 mkStrings("p_offset", ph.fileOffset().toString()),
                 mkStrings("p_vaddr", ph.virtualAddress().toString()),
                 mkStrings("p_paddr", ph.physicalAddress().toString()),
-                // TODO: To human readable size e.g. 4kB
-                mkStrings("p_filesz", dec(ph.fileSize())),
-                mkStrings("p_memsz", dec(ph.memorySize())),
+                mkStrings("p_filesz", kb(ph.fileSize())),
+                mkStrings("p_memsz", kb(ph.memorySize())),
 
                 mkStrings("p_flags",
                         hex(ph.flags().intValue()),

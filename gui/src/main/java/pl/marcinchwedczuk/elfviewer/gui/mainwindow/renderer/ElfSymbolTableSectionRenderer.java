@@ -51,7 +51,7 @@ public class ElfSymbolTableSectionRenderer<NATIVE_WORD extends Number & Comparab
                         hex(entry.symbol.nameIndex().intValue()),
                         entry.symbol.name(),
                         entry.symbol.value().toString(),
-                        dec(entry.symbol.size()),
+                        kb(entry.symbol.size()),
                         hex(entry.symbol.info()),
                         entry.symbol.binding().apiName(),
                         entry.symbol.symbolType().apiName(),

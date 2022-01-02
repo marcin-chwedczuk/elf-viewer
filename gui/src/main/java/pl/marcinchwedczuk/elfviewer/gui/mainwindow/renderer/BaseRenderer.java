@@ -194,6 +194,34 @@ public abstract class BaseRenderer<R, NATIVE_WORD extends Number & Comparable<NA
         return String.format("%d", value);
     }
 
+    protected String kb(NATIVE_WORD fileSize) {
+        return dec(fileSize.longValue());
+    }
+
+    protected static String kb(long fileSize) {
+        if (fileSize == 0) return "0 Bytes";
+
+        int k = 1024;
+        String[] sizes = {"Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+        int i = (int) Math.floor(Math.log(fileSize) / Math.log(k));
+        return String.format("%s %s",
+                simplifyNumberString(Double.toString(fileSize / Math.pow(k, i))),
+                sizes[i]);
+    }
+
+    private static String simplifyNumberString(String s) {
+        if (s == null || s.isEmpty()) return s;
+
+        int i = s.length()-1;
+        // TODO: Test on system with , as separator
+        while (i > 0 && (s.charAt(i) == '0' || s.charAt(i) == '.')) {
+            i--;
+            if (s.charAt(i+1) == '.') break;
+        }
+
+        return s.substring(0, i+1);
+    }
+
     protected static String placeholder(String placeholder, String s) {
         if (s == null || s.length() == 0) return placeholder;
         return s;

@@ -51,11 +51,11 @@ public class ElfSectionHeaderRenderer<NATIVE_WORD extends Number & Comparable<NA
 
                 mkStrings("sh_addr", header.virtualAddress().toString()),
                 mkStrings("sh_offset", header.fileOffset().toString()),
-                mkStrings("sh_size", dec(header.size())),
+                mkStrings("sh_size", kb(header.size())),
                 mkStrings("sh_link", hex(header.link())),
                 mkStrings("sh_info", hex(header.info())),
                 mkStrings("sh_addralign", dec(header.addressAlignment())),
-                mkStrings("sh_entsize", dec(header.containedEntrySize()))
+                mkStrings("sh_entsize", kb(header.containedEntrySize()))
         );
     }
 

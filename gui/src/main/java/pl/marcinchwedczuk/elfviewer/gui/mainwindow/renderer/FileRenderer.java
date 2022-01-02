@@ -43,7 +43,7 @@ public class FileRenderer<NATIVE_WORD extends Number & Comparable<NATIVE_WORD>>
             fields.addAll(List.of(
                     mkStrings("name", path.getFileName().toString()),
                     mkStrings("path", path.toAbsolutePath().toString()),
-                    mkStrings("size", dec(attr.size())), // TODO: KB MB etc.
+                    mkStrings("size", dec(attr.size())),
                     mkStrings("ctime", attr.creationTime().toString()),
                     mkStrings("mtime", attr.lastModifiedTime().toString()),
                     mkStrings("atime", attr.lastAccessTime().toString())
